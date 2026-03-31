@@ -2,6 +2,13 @@ node_modules
 dist
 .DS_Store
 .env
+/build
+/logs
+*.log
+/output
+*.tmp
+/out
+/public
 
 # Ignore the output video from Git but not videos you import into src/.
 out

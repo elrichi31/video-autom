@@ -1,0 +1,198 @@
+Quiero que crees un video vertical en Remotion con estética premium para redes sociales, siguiendo este estilo visual y de motion de forma estricta.
+
+OBJETIVO GENERAL
+Crear un video tipo TikTok / Reel / Short, con alto impacto visual, legible en móvil, ritmo dinámico y aspecto profesional. Debe sentirse como contenido tech premium, moderno, limpio, con muy buena jerarquía visual y excelente retención.
+
+FORMATO
+- Resolución: 1080x1920
+- Orientación: vertical
+- FPS: 30
+- Duración: entre 45 y 75 segundos, según el tema
+- Pensado 100% para móvil
+- Todo debe verse grande, claro y centrado
+- El contenido importante debe estar dentro de safe margins móviles
+
+DIRECCIÓN VISUAL
+- Estilo: tech minimal premium
+- Base visual: dark mode
+- Fondo: negro / verde oscuro / gris muy oscuro
+- Color principal: verde neón o verde brillante premium
+- Color secundario opcional: azul suave o cian, pero el verde debe dominar
+- Tipografía: sans-serif moderna como Inter o Poppins
+- El texto debe ser grande, dominante y muy legible
+- Nada de UI genérica o card grids estilo SaaS aburrido
+- Debe verse editorial, limpio, moderno y enfocado en impacto
+
+JERARQUÍA VISUAL
+- El texto principal siempre debe ser GRANDE
+- Los títulos deben ocupar bien la pantalla
+- El contenido debe sentirse centrado horizontal y verticalmente
+- El hook inicial y el cierre deben ser los momentos más potentes visualmente
+- Cada escena debe tener un centro visual muy claro
+- Evitar espacios vacíos innecesarios
+- Todo debe sentirse balanceado en pantalla vertical
+
+REGLAS IMPORTANTES DE LAYOUT
+- El layout debe ser estable
+- No quiero que los títulos “suban” o “se muevan” cuando aparece nuevo texto
+- No quiero efecto de apilado o reflow visual
+- Reserva espacio fijo para cada bloque de texto
+- Usa slots o áreas estáticas para que solo animen los elementos, no la estructura
+- Cada escena debe verse firme, como si el diseño ya estuviera colocado y solo entrara visualmente
+
+ESTILO DE ANIMACIÓN
+- Nada debe aparecer estático
+- Todo debe entrar con animación suave
+- Usar solo animaciones compatibles con Remotion
+- No usar CSS transitions
+- Usar useCurrentFrame(), interpolate() y spring()
+- Entradas recomendadas: fade, slide, scale, blur-to-sharp
+- Movimiento constante sutil: zoom muy leve, drift, glow pulsante
+- Motion premium, no exagerado ni caricaturesco
+- El video debe sentirse vivo todo el tiempo
+
+MICROINTERACCIONES OBLIGATORIAS
+- Glow pulsante en bullets o elementos clave
+- Movimiento leve constante en escenas
+- Fondos animados sutiles
+- Transiciones suaves entre bloques
+- Partículas o líneas en movimiento, según la escena
+- Elementos flotando o respirando ligeramente
+- Cambios visuales cada 1–2 segundos para mantener atención
+
+FONDOS
+- Evitar fondos vacíos o planos
+- Usar fondos oscuros con atmósfera premium
+- Añadir líneas animadas, beams, grids sutiles, barridos de luz o patrones tech
+- Preferir líneas en movimiento antes que bolas/orbes si el resultado se ve más limpio
+- El fondo debe acompañar, no competir con el texto
+- El fondo debe repetirse con consistencia estética en todas las escenas
+- Si hay una variación de fondo entre escenas, debe sentirse parte del mismo sistema visual
+
+REGLAS DE TEXTO
+- Texto corto y directo
+- Nada de párrafos largos
+- Máximo una idea principal por bloque
+- Máximo una línea o dos por bloque, dependiendo del tamaño
+- El texto siempre debe ser muy fácil de leer en pantalla pequeña
+- El copy debe sentirse rápido, claro y visual
+- Evitar repetir la misma frase en varios lugares de la misma escena
+- Si hay título, subtítulo y card auxiliar, cada uno debe aportar algo distinto
+- No duplicar mensaje con diferente formato
+
+ESTILO DE ESCENAS
+- Todas las escenas deben verse centradas y ordenadas
+- El contenido principal debe estar alineado al centro horizontalmente
+- Siempre que sea posible, también debe sentirse centrado verticalmente
+- El hook y el outro deben verse especialmente hero-centered
+- Las escenas intermedias deben seguir ese mismo lenguaje visual
+
+ESTRUCTURA RECOMENDADA DEL VIDEO
+1. HOOK
+- Debe ser impactante
+- Texto enorme
+- Muy legible
+- Centrado horizontal y verticalmente
+- Debe durar suficiente para leerse bien
+- Puede entrar con scale + blur → sharp
+- El fondo debe tener movimiento sutil
+
+2. PROBLEMA / CONTEXTO
+- Explica rápido el problema o el dolor
+- Puede ir en 1 o 2 bloques
+- Mantener layout estático
+- Resaltar palabras clave con color o glow
+
+3. TIPS / PUNTOS / BLOQUES PRINCIPALES
+- Cada tip debe ser una mini escena
+- Cada tip debe tener un encabezado arriba, grande, visible y protagonista
+- Ejemplo: “TIP 1”, “TIP 2”, etc. debe verse como título superior, no como simple chip pequeño
+- Debe haber buena separación entre:
+  - encabezado del tip
+  - título principal
+  - subtítulo
+  - tarjetas o ejemplos
+  - remate final
+- Todo centrado
+- Nada debe moverse de lugar al aparecer el siguiente elemento
+- El fondo de estas escenas puede tener líneas animadas compartidas para dar coherencia
+
+4. OUTRO
+- Cierre fuerte y limpio
+- Texto grande y centrado
+- Mensaje final claro
+- CTA corto
+- Fade out + zoom out suave
+- Fondo con dispersión o respiración final
+
+IMPLEMENTACIÓN TÉCNICA EN REMOTION
+- Usar <Sequence> para separar escenas y bloques
+- Usar interpolate() para:
+  - opacity
+  - scale
+  - translateY
+  - blur simulado si aplica
+- Usar spring() para entradas naturales
+- Cada escena debe ser modular y reutilizable
+- Mantener código ordenado y limpio
+- Crear helpers reutilizables para:
+  - fondos
+  - títulos
+  - labels
+  - cards
+  - glow dots
+  - motion backgrounds
+  - slots fijos de layout
+- Si se usan cards, que sean glassmorphism sutil, no demasiado pesadas
+- Si se usan fondos animados en tips, deben ser compartidos y consistentes
+
+SISTEMA DE LAYOUT
+- Crear una estructura fija por escena
+- Si una escena tiene:
+  - header
+  - título
+  - subtítulo
+  - detalle
+  - ejemplo
+  - CTA pequeño
+  entonces cada una debe tener su espacio reservado
+- No permitir que al aparecer un elemento, el resto cambie de posición
+- El usuario debe percibir un diseño estático con capas animadas, no un bloque que se recompone constantemente
+
+TONO
+- Directo
+- Claro
+- Visual
+- Moderno
+- Práctico
+- Rápido
+- Sin relleno
+
+EVITAR
+- Texto pequeño
+- Escenas desbalanceadas
+- Contenido pegado arriba sin intención
+- Repetición innecesaria del mismo copy
+- Pantallas estáticas
+- Fondos blancos
+- Logos con fondo blanco
+- Elementos que saturen la pantalla
+- Demasiadas cards al mismo tiempo
+- Estética genérica de dashboard
+- Animaciones torpes o exageradas
+- Layout shift
+- Títulos que cambian de lugar cuando entran otros elementos
+
+RESULTADO ESPERADO
+Quiero un video que:
+- parezca hecho por un creador top de contenido tech
+- se vea premium en móvil
+- tenga ritmo constante
+- mantenga atención visual
+- use texto grande y muy legible
+- se sienta centrado, limpio y moderno
+- tenga movimiento sutil pero continuo
+- esté listo para Reels / TikTok / Shorts
+
+INSTRUCCIÓN FINAL
+No hagas una versión genérica. Quiero una composición con personalidad visual, estructura sólida, tipografía grande, fondo animado coherente, y una ejecución muy cuidada en ritmo, legibilidad y layout.
