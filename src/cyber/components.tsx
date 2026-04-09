@@ -515,11 +515,11 @@ export const HeroLayout: FC<{
   footer?: ReactNode;
 }> = ({ eyebrow, title, subtitle, detail, footer }) => (
   <div style={{ position: "relative", width: "100%", height: "100%" }}>
-    <Slot top={140} height={84}>{eyebrow}</Slot>
-    <Slot top={280} height={430}>{title}</Slot>
-    <Slot top={790} height={130}>{subtitle}</Slot>
-    <Slot top={1020} height={220}>{detail}</Slot>
-    <Slot top={1400} height={170}>{footer}</Slot>
+    <Slot top={130} height={84}>{eyebrow}</Slot>
+    <Slot top={270} height={430}>{title}</Slot>
+    <Slot top={780} height={130}>{subtitle}</Slot>
+    <Slot top={1030} height={220}>{detail}</Slot>
+    <Slot top={1420} height={170}>{footer}</Slot>
   </div>
 );
 
@@ -532,12 +532,12 @@ export const AttackLayout: FC<{
   kicker?: ReactNode;
 }> = ({ header, title, subtitle, detail, card, kicker }) => (
   <div style={{ position: "relative", width: "100%", height: "100%" }}>
-    <Slot top={120} height={82}>{header}</Slot>
-    <Slot top={300} height={250}>{title}</Slot>
-    <Slot top={640} height={130}>{subtitle}</Slot>
-    <Slot top={800} height={80}>{detail}</Slot>
-    <Slot top={910} height={290}>{card}</Slot>
-    <Slot top={1320} height={110}>{kicker}</Slot>
+    <Slot top={110} height={82}>{header}</Slot>
+    <Slot top={270} height={250}>{title}</Slot>
+    <Slot top={610} height={130}>{subtitle}</Slot>
+    <Slot top={810} height={80}>{detail}</Slot>
+    <Slot top={970} height={290}>{card}</Slot>
+    <Slot top={1380} height={110}>{kicker}</Slot>
   </div>
 );
 

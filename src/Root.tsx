@@ -14,6 +14,10 @@ import {
   AiSkillsComposition,
   aiSkillsDuration,
 } from "./AiSkillsComposition";
+import {
+  HackerGroupsComposition,
+  hackerGroupsDuration,
+} from "./HackerGroupsComposition";
 
 export const RemotionRoot: FC = () => {
   return (
@@ -47,6 +51,18 @@ export const RemotionRoot: FC = () => {
         id="AiSkillsVerticalPremium"
         component={AiSkillsComposition}
         durationInFrames={aiSkillsDuration}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{
+          voiceoverFile:
+            "ElevenLabs_2026-04-04T05_10_01_David - Energetic, Deep and Pleasant_pvc_sp100_s31_sb82_se18_b_m2.mp3",
+        }}
+      />
+      <Composition
+        id="HackerGroupsVerticalPremium"
+        component={HackerGroupsComposition}
+        durationInFrames={hackerGroupsDuration}
         fps={30}
         width={1080}
         height={1920}
