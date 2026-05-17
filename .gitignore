@@ -1,7 +1,15 @@
 node_modules
 dist
 .DS_Store
+
+# Environment files — NEVER commit these
 .env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+
 /build
 /logs
 *.log
@@ -12,3 +20,7 @@ dist
 
 # Ignore the output video from Git but not videos you import into src/.
 out
+
+# Next.js dashboard build artifacts
+dashboard/.next/
+dashboard/out/
