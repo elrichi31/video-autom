@@ -47,6 +47,11 @@ import {
   ransomwareTerrorTecnologicoDuration,
 } from "./RansomwareTerrorTecnologicoComposition";
 
+import {
+  DeepfakesComposition,
+  deepfakesDuration,
+} from "./DeepfakesComposition";
+
 export const RemotionRoot: FC = () => {
   return (
     <>
@@ -189,6 +194,15 @@ export const RemotionRoot: FC = () => {
         defaultProps={{
           backgroundMusicFile: null,
         }}
+      />
+      <Composition
+        id="DeepfakesVerticalPremium"
+        component={DeepfakesComposition}
+        durationInFrames={deepfakesDuration}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{ voiceoverFile: null }}
       />
     </>
   );

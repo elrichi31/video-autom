@@ -19,10 +19,14 @@ export async function GET(_req: NextRequest, { params }: { params: { path: strin
       ext === ".png"  ? "image/png"  :
       ext === ".jpg" || ext === ".jpeg" ? "image/jpeg" :
       ext === ".webp" ? "image/webp" :
+      ext === ".mp3"  ? "audio/mpeg" :
       "application/octet-stream";
 
+    // Audio files are regenerated in-place — never cache them
+    const cacheControl = ext === ".mp3" ? "no-store" : "public, max-age=3600";
+
     return new NextResponse(buffer, {
-      headers: { "Content-Type": mime, "Cache-Control": "public, max-age=3600" },
+      headers: { "Content-Type": mime, "Cache-Control": cacheControl },
     });
   } catch {
     return new NextResponse("Not found", { status: 404 });

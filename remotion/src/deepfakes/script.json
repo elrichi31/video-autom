@@ -1,0 +1,109 @@
+{
+  "slug": "deepfakes",
+  "displayTitle": "Deepfakes",
+  "accents": {
+    "intro": [
+      "#FF5733",
+      "#C70039"
+    ],
+    "layers": [
+      "#900C3F",
+      "#581845"
+    ],
+    "phase1": [
+      "#FFC300",
+      "#FF5733"
+    ],
+    "phase2": [
+      "#DAF7A6",
+      "#FFC300"
+    ],
+    "phase3": [
+      "#C70039",
+      "#900C3F"
+    ],
+    "reality": [
+      "#581845",
+      "#DAF7A6"
+    ],
+    "close": [
+      "#900C3F",
+      "#FF5733"
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "tag": "ALERTA",
+      "title": "EL PELIGRO\nDE LOS\nDEEPFAKES",
+      "subtitle": "la tecnología que engaña"
+    },
+    "layers": {
+      "tag": "CAPAS",
+      "terminal": [
+        "> deepfake.origen = 2017",
+        "> tecnología.base = IA",
+        "> riesgo          = alto",
+        "> impacto.global  = CRECIENTE"
+      ],
+      "definition": "Deepfakes son videos\ndigitalmente alterados\npor inteligencia artificial",
+      "detail": "El término 'deepfake' proviene de 'deep learning' y 'fake'."
+    },
+    "phase1": {
+      "phase": "FASE 01",
+      "timestamp": "INICIO",
+      "title": "Creación\nInicial",
+      "narrative": "Los deepfakes comenzaron como una curiosidad tecnológica, generando rostros falsos.",
+      "detail": "En 2019, se detectaron más de 14,000 videos deepfake en línea.",
+      "indicator": [
+        "14,000 videos",
+        "2019"
+      ]
+    },
+    "phase2": {
+      "phase": "FASE 02",
+      "timestamp": "EVOLUCIÓN",
+      "title": "Avances\nTecnológicos",
+      "narrative": "La tecnología mejoró, permitiendo reemplazar rostros en videos con creciente realismo.",
+      "detail": "Deepfakes ahora se usan para manipular discursos políticos.",
+      "indicator": [
+        "Manipulación política",
+        "Realismo avanzado"
+      ]
+    },
+    "phase3": {
+      "phase": "FASE 03",
+      "timestamp": "AMENAZA",
+      "title": "Riesgos\nReales",
+      "narrative": "Los deepfakes representan un peligro para la veracidad de la información y la seguridad personal.",
+      "detail": "En 2021, el 96% de los deepfakes detectados eran pornográficos.",
+      "indicator": [
+        "96% pornografía",
+        "Seguridad en riesgo"
+      ]
+    },
+    "reality": {
+      "tag": "REALIDAD",
+      "title": "Aunque la\ntecnología mejora,\ndepende de nosotros\ndetectar la verdad",
+      "actions": [
+        "Verifica fuentes de información",
+        "Cuestiona videos sospechosos",
+        "Utiliza herramientas de detección",
+        "No confíes ciegamente en videos"
+      ]
+    },
+    "close": {
+      "tag": "DEEPFAKES · CONCLUSIÓN",
+      "title": "El futuro está\nen nuestras manos,\nno en los algoritmos",
+      "subtitle": "La responsabilidad es de todos. Protejamos la verdad."
+    }
+  },
+  "imagePrompts": {
+    "intro": "Cinematic dark dramatic image. Silhouette of a person behind a digital screen, glowing red and orange, representing deception. Deep blacks, dramatic neon lighting, no text, vertical composition, photorealistic.",
+    "layers": "Cinematic dark dramatic image. Layers of digital faces overlapping, representing the complexity of deepfakes. Deep blacks, purple neon lighting, no text, vertical composition, photorealistic.",
+    "phase1": "Cinematic dark dramatic image. A computer screen displaying a digital face morphing, surrounded by data streams. Deep blacks, yellow and orange neon lighting, no text, vertical composition, photorealistic.",
+    "phase2": "Cinematic dark dramatic image. A realistic face on a digital screen being altered pixel by pixel. Deep blacks, green and yellow neon lighting, no text, vertical composition, photorealistic.",
+    "phase3": "Cinematic dark dramatic image. A shadowy figure controlling multiple digital screens, each showing different deepfakes. Deep blacks, red and purple neon lighting, no text, vertical composition, photorealistic.",
+    "reality": "Cinematic dark dramatic image. A person holding a magnifying glass over a digital screen, searching for truth. Deep blacks, soft green and yellow neon lighting, no text, vertical composition, photorealistic.",
+    "close": "Cinematic dark dramatic image. A hand reaching out to touch a digital screen with a symbol of truth or authenticity. Deep blacks, red and orange neon lighting, no text, vertical composition, photorealistic."
+  }
+}
