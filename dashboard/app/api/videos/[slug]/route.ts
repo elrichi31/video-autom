@@ -4,7 +4,7 @@ import path from "path";
 import type { VideoScript } from "@/lib/types";
 import { generateDataTs } from "@/lib/generate-data-ts";
 
-const REPO_ROOT = path.join(process.cwd(), "..");
+const REPO_ROOT = path.join(process.cwd(), "..", "remotion");
 
 export async function GET(_req: NextRequest, { params }: { params: { slug: string } }) {
   const { slug } = params;

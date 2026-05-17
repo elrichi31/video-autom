@@ -16,10 +16,16 @@ dist
 /output
 *.tmp
 /out
-/public
 
-# Ignore the output video from Git but not videos you import into src/.
-out
+# Remotion build output
+remotion/out/
+
+# Remotion public assets (audio, generated images — too large for git)
+remotion/public/
+
+# Next.js dashboard build artifacts
+dashboard/.next/
+dashboard/out/
 
 # Next.js dashboard build artifacts
 dashboard/.next/

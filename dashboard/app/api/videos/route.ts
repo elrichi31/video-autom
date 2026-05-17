@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { readdir, readFile, stat } from "fs/promises";
 import path from "path";
 
-const REPO_ROOT = path.join(process.cwd(), "..");
+const REPO_ROOT = path.join(process.cwd(), "..", "remotion");
 const SRC_DIR   = path.join(REPO_ROOT, "src");
 const PUB_DIR   = path.join(REPO_ROOT, "public");
 

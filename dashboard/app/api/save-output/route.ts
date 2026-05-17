@@ -5,7 +5,7 @@ import type { VideoScript, GeneratedImage } from "@/lib/types";
 import { generateDataTs } from "@/lib/generate-data-ts";
 import { generateCompositionTsx } from "@/lib/generate-composition-tsx";
 
-const REPO_ROOT = path.join(process.cwd(), "..");
+const REPO_ROOT = path.join(process.cwd(), "..", "remotion");
 
 function toComponentName(slug: string): string {
   return slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join("") + "Composition";

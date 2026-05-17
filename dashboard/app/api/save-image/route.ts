@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 
-const REPO_ROOT = path.join(process.cwd(), "..");
+const REPO_ROOT = path.join(process.cwd(), "..", "remotion");
 
 export async function POST(req: NextRequest) {
   const { slug, filename, b64 }: { slug: string; filename: string; b64: string } = await req.json();

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { readFile } from "fs/promises";
 import path from "path";
 
-const REPO_ROOT = path.join(process.cwd(), "..");
+const REPO_ROOT = path.join(process.cwd(), "..", "remotion");
 
 export async function GET(_req: NextRequest, { params }: { params: { path: string[] } }) {
   const filePath = path.join(REPO_ROOT, "public", ...params.path);
