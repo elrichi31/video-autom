@@ -12,10 +12,39 @@ export interface VideoMeta {
   hasScript: boolean;
   thumbnailPath: string | null;
   createdAt: string;
+  compositionId: string;
+}
+
+// Reads Root.tsx and builds a map of { ComponentName → compositionId }
+async function buildCompositionIdMap(): Promise<Map<string, string>> {
+  const map = new Map<string, string>();
+  try {
+    const rootContent = await readFile(path.join(REPO_ROOT, "src", "Root.tsx"), "utf-8");
+    const blockRegex = /<Composition[\s\S]*?\/>/g;
+    const idRx = /id="([^"]+)"/;
+    const compRx = /component=\{(\w+)\}/;
+    for (const block of rootContent.matchAll(blockRegex)) {
+      const id   = block[0].match(idRx)?.[1];
+      const comp = block[0].match(compRx)?.[1];
+      if (id && comp) map.set(comp, id);
+    }
+  } catch {}
+  return map;
+}
+
+function slugToComponentName(slug: string): string {
+  return slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join("") + "Composition";
+}
+
+function slugToFallbackCompositionId(slug: string): string {
+  return slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join("") + "VerticalPremium";
 }
 
 export async function GET() {
-  const entries = await readdir(SRC_DIR, { withFileTypes: true });
+  const [entries, compositionIdMap] = await Promise.all([
+    readdir(SRC_DIR, { withFileTypes: true }),
+    buildCompositionIdMap(),
+  ]);
   const videos: VideoMeta[] = [];
 
   for (const entry of entries) {
@@ -50,12 +79,16 @@ export async function GET() {
         if (intro) thumbnailPath = `${slug}/${intro}`;
       } catch {}
 
+      const componentName = slugToComponentName(slug);
+      const compositionId = compositionIdMap.get(componentName) ?? slugToFallbackCompositionId(slug);
+
       videos.push({
         slug,
         displayTitle,
         hasScript,
         thumbnailPath,
         createdAt: dataStat.birthtime.toISOString(),
+        compositionId,
       });
     } catch {
       // No data.ts → skip

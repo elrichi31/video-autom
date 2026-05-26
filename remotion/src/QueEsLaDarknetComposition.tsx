@@ -21,20 +21,22 @@ import {
   TimestampDisplay,
 } from "./dark-web/components";
 import {
-  RANSOMWARE_TERROR_TECNOLOGICO_ACCENTS as ACCENTS,
-  RANSOMWARE_TERROR_TECNOLOGICO_CLOSE as CLOSE,
-  RANSOMWARE_TERROR_TECNOLOGICO_DURATIONS as D,
-  RANSOMWARE_TERROR_TECNOLOGICO_INTRO as INTRO,
-  RANSOMWARE_TERROR_TECNOLOGICO_LAYERS as LAYERS,
-  RANSOMWARE_TERROR_TECNOLOGICO_PHASE1 as PHASE1,
-  RANSOMWARE_TERROR_TECNOLOGICO_PHASE2 as PHASE2,
-  RANSOMWARE_TERROR_TECNOLOGICO_PHASE3 as PHASE3,
-  RANSOMWARE_TERROR_TECNOLOGICO_REALITY as REALITY,
-  RANSOMWARE_TERROR_TECNOLOGICO_TOTAL_DURATION as TOTAL,
-} from "./ransomware-terror-tecnologico/data";
+  QUE_ES_LA_DARKNET_ACCENTS as ACCENTS,
+  QUE_ES_LA_DARKNET_CLOSE as CLOSE,
+  QUE_ES_LA_DARKNET_DURATIONS as D,
+  QUE_ES_LA_DARKNET_INTRO as INTRO,
+  QUE_ES_LA_DARKNET_LAYERS as LAYERS,
+  QUE_ES_LA_DARKNET_PHASE1 as PHASE1,
+  QUE_ES_LA_DARKNET_PHASE2 as PHASE2,
+  QUE_ES_LA_DARKNET_PHASE3 as PHASE3,
+  QUE_ES_LA_DARKNET_REALITY as REALITY,
+  QUE_ES_LA_DARKNET_TOTAL_DURATION as TOTAL,
+} from "./que-es-la-darknet/data";
 
 const FPS = 30;
 const SIL = 45;
+
+export const queEsLaDarknetDuration = TOTAL + 7 * SIL;
 
 type SceneKey = "intro"|"layers"|"phase1"|"phase2"|"phase3"|"reality"|"close";
 type SceneAudio = Partial<Record<SceneKey, string>>;
@@ -66,20 +68,23 @@ export const calculateMetadata = async ({ props }: { props: Props }) => {
   return { durationInFrames: total, props: { ...props, sceneDurations: sd } };
 };
 
-export const ransomwareTerrorTecnologicoDuration = TOTAL + 7 * SIL;
 
+/* ─── helpers ─── */
+
+/* ─── intro ─── */
 const IntroScene: FC = () => (
-  <DarkShell accent={ACCENTS.intro} durationInFrames={D.intro} variant="alert" bgSrc={staticFile("ransomware-terror-tecnologico/ransomware-terror-tecnologico-intro.png")}>
+  <DarkShell accent={ACCENTS.intro} durationInFrames={D.intro} variant="alert" bgSrc={staticFile("que-es-la-darknet/que-es-la-darknet-intro.png")}>
     <AlertLayout
       tag={<BlockSequence from={0} durationInFrames={D.intro}><Reveal y={12} blurFrom={8}><PhaseLabel text={INTRO.tag} accent={ACCENTS.intro[0]} /></Reveal></BlockSequence>}
-      title={<BlockSequence from={6} durationInFrames={D.intro - 6}><Reveal y={50} scaleFrom={0.88} blurFrom={30} durationInFrames={38}><GlitchTitle text={INTRO.title} accent={ACCENTS.intro} size={120} /></Reveal></BlockSequence>}
+      title={<BlockSequence from={6} durationInFrames={D.intro - 6}><Reveal y={50} scaleFrom={0.88} blurFrom={30} durationInFrames={38}><GlitchTitle text={INTRO.title} accent={ACCENTS.intro} size={136} /></Reveal></BlockSequence>}
       subtitle={<BlockSequence from={24} durationInFrames={D.intro - 24}><Reveal y={16} blurFrom={10}><DetailText text={INTRO.subtitle} size={30} /></Reveal></BlockSequence>}
     />
   </DarkShell>
 );
 
+/* ─── layers ─── */
 const LayersScene: FC = () => (
-  <DarkShell accent={ACCENTS.layers} durationInFrames={D.layers} variant="terminal" bgSrc={staticFile("ransomware-terror-tecnologico/ransomware-terror-tecnologico-layers.png")}>
+  <DarkShell accent={ACCENTS.layers} durationInFrames={D.layers} variant="terminal" bgSrc={staticFile("que-es-la-darknet/que-es-la-darknet-layers.png")}>
     <ExplainLayout
       tag={<BlockSequence from={0} durationInFrames={D.layers}><Reveal y={12} blurFrom={8}><PhaseLabel text={LAYERS.tag} accent={ACCENTS.layers[0]} /></Reveal></BlockSequence>}
       terminal={<BlockSequence from={10} durationInFrames={D.layers - 10}><Reveal y={20} blurFrom={14}><TerminalBlock lines={LAYERS.terminal} accent={ACCENTS.layers} startFrame={12} /></Reveal></BlockSequence>}
@@ -88,12 +93,13 @@ const LayersScene: FC = () => (
   </DarkShell>
 );
 
+/* ─── phase scene ─── */
 type PhaseKey = "phase1" | "phase2" | "phase3";
 const PhaseScene: FC<{ pk: PhaseKey }> = ({ pk }) => {
   const data   = pk === "phase1" ? PHASE1 : pk === "phase2" ? PHASE2 : PHASE3;
   const accent = ACCENTS[pk];
   const dur    = D[pk];
-  const imgSrc = `ransomware-terror-tecnologico/ransomware-terror-tecnologico-${pk}.png`;
+  const imgSrc = pk === "phase1" ? "que-es-la-darknet/que-es-la-darknet-phase1.png" : pk === "phase2" ? "que-es-la-darknet/que-es-la-darknet-phase2.png" : "que-es-la-darknet/que-es-la-darknet-phase3.png";
   return (
     <DarkShell accent={accent} durationInFrames={dur} variant="body" bgSrc={staticFile(imgSrc)}>
       <PhaseLayout
@@ -105,18 +111,20 @@ const PhaseScene: FC<{ pk: PhaseKey }> = ({ pk }) => {
   );
 };
 
+/* ─── reality ─── */
 const RealityScene: FC = () => (
-  <DarkShell accent={ACCENTS.reality} durationInFrames={D.reality} variant="body" bgSrc={staticFile("ransomware-terror-tecnologico/ransomware-terror-tecnologico-reality.png")}>
+  <DarkShell accent={ACCENTS.reality} durationInFrames={D.reality} variant="body" bgSrc={staticFile("que-es-la-darknet/que-es-la-darknet-reality.png")}>
     <DefenseLayout
       tag={<BlockSequence from={0} durationInFrames={D.reality}><Reveal y={12} blurFrom={8}><PhaseLabel text={REALITY.tag} accent={ACCENTS.reality[0]} /></Reveal></BlockSequence>}
-      title={<BlockSequence from={10} durationInFrames={D.reality - 10}><Reveal y={38} scaleFrom={0.93} blurFrom={24}><NarrativeText text={REALITY.title} size={52} /></Reveal></BlockSequence>}
+      title={<BlockSequence from={10} durationInFrames={D.reality - 10}><Reveal y={38} scaleFrom={0.93} blurFrom={24}><NarrativeText text={REALITY.title} size={58} /></Reveal></BlockSequence>}
       actions={<BlockSequence from={34} durationInFrames={D.reality - 34}><Reveal y={24} blurFrom={14}><ActionList items={REALITY.actions} accent={ACCENTS.reality} /></Reveal></BlockSequence>}
     />
   </DarkShell>
 );
 
+/* ─── close ─── */
 const CloseScene: FC = () => (
-  <DarkShell accent={ACCENTS.close} durationInFrames={D.close} variant="close" bgSrc={staticFile("ransomware-terror-tecnologico/ransomware-terror-tecnologico-close.png")}>
+  <DarkShell accent={ACCENTS.close} durationInFrames={D.close} variant="close" bgSrc={staticFile("que-es-la-darknet/que-es-la-darknet-close.png")}>
     <CloseLayout
       tag={<BlockSequence from={0} durationInFrames={D.close}><Reveal y={12} blurFrom={8}><PhaseLabel text={CLOSE.tag} accent={ACCENTS.close[0]} /></Reveal></BlockSequence>}
       title={<BlockSequence from={8} durationInFrames={D.close - 8}><Reveal y={40} scaleFrom={0.92} blurFrom={26} durationInFrames={36}><GlitchTitle text={CLOSE.title} accent={ACCENTS.close} size={96} /></Reveal></BlockSequence>}
@@ -126,7 +134,8 @@ const CloseScene: FC = () => (
   </DarkShell>
 );
 
-export const RansomwareTerrorTecnologicoComposition: FC<Props> = ({ voiceoverFile = null, voiceoverFiles = null, sceneDurations = null }) => {
+/* ─── main ─── */
+export const QueEsLaDarknetComposition: FC<Props> = ({ voiceoverFile = null, voiceoverFiles = null, sceneDurations = null }) => {
   const dur = (key: SceneKey) => sceneDurations?.[key] ?? (D as Record<string, number>)[key] + SIL;
   const off = {
     intro:   0,

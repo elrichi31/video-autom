@@ -1,0 +1,110 @@
+{
+  "slug": "que-es-la-darknet",
+  "displayTitle": "Qué es la Darknet",
+  "accents": {
+    "intro": [
+      "#000000",
+      "#1a1a1a"
+    ],
+    "layers": [
+      "#1a1a1a",
+      "#333333"
+    ],
+    "phase1": [
+      "#333333",
+      "#4d4d4d"
+    ],
+    "phase2": [
+      "#4d4d4d",
+      "#666666"
+    ],
+    "phase3": [
+      "#666666",
+      "#808080"
+    ],
+    "reality": [
+      "#ff0000",
+      "#990000"
+    ],
+    "close": [
+      "#000000",
+      "#1a1a1a"
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "tag": "DARKNET",
+      "title": "EL LADO\nOSCURO\nDE INTERNET",
+      "subtitle": "explora lo desconocido"
+    },
+    "layers": {
+      "tag": "CIBERESPACIO",
+      "terminal": [
+        "> internet.visible = 4% de la web",
+        "> internet.oculta  = 96% restante",
+        "> darknet.acceso   = especial",
+        "> tráfico.ilícito  = 100 TIENDAS"
+      ],
+      "definition": "La Darknet es una parte\nde la Deep Web,\ninaccesible por navegadores comunes",
+      "detail": "El 96% de la web es la Deep Web, donde se encuentra la Darknet."
+    },
+    "phase1": {
+      "phase": "ACCESO",
+      "timestamp": "CONEXIÓN",
+      "title": "Cómo\nEntrar",
+      "narrative": "El acceso a la Darknet requiere software especial como Tor, que oculta identidades y ubicaciones.",
+      "detail": "Tor fue descargado más de 2 millones de veces en 2021.",
+      "indicator": [
+        "Tor",
+        "2 millones"
+      ]
+    },
+    "phase2": {
+      "phase": "CONTENIDO",
+      "timestamp": "DENTRO",
+      "title": "Lo que\nEncontrarás",
+      "narrative": "Desde foros de discusión hasta mercados ilegales, la Darknet es un refugio para diversos tipos de contenido.",
+      "detail": "Existen más de 100 mercados ilegales activos en la Darknet.",
+      "indicator": [
+        "Mercados ilegales",
+        "100 activos"
+      ]
+    },
+    "phase3": {
+      "phase": "RIESGOS",
+      "timestamp": "PELIGRO",
+      "title": "Peligros\nOcultos",
+      "narrative": "Riesgos de entrar a la Darknet incluyen estafas, contenido ilegal y vigilancia gubernamental.",
+      "detail": "El FBI ha cerrado múltiples sitios en operaciones encubiertas.",
+      "indicator": [
+        "Estafas",
+        "Vigilancia"
+      ]
+    },
+    "reality": {
+      "tag": "REALIDAD",
+      "title": "La Darknet no\nes ilegal, pero\nmucho de su\ncontenido sí lo es.",
+      "actions": [
+        "Reflexiona antes de entrar",
+        "Infórmate sobre riesgos",
+        "Usa tecnología segura",
+        "Conoce las leyes locales"
+      ]
+    },
+    "close": {
+      "tag": "DARKNET · CONCLUSIÓN",
+      "title": "Conocer\nes prevenir\npeligros",
+      "subtitle": "La información es tu mejor defensa. Mantente seguro."
+    }
+  },
+  "imagePrompts": {
+    "intro": "Hyper-realistic cinematic photograph. A shadowy figure in a dimly lit room, surrounded by multiple screens showing cryptic code and darknet interfaces. Shot on RED Monstro 8K, anamorphic 50mm lens. Dramatic chiaroscuro lighting, deep shadows, volumetric light rays. Ultra-sharp, RAW unedited. No text, no watermarks, no logos. Vertical 9:16 composition. Photorealistic, not illustrated, not CGI.",
+    "layers": "Hyper-realistic cinematic photograph. A vast, dark virtual landscape filled with abstract digital data streams and hidden pathways, symbolizing the deep web. Shot on RED Monstro 8K, anamorphic 50mm lens. Dramatic chiaroscuro lighting, deep shadows, volumetric light rays. Ultra-sharp, RAW unedited. Vertical 9:16 composition. Photorealistic, not illustrated, not CGI.",
+    "phase1": "Hyper-realistic cinematic photograph. A close-up of a computer screen displaying the Tor browser, with a user’s hand hovering over the mouse, ready to click. Shot on RED Monstro 8K, anamorphic 50mm lens. Dramatic chiaroscuro lighting, deep shadows. Ultra-sharp, RAW unedited. Vertical 9:16 composition. Photorealistic, not illustrated, not CGI.",
+    "phase2": "Hyper-realistic cinematic photograph. An anonymous user browsing a virtual marketplace on the darknet, filled with listings of various illegal goods and services. Shot on RED Monstro 8K, anamorphic 50mm lens. Dramatic chiaroscuro lighting, deep shadows. Ultra-sharp, RAW unedited. Vertical 9:16 composition. Photorealistic, not illustrated, not CGI.",
+    "phase3": "Hyper-realistic cinematic photograph. A person in a hoodie, sitting in a dark room, with multiple warning signs and alerts flashing on computer screens around them. Shot on RED Monstro 8K, anamorphic 50mm lens. Dramatic chiaroscuro lighting, deep shadows. Ultra-sharp, RAW unedited. Vertical 9:16 composition. Photorealistic, not illustrated, not CGI.",
+    "reality": "Hyper-realistic cinematic photograph. A courtroom scene with a gavel in focus, symbolizing the legal implications of using the darknet. Shot on RED Monstro 8K, anamorphic 50mm lens. Dramatic chiaroscuro lighting, deep shadows. Ultra-sharp, RAW unedited. Vertical 9:16 composition. Photorealistic, not illustrated, not CGI.",
+    "close": "Hyper-realistic cinematic photograph. A person closing a laptop with a serious expression, symbolizing awareness and caution. Shot on RED Monstro 8K, anamorphic 50mm lens. Dramatic chiaroscuro lighting, deep shadows. Ultra-sharp, RAW unedited. Vertical 9:16 composition. Photorealistic, not illustrated, not CGI."
+  },
+  "targetDurationSeconds": 60
+}

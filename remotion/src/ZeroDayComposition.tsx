@@ -92,13 +92,6 @@ const ExplainScene: FC = () => (
           </Reveal>
         </BlockSequence>
       }
-      detail={
-        <BlockSequence from={90} durationInFrames={ZERO_DAY_DURATIONS.explain - 90}>
-          <Reveal y={16} blurFrom={10}>
-            <DetailText text={ZERO_DAY_EXPLAIN.detail} size={34} maxWidth={680} />
-          </Reveal>
-        </BlockSequence>
-      }
     />
   </DarkShell>
 );
@@ -114,13 +107,6 @@ const PhaseScene: FC<{ index: number }> = ({ index }) => {
   return (
     <DarkShell accent={accent} durationInFrames={dur} variant="body">
       <PhaseLayout
-        phase={
-          <BlockSequence from={0} durationInFrames={dur}>
-            <Reveal y={12} blurFrom={8}>
-              <PhaseLabel text={phase.phase} accent={accent[0]} />
-            </Reveal>
-          </BlockSequence>
-        }
         timestamp={
           <BlockSequence from={6} durationInFrames={dur - 6}>
             <Reveal y={10} blurFrom={6}>
@@ -132,20 +118,6 @@ const PhaseScene: FC<{ index: number }> = ({ index }) => {
           <BlockSequence from={12} durationInFrames={dur - 12}>
             <Reveal y={44} scaleFrom={0.9} blurFrom={28} durationInFrames={36}>
               <GlitchTitle text={phase.title} accent={accent} size={130} />
-            </Reveal>
-          </BlockSequence>
-        }
-        narrative={
-          <BlockSequence from={28} durationInFrames={dur - 28}>
-            <Reveal y={22} blurFrom={14}>
-              <NarrativeText text={phase.narrative} size={52} />
-            </Reveal>
-          </BlockSequence>
-        }
-        detail={
-          <BlockSequence from={46} durationInFrames={dur - 46}>
-            <Reveal y={16} blurFrom={10}>
-              <DetailText text={phase.detail} size={34} maxWidth={700} />
             </Reveal>
           </BlockSequence>
         }

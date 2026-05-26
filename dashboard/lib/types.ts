@@ -1,5 +1,7 @@
 export type AccentPair = [string, string];
 
+// ─── Standard scenes ─────────────────────────────────────────────────────────
+
 export interface SceneIntro {
   tag: string;
   title: string;
@@ -37,6 +39,8 @@ export interface SceneClose {
 export interface VideoScript {
   slug: string;
   displayTitle: string;
+  compositionType?: "standard";
+  targetDurationSeconds: number;
   accents: {
     intro:   AccentPair;
     layers:  AccentPair;
@@ -66,6 +70,41 @@ export interface VideoScript {
   };
 }
 
+// ─── Timeline scenes ──────────────────────────────────────────────────────────
+
+export interface SceneEvent {
+  event: string;    // e.g. "PRIMER ATAQUE"
+  year: string;     // e.g. "2010"
+  headline: string; // e.g. "STUXNET\nDESCUBIERTO"
+  impact: string;   // brief impact — máx 120 chars
+}
+
+export type SceneKeyTimeline = "intro" | "event1" | "event2" | "event3" | "event4" | "today" | "close";
+
+export interface VideoScriptTimeline {
+  slug: string;
+  displayTitle: string;
+  compositionType: "timeline";
+  targetDurationSeconds: number;
+  accents: Record<SceneKeyTimeline, AccentPair>;
+  scenes: {
+    intro:  SceneIntro;
+    event1: SceneEvent;
+    event2: SceneEvent;
+    event3: SceneEvent;
+    event4: SceneEvent;
+    today:  SceneReality;
+    close:  SceneClose;
+  };
+  imagePrompts: Record<SceneKeyTimeline, string>;
+}
+
+// ─── Union ────────────────────────────────────────────────────────────────────
+
+export type AnyVideoScript = VideoScript | VideoScriptTimeline;
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
 export type SceneKey = keyof VideoScript["scenes"];
 
 export const SCENE_LABELS: Record<SceneKey, string> = {
@@ -78,8 +117,30 @@ export const SCENE_LABELS: Record<SceneKey, string> = {
   close:   "Cierre",
 };
 
+export const SCENE_LABELS_TIMELINE: Record<SceneKeyTimeline, string> = {
+  intro:  "Introducción",
+  event1: "Evento 01",
+  event2: "Evento 02",
+  event3: "Evento 03",
+  event4: "Evento 04",
+  today:  "Actualidad",
+  close:  "Cierre",
+};
+
+export function getSceneLabels(script: AnyVideoScript): Record<string, string> {
+  return script.compositionType === "timeline"
+    ? (SCENE_LABELS_TIMELINE as Record<string, string>)
+    : (SCENE_LABELS as Record<string, string>);
+}
+
+export function getSceneKeys(script: AnyVideoScript): string[] {
+  return script.compositionType === "timeline"
+    ? ["intro", "event1", "event2", "event3", "event4", "today", "close"]
+    : ["intro", "layers", "phase1", "phase2", "phase3", "reality", "close"];
+}
+
 export interface GeneratedImage {
-  sceneKey: SceneKey;
+  sceneKey: string;
   filename: string;
   b64: string;
 }

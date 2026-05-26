@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import type { VideoScript, GeneratedImage, SceneKey } from "@/lib/types";
-import { SCENE_LABELS } from "@/lib/types";
+import type { AnyVideoScript, GeneratedImage } from "@/lib/types";
+import { getSceneKeys, getSceneLabels } from "@/lib/types";
 import { VideoList } from "@/components/VideoList";
 import { VideoEditor } from "@/components/VideoEditor";
 
@@ -12,7 +12,7 @@ type View =
   | { name: "home" }
   | { name: "wizard"; step: 1 | 2 | 3 | 4 }
   | { name: "videos" }
-  | { name: "editor"; slug: string };
+  | { name: "editor"; slug: string; compositionId: string };
 
 function Nav({
   view,
@@ -103,14 +103,18 @@ function StepIndicator({ current }: { current: number }) {
 
 // ─── WIZARD STEP 1 ───────────────────────────────────────────────────────────
 
+const DURATION_PRESETS = [30, 45, 60, 90];
+
 function TopicForm({
   initialTopic,
   onScript,
 }: {
   initialTopic?: string;
-  onScript: (s: VideoScript) => void;
+  onScript: (s: AnyVideoScript) => void;
 }) {
   const [topic, setTopic] = useState(initialTopic ?? "");
+  const [targetDuration, setTargetDuration] = useState(45);
+  const [compositionType, setCompositionType] = useState<"standard" | "timeline">("standard");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -129,7 +133,7 @@ function TopicForm({
       const res = await fetch("/api/generate-script", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic }),
+        body: JSON.stringify({ topic, targetDurationSeconds: targetDuration, compositionType }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Error desconocido");
@@ -165,6 +169,56 @@ function TopicForm({
             </button>
           ))}
         </div>
+
+        {/* Duration selector */}
+        <div className="bg-[#161616] border border-[#2a2a2a] rounded-xl p-3">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs font-bold text-[#666] uppercase tracking-wider">Duración del video</p>
+            <span className="text-violet-400 font-mono text-xs font-bold">{targetDuration}s</span>
+          </div>
+          <div className="flex gap-2">
+            {DURATION_PRESETS.map((secs) => (
+              <button
+                key={secs}
+                type="button"
+                onClick={() => setTargetDuration(secs)}
+                className={`flex-1 py-1.5 rounded-lg text-sm font-semibold transition
+                  ${targetDuration === secs
+                    ? "bg-violet-600 text-white"
+                    : "bg-[#1e1e1e] border border-[#2a2a2a] text-[#666] hover:text-white hover:border-[#444]"}`}
+              >
+                {secs}s
+              </button>
+            ))}
+          </div>
+          <p className="text-[10px] text-[#444] mt-2">
+            Las escenas se escalan proporcionalmente · variación natural de ±2s
+          </p>
+        </div>
+
+        {/* Composition type selector */}
+        <div className="bg-[#161616] border border-[#2a2a2a] rounded-xl p-3">
+          <p className="text-xs font-bold text-[#666] uppercase tracking-wider mb-2">Tipo de composición</p>
+          <div className="flex gap-2">
+            {(["standard", "timeline"] as const).map((type) => (
+              <button
+                key={type}
+                type="button"
+                onClick={() => setCompositionType(type)}
+                className={`flex-1 py-2 rounded-lg text-sm font-semibold transition text-left px-3
+                  ${compositionType === type
+                    ? "bg-violet-600 text-white"
+                    : "bg-[#1e1e1e] border border-[#2a2a2a] text-[#666] hover:text-white hover:border-[#444]"}`}
+              >
+                <span className="block text-sm">{type === "standard" ? "Estándar" : "Timeline"}</span>
+                <span className="block text-[10px] opacity-70 mt-0.5">
+                  {type === "standard" ? "7 escenas temáticas" : "Cronología de eventos"}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
         {error && (
           <p className="text-red-400 text-sm bg-red-900/20 border border-red-800/30 rounded-lg px-3 py-2">{error}</p>
         )}
@@ -180,9 +234,11 @@ function TopicForm({
 
 // ─── WIZARD STEP 2 ───────────────────────────────────────────────────────────
 
-function ScriptPreview({ script, onContinue }: { script: VideoScript; onContinue: () => void }) {
+function ScriptPreview({ script, onContinue }: { script: AnyVideoScript; onContinue: () => void }) {
   const [expanded, setExpanded] = useState<string | null>(null);
-  const sceneEntries = Object.entries(script.scenes) as [SceneKey, unknown][];
+  const sceneLabels = getSceneLabels(script);
+  const sceneEntries = Object.entries(script.scenes);
+  const accents = script.accents as Record<string, [string, string]>;
 
   return (
     <div className="max-w-2xl">
@@ -192,8 +248,8 @@ function ScriptPreview({ script, onContinue }: { script: VideoScript; onContinue
           <p className="text-[#666] text-sm mono mt-1">{script.slug}</p>
         </div>
         <div className="flex gap-1">
-          {(Object.keys(script.accents) as (keyof typeof script.accents)[]).map((k) => (
-            <div key={k} className="w-4 h-4 rounded-full" style={{ background: script.accents[k][0] }} title={k} />
+          {Object.keys(accents).map((k) => (
+            <div key={k} className="w-4 h-4 rounded-full" style={{ background: accents[k][0] }} title={k} />
           ))}
         </div>
       </div>
@@ -201,12 +257,12 @@ function ScriptPreview({ script, onContinue }: { script: VideoScript; onContinue
         {sceneEntries.map(([key, scene]) => (
           <div key={key}
             className="border rounded-xl overflow-hidden cursor-pointer hover:opacity-90 transition"
-            style={{ borderColor: script.accents[key][0] + "55", background: script.accents[key][0] + "0d" }}
+            style={{ borderColor: (accents[key]?.[0] ?? "#444") + "55", background: (accents[key]?.[0] ?? "#444") + "0d" }}
             onClick={() => setExpanded(expanded === key ? null : key)}>
             <div className="flex items-center justify-between px-4 py-3">
               <div className="flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full" style={{ background: script.accents[key][0] }} />
-                <span className="text-sm font-semibold">{SCENE_LABELS[key]}</span>
+                <div className="w-2 h-2 rounded-full" style={{ background: accents[key]?.[0] ?? "#444" }} />
+                <span className="text-sm font-semibold">{sceneLabels[key] ?? key}</span>
                 {"title" in (scene as Record<string, unknown>)
                   ? <span className="text-[#666] text-xs mono ml-2 truncate max-w-[200px]">
                       {String((scene as Record<string, unknown>).title).replace(/\\n/g, " · ")}
@@ -233,21 +289,22 @@ function ScriptPreview({ script, onContinue }: { script: VideoScript; onContinue
 
 // ─── WIZARD STEP 3 ───────────────────────────────────────────────────────────
 
-const SCENE_KEYS: SceneKey[] = ["intro", "layers", "phase1", "phase2", "phase3", "reality", "close"];
-
 function ImageGallery({
   script, images, onImages, onContinue,
 }: {
-  script: VideoScript; images: GeneratedImage[];
+  script: AnyVideoScript; images: GeneratedImage[];
   onImages: (imgs: GeneratedImage[]) => void; onContinue: () => void;
 }) {
   const [loadingAll, setLoadingAll] = useState(false);
-  const [loadingKey, setLoadingKey] = useState<SceneKey | null>(null);
+  const [loadingKey, setLoadingKey] = useState<string | null>(null);
   const [errors, setErrors]         = useState<string[]>([]);
 
-  function getImage(key: SceneKey) { return images.find((i) => i.sceneKey === key); }
+  const sceneKeys   = getSceneKeys(script);
+  const sceneLabels = getSceneLabels(script);
 
-  async function generate(sceneKey?: SceneKey) {
+  function getImage(key: string) { return images.find((i) => i.sceneKey === key); }
+
+  async function generate(sceneKey?: string) {
     if (sceneKey) setLoadingKey(sceneKey); else setLoadingAll(true);
     setErrors([]);
     try {
@@ -278,7 +335,7 @@ function ImageGallery({
         <div>
           <h2 className="text-2xl font-bold">Imágenes por escena</h2>
           <p className="text-[#666] text-sm mt-1">
-            {images.length}/{SCENE_KEYS.length} generadas · gpt-image-1 · 1024×1536
+            {images.length}/{sceneKeys.length} generadas · gpt-image-1 · 1024×1536
           </p>
         </div>
         <button onClick={() => generate()} disabled={loadingAll}
@@ -295,7 +352,7 @@ function ImageGallery({
         </div>
       )}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-6">
-        {SCENE_KEYS.map((key) => {
+        {sceneKeys.map((key) => {
           const img = getImage(key);
           const isLoading = loadingKey === key || (loadingAll && !img);
           return (
@@ -303,7 +360,7 @@ function ImageGallery({
               style={{ aspectRatio: "9/16" }}>
               {img ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={`data:image/png;base64,${img.b64}`} alt={SCENE_LABELS[key]}
+                <img src={`data:image/png;base64,${img.b64}`} alt={sceneLabels[key] ?? key}
                   className="w-full h-full object-cover" />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -313,7 +370,7 @@ function ImageGallery({
                 </div>
               )}
               <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-                <p className="text-white text-xs font-semibold">{SCENE_LABELS[key]}</p>
+                <p className="text-white text-xs font-semibold">{sceneLabels[key] ?? key}</p>
               </div>
               {img && (
                 <button onClick={() => generate(key)} disabled={loadingKey === key}
@@ -347,7 +404,7 @@ function ImageGallery({
 function SavePanel({
   script, images, onReset, onGoToVideos,
 }: {
-  script: VideoScript; images: GeneratedImage[];
+  script: AnyVideoScript; images: GeneratedImage[];
   onReset: () => void; onGoToVideos: () => void;
 }) {
   const [loading, setLoading] = useState(false);
@@ -474,7 +531,7 @@ export default function Home() {
   const [view, setView] = useState<View>({ name: "home" });
 
   // Wizard state
-  const [script, setScript]   = useState<VideoScript | null>(null);
+  const [script, setScript]   = useState<AnyVideoScript | null>(null);
   const [images, setImages]   = useState<GeneratedImage[]>([]);
   const [preTopic, setPreTopic] = useState("");
 
@@ -546,7 +603,7 @@ export default function Home() {
             </button>
           </div>
           <VideoList
-            onEdit={(slug) => setView({ name: "editor", slug })}
+            onEdit={(slug, compositionId) => setView({ name: "editor", slug, compositionId })}
             onRegenerate={(title) => goWizard(title)}
           />
         </div>
@@ -555,6 +612,7 @@ export default function Home() {
       {view.name === "editor" && (
         <VideoEditor
           slug={view.slug}
+          compositionId={view.compositionId}
           onBack={() => setView({ name: "videos" })}
         />
       )}

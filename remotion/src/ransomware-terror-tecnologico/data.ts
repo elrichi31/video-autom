@@ -22,82 +22,82 @@ export const RANSOMWARE_TERROR_TECNOLOGICO_TOTAL_DURATION =
   RANSOMWARE_TERROR_TECNOLOGICO_DURATIONS.close;
 
 export const RANSOMWARE_TERROR_TECNOLOGICO_ACCENTS = {
-  intro:   ["#FF0000","#8B0000"] as AccentPair,
-  layers:  ["#FF4500","#FF6347"] as AccentPair,
-  phase1:  ["#FFA500","#FFD700"] as AccentPair,
-  phase2:  ["#FFFF00","#ADFF2F"] as AccentPair,
-  phase3:  ["#32CD32","#008000"] as AccentPair,
-  reality: ["#00CED1","#4682B4"] as AccentPair,
-  close:   ["#1E90FF","#0000CD"] as AccentPair,
+  intro:   ["#FF0000", "#8B0000"] as AccentPair,
+  layers:  ["#FF3300", "#CC1100"] as AccentPair,
+  phase1:  ["#FF6600", "#CC4400"] as AccentPair,
+  phase2:  ["#FF9900", "#CC7700"] as AccentPair,
+  phase3:  ["#FFCC00", "#CC9900"] as AccentPair,
+  reality: ["#00AAFF", "#0077CC"] as AccentPair,
+  close:   ["#FF0000", "#8B0000"] as AccentPair,
 };
 
 export const RANSOMWARE_TERROR_TECNOLOGICO_INTRO = {
-  "tag": "PELIGRO",
-  "title": "RANSOMWARE\nEL TERROR\nDIGITAL",
-  "subtitle": "la amenaza invisible"
+  "tag": "CIBERATAQUE",
+  "title": "EN 23\nMINUTOS\nPARALIZADO",
+  "subtitle": "el secuestro digital que no para"
 };
 
 export const RANSOMWARE_TERROR_TECNOLOGICO_LAYERS = {
-  "tag": "CAPAS DEL RIESGO",
+  "tag": "CÓMO FUNCIONA",
   "terminal": [
-    "> tipo.ataque = malware",
-    "> objetivo    = datos sensibles",
-    "> rescate     = criptomonedas",
-    "> impacto     = GLOBAL"
+    "> vector.entrada   = email malicioso (94% de los casos)",
+    "> tiempo.detección = 278 días en promedio",
+    "> cifrado.activo   = en menos de 23 minutos",
+    "> rescate.promedio = $1.540.000 en 2023"
   ],
-  "definition": "Ransomware es un tipo\nde malware que cifra\nlos datos de la víctima",
-  "detail": "El primer ransomware, llamado AIDS, apareció en 1989 y se distribuía por disquetes."
+  "definition": "No borra tus datos.\nLos cifra — y solo ellos\ntienen la clave.",
+  "detail": "En 2023 los ataques de ransomware costaron 1,1 billones de dólares a nivel global. Récord absoluto."
 };
 
 export const RANSOMWARE_TERROR_TECNOLOGICO_PHASE1 = {
-  "phase": "FASE 01",
-  "timestamp": "INFILTRACIÓN",
-  "title": "Infiltración\nSutil",
-  "narrative": "El ransomware se infiltra en el sistema a través de correos o descargas.",
-  "detail": "El 54% de las infecciones provienen de correos electrónicos maliciosos.",
+  "phase": "INFILTRACIÓN",
+  "timestamp": "EL ENGAÑO",
+  "title": "Un Email.\nUn Clic.\nTodo Perdido.",
+  "narrative": "El 94% de los ataques empiezan con un correo. Alguien del equipo hace clic. En menos de 23 minutos los archivos ya están cifrados.",
+  "detail": "Los atacantes permanecen ocultos en la red un promedio de 278 días antes de activar el ransomware.",
   "indicator": [
-    "Correos maliciosos",
-    "Descargas inseguras"
+    "94% entran por email",
+    "278 días sin ser detectados"
   ]
 };
 
 export const RANSOMWARE_TERROR_TECNOLOGICO_PHASE2 = {
-  "phase": "FASE 02",
-  "timestamp": "CIFRADO",
-  "title": "Cifrado\nIrreversible",
-  "narrative": "El malware cifra archivos críticos, haciendo inaccesible la información.",
-  "detail": "En 2021, los ataques de ransomware aumentaron un 150%.",
+  "phase": "CIFRADO",
+  "timestamp": "EL SECUESTRO",
+  "title": "Tus Archivos\nYa No Son\nTuyos",
+  "narrative": "Hospitales que no pueden acceder a historiales. Fábricas detenidas. Municipios sin servicios. El ransomware no discrimina objetivo.",
+  "detail": "El Hospital Universitario de Düsseldorf (2020): primer muerte documentada causada por un ataque de ransomware.",
   "indicator": [
-    "Cifrado de datos",
-    "Pérdida de acceso"
+    "1er muerte confirmada · Düsseldorf 2020",
+    "$1,1 billones perdidos en 2023"
   ]
 };
 
 export const RANSOMWARE_TERROR_TECNOLOGICO_PHASE3 = {
-  "phase": "FASE 03",
-  "timestamp": "RESCATE",
-  "title": "Exigencia\nde Rescate",
-  "narrative": "Se solicita un pago para recuperar el acceso, generalmente en criptomonedas.",
-  "detail": "Los rescates promedian $170,000 por incidente en 2021.",
+  "phase": "RESCATE",
+  "timestamp": "EL PRECIO",
+  "title": "Colonial\nPipeline:\n$4,4M",
+  "narrative": "Mayo 2021. Colonial Pipeline pagó 4,4 millones de dólares en bitcoin en pocas horas. El FBI recuperó 2,3 millones. El resto, desaparecido.",
+  "detail": "El rescate promedio en 2023 fue de 1.542.333 dólares. Un 89% más que el año anterior.",
   "indicator": [
-    "Pago en criptomonedas",
-    "Costo financiero"
+    "$4,4M · Colonial Pipeline 2021",
+    "+89% aumento de rescates en 2023"
   ]
 };
 
 export const RANSOMWARE_TERROR_TECNOLOGICO_REALITY = {
-  "tag": "REALIDAD DIGITAL",
-  "title": "El ransomware\nno discrimina:\nempresas, hospitales\ny gobiernos son víctimas",
+  "tag": "DEFENSA · AHORA",
+  "title": "Pagar\nno garantiza\nrecuperar.\nJamás.",
   "actions": [
-    "Actualiza tu software",
-    "Usa copias de seguridad",
-    "Desconfía de correos sospechosos",
-    "Educa a tu equipo"
+    "Backup offline diario — desconectado de la red",
+    "Autenticación en dos pasos en todo el equipo",
+    "Simula ataques de phishing con tu organización",
+    "Plan de respuesta escrito antes del ataque"
   ]
 };
 
 export const RANSOMWARE_TERROR_TECNOLOGICO_CLOSE = {
   "tag": "RANSOMWARE · CONCLUSIÓN",
-  "title": "La prevención\nes tu mejor\narma",
-  "subtitle": "Protégete antes de que sea demasiado tarde."
+  "title": "El ataque\nperfecto solo\nnecesita un clic",
+  "subtitle": "La pregunta no es si te atacarán. Es cuándo."
 };

@@ -1,0 +1,110 @@
+{
+  "slug": "escasez-tokens-ia",
+  "displayTitle": "La Escasez de Tokens en la IA",
+  "accents": {
+    "intro": [
+      "#FF4500",
+      "#FF6347"
+    ],
+    "layers": [
+      "#FFD700",
+      "#FFA500"
+    ],
+    "phase1": [
+      "#00FF00",
+      "#32CD32"
+    ],
+    "phase2": [
+      "#1E90FF",
+      "#00BFFF"
+    ],
+    "phase3": [
+      "#8A2BE2",
+      "#9400D3"
+    ],
+    "reality": [
+      "#FFFFFF",
+      "#C0C0C0"
+    ],
+    "close": [
+      "#FF0000",
+      "#8B0000"
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "tag": "CRISIS SILENCIOSA",
+      "title": "TOKENS\nAL LÍMITE",
+      "subtitle": "La inteligencia artificial está sufriendo un problema inesperado"
+    },
+    "layers": {
+      "tag": "ENTENDIENDO LA BASE",
+      "terminal": [
+        "> ia.tokens         = unidades básicas de lenguaje",
+        "> procesamiento.natural = depende de tokens",
+        "> demanda.creciente = 1000% en 2023",
+        "> tokens.escasos    = EL PROBLEMA OCULTO"
+      ],
+      "definition": "Los tokens son la base del procesamiento\nde lenguaje natural. Sin ellos,\nla IA no puede funcionar.",
+      "detail": "En 2023, la demanda de tokens ha aumentado un 1000% debido al auge en aplicaciones IA."
+    },
+    "phase1": {
+      "phase": "DEMANDA EXPLOSIVA",
+      "timestamp": "AUMENTO",
+      "title": "Consumo\nDescontrolado",
+      "narrative": "La demanda de tokens ha crecido exponencialmente. Las aplicaciones que usamos cada día están consumiendo más de lo esperado.",
+      "detail": "En 2023, se generaron 5 trillones de tokens cada día, saturando el sistema.",
+      "indicator": [
+        "5 trillones de tokens diarios",
+        "Crecimiento del 1000%"
+      ]
+    },
+    "phase2": {
+      "phase": "CONSECUENCIAS REALES",
+      "timestamp": "IMPACTO",
+      "title": "Sistemas\nAl Límite",
+      "narrative": "La escasez de tokens no solo afecta a las grandes corporaciones. También está impactando a las pequeñas startups y a los desarrolladores independientes.",
+      "detail": "El 74% de las pequeñas empresas han reportado problemas de acceso a tokens.",
+      "indicator": [
+        "74% de empresas afectadas",
+        "Problemas de acceso"
+      ]
+    },
+    "phase3": {
+      "phase": "GOLPE INESPERADO",
+      "timestamp": "SORPRESA",
+      "title": "El Coste\nOculto",
+      "narrative": "El costo de los tokens ha incrementado los gastos operativos. Las empresas están gastando más en tokens que en infraestructura.",
+      "detail": "El costo de los tokens ha superado los $10 millones mensuales para algunas empresas.",
+      "indicator": [
+        "$10 millones al mes",
+        "Coste mayor que infraestructura"
+      ]
+    },
+    "reality": {
+      "tag": "REALIDAD · CONTEXTO",
+      "title": "El Futuro\ndepende de\nnuestras acciones",
+      "actions": [
+        "Optimiza el uso de tokens inmediatamente",
+        "Investiga alternativas más eficientes",
+        "Colabora en el desarrollo de nuevas soluciones",
+        "Comparte la realidad del problema"
+      ]
+    },
+    "close": {
+      "tag": "LA ERA DE LOS TOKENS",
+      "title": "La escasez\nnos obliga\na innovar",
+      "subtitle": "La IA necesita más que nunca nuestra atención y acción"
+    }
+  },
+  "imagePrompts": {
+    "intro": "Hyper-realistic cinematic photograph. Extreme close-up of a digital counter rapidly increasing, representing token consumption. Dark tech-themed background. Shot on RED Monstro 8K, anamorphic 50mm lens. Neon reflections, deep blacks. No text, no logos. Vertical 9:16. Photorealistic.",
+    "layers": "Hyper-realistic cinematic photograph. Overhead view of a server room with blinking lights, cables intertwined. Blue and orange lights creating a dynamic contrast. Shot on RED Monstro 8K, anamorphic 50mm lens. Volumetric fog for added depth. No text, no logos. Vertical 9:16. Photorealistic.",
+    "phase1": "Hyper-realistic cinematic photograph. POV of a developer's hands typing on a keyboard, token metrics on screen. Dimly lit room, focused light on hands. Shot on RED Monstro 8K, anamorphic 50mm lens. Single point backlight. No text, no logos. Vertical 9:16. Photorealistic.",
+    "phase2": "Hyper-realistic cinematic photograph. Gran angular of a small startup office with stressed team, screens full of error messages. Shot on RED Monstro 8K, anamorphic 50mm lens. Cold fluorescent lighting, shadows. No text, no logos. Vertical 9:16. Photorealistic.",
+    "phase3": "Hyper-realistic cinematic photograph. Macro shot of a digital ledger displaying token transactions, with numbers highlighted. Dark background with neon green overlay. Shot on RED Monstro 8K, anamorphic 50mm lens. Neon reflections. No text, no logos. Vertical 9:16. Photorealistic.",
+    "reality": "Hyper-realistic cinematic photograph. Environmental shot of a city skyline at dusk, digital data streams overlaid. Unique lighting from the setting sun. Shot on RED Monstro 8K, anamorphic 50mm lens. Volumetric haze for atmospheric depth. No text, no logos. Vertical 9:16. Photorealistic.",
+    "close": "Hyper-realistic cinematic photograph. First-person perspective looking at a smartphone screen displaying a digital token market. Dim room with a single light source. Shot on RED Monstro 8K, anamorphic 50mm lens. Deep blacks, focused light on screen. No text, no logos. Vertical 9:16. Photorealistic."
+  },
+  "targetDurationSeconds": 60
+}

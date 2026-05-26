@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir, readFile } from "fs/promises";
 import path from "path";
-import type { VideoScript, GeneratedImage } from "@/lib/types";
+import type { AnyVideoScript, GeneratedImage } from "@/lib/types";
 import { generateDataTs } from "@/lib/generate-data-ts";
-import { generateCompositionTsx } from "@/lib/generate-composition-tsx";
+import { generateCompositionTsx, validateCompositionTsx } from "@/lib/generate-composition-tsx";
 
 const REPO_ROOT = path.join(process.cwd(), "..", "remotion");
 
@@ -26,8 +26,10 @@ async function registerInRoot(slug: string) {
   // Skip if already registered
   if (src.includes(componentName)) return;
 
+  const calcMetaAlias = slug.replace(/-(\w)/g, (_: string, c: string) => c.toUpperCase()) + "CalculateMetadata";
+
   // Insert import before "export const RemotionRoot"
-  const importBlock = `import {\n  ${componentName},\n  ${durationExport},\n} from "./${componentName}";\n`;
+  const importBlock = `import {\n  ${componentName},\n  ${durationExport},\n  calculateMetadata as ${calcMetaAlias},\n} from "./${componentName}";\n`;
   src = src.replace(
     /^(export const RemotionRoot)/m,
     `${importBlock}\n$1`,
@@ -38,11 +40,12 @@ async function registerInRoot(slug: string) {
     `      <Composition\n` +
     `        id="${compositionId}"\n` +
     `        component={${componentName}}\n` +
+    `        calculateMetadata={${calcMetaAlias}}\n` +
     `        durationInFrames={${durationExport}}\n` +
     `        fps={30}\n` +
     `        width={1080}\n` +
     `        height={1920}\n` +
-    `        defaultProps={{ voiceoverFile: null }}\n` +
+    `        defaultProps={{ voiceoverFile: null, voiceoverFiles: null, sceneDurations: null }}\n` +
     `      />\n`;
   src = src.replace(/(\s+<\/>\s*\);\s*};?\s*$)/, `\n${compositionBlock}    </>\n  );\n};\n`);
 
@@ -50,7 +53,7 @@ async function registerInRoot(slug: string) {
 }
 
 export async function POST(req: NextRequest) {
-  const { script, images }: { script: VideoScript; images: GeneratedImage[] } = await req.json();
+  const { script, images }: { script: AnyVideoScript; images: GeneratedImage[] } = await req.json();
   const saved: string[] = [];
 
   // 1. data.ts + script.json
@@ -64,6 +67,11 @@ export async function POST(req: NextRequest) {
   // 2. Composition .tsx
   const componentName = toComponentName(script.slug);
   const tsxContent = generateCompositionTsx(script);
+  const validationErrors = validateCompositionTsx(tsxContent, script.slug);
+  if (validationErrors.length > 0) {
+    const msg = validationErrors.map((e) => `[${e.rule}] ${e.detail}`).join("\n");
+    return NextResponse.json({ error: `Composition generada inválida:\n${msg}` }, { status: 500 });
+  }
   const tsxPath = path.join(REPO_ROOT, "src", `${componentName}.tsx`);
   await writeFile(tsxPath, tsxContent, "utf-8");
   saved.push(`src/${componentName}.tsx`);

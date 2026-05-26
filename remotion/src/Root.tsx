@@ -45,12 +45,32 @@ import {
 import {
   RansomwareTerrorTecnologicoComposition,
   ransomwareTerrorTecnologicoDuration,
+  calculateMetadata as ransomwareCalculateMetadata,
 } from "./RansomwareTerrorTecnologicoComposition";
 
 import {
   DeepfakesComposition,
   deepfakesDuration,
+  calculateMetadata as deepfakesCalculateMetadata,
 } from "./DeepfakesComposition";
+
+import {
+  QueEsLaDeepwebComposition,
+  queEsLaDeepwebDuration,
+  calculateMetadata as queEsLaDeepwebCalculateMetadata,
+} from "./QueEsLaDeepwebComposition";
+
+import {
+  QueEsLaDarknetComposition,
+  queEsLaDarknetDuration,
+  calculateMetadata as queEsLaDarknetCalculateMetadata,
+} from "./QueEsLaDarknetComposition";
+
+import {
+  EscasezTokensIaComposition,
+  escasezTokensIaDuration,
+  calculateMetadata as escasezTokensIaCalculateMetadata,
+} from "./EscasezTokensIaComposition";
 
 export const RemotionRoot: FC = () => {
   return (
@@ -178,11 +198,12 @@ export const RemotionRoot: FC = () => {
       <Composition
         id="RansomwareTerrorTecnologicoVerticalPremium"
         component={RansomwareTerrorTecnologicoComposition}
+        calculateMetadata={ransomwareCalculateMetadata}
         durationInFrames={ransomwareTerrorTecnologicoDuration}
         fps={30}
         width={1080}
         height={1920}
-        defaultProps={{ voiceoverFile: null }}
+        defaultProps={{ voiceoverFile: null, voiceoverFiles: null, sceneDurations: null }}
       />
       <Composition
         id="ReduceAIHallucinationsVertical"
@@ -198,11 +219,42 @@ export const RemotionRoot: FC = () => {
       <Composition
         id="DeepfakesVerticalPremium"
         component={DeepfakesComposition}
+        calculateMetadata={deepfakesCalculateMetadata}
         durationInFrames={deepfakesDuration}
         fps={30}
         width={1080}
         height={1920}
-        defaultProps={{ voiceoverFile: null }}
+        defaultProps={{ voiceoverFile: null, voiceoverFiles: null, sceneDurations: null }}
+      />
+      <Composition
+        id="QueEsLaDeepwebVerticalPremium"
+        component={QueEsLaDeepwebComposition}
+        calculateMetadata={queEsLaDeepwebCalculateMetadata}
+        durationInFrames={queEsLaDeepwebDuration}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{ voiceoverFile: null, voiceoverFiles: null, sceneDurations: null }}
+      />
+      <Composition
+        id="QueEsLaDarknetVerticalPremium"
+        component={QueEsLaDarknetComposition}
+        calculateMetadata={queEsLaDarknetCalculateMetadata}
+        durationInFrames={queEsLaDarknetDuration}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{ voiceoverFile: null, voiceoverFiles: null, sceneDurations: null }}
+      />
+      <Composition
+        id="EscasezTokensIaVerticalPremium"
+        component={EscasezTokensIaComposition}
+        calculateMetadata={escasezTokensIaCalculateMetadata}
+        durationInFrames={escasezTokensIaDuration}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{ voiceoverFile: null, voiceoverFiles: null, sceneDurations: null }}
       />
     </>
   );

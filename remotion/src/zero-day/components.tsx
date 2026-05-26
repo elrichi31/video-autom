@@ -2,6 +2,7 @@ import type { FC, ReactNode } from "react";
 import {
   AbsoluteFill,
   Easing,
+  Img,
   Sequence,
   interpolate,
   random,
@@ -50,7 +51,8 @@ export const DarkShell: FC<{
   durationInFrames: number;
   children: ReactNode;
   variant?: "alert" | "body" | "terminal" | "close";
-}> = ({ accent, durationInFrames, children, variant = "body" }) => {
+  bgSrc?: string;
+}> = ({ accent, durationInFrames, children, variant = "body", bgSrc }) => {
   const frame = useCurrentFrame();
   const contentOpacity = interpolate(
     frame,
@@ -62,6 +64,20 @@ export const DarkShell: FC<{
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#050101", color: "white", overflow: "hidden" }}>
+      {bgSrc && (
+        <Img
+          src={bgSrc}
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "center",
+            opacity: 1,
+          }}
+        />
+      )}
       <DarkBackground accent={accent} variant={variant} />
       {variant === "alert" && <AlertBorder accent={accent} />}
       <div
@@ -104,7 +120,7 @@ const DarkBackground: FC<{ accent: AccentPair; variant: string }> = ({ accent, v
     <>
       <AbsoluteFill
         style={{
-          background: `radial-gradient(ellipse at 50% 30%, ${accent[1]}33 0%, transparent 50%), radial-gradient(circle at 80% 80%, ${accent[0]}18 0%, transparent 40%), linear-gradient(180deg, #0a0204 0%, #050101 50%, #020001 100%)`,
+          background: `radial-gradient(ellipse at 50% 30%, ${accent[1]}11 0%, transparent 50%), radial-gradient(circle at 80% 80%, ${accent[0]}09 0%, transparent 40%), linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.65) 100%)`,
         }}
       />
       {/* Grid */}
@@ -257,8 +273,8 @@ export const GlitchTitle: FC<{ text: string; accent: AccentPair; size?: number }
           fontWeight: 900,
           letterSpacing: -6,
           whiteSpace: "pre-line",
-          color: "#FFFFFF",
-          textShadow: `0 0 40px ${accent[0]}44, 0 0 80px ${accent[0]}22`,
+          color: "rgba(255,255,255,0.95)",
+          textShadow: `0 2px 24px rgba(0,0,0,0.9), 0 0 40px ${accent[0]}44, 0 0 80px ${accent[0]}22`,
           transform: `skewX(${skew * 0.3}deg)`,
         }}
       >
@@ -428,6 +444,7 @@ export const NarrativeText: FC<{
       textAlign: "center",
       whiteSpace: "pre-line",
       color: accent,
+      textShadow: "0 2px 20px rgba(0,0,0,0.95), 0 0 40px rgba(0,0,0,0.7)",
     }}
   >
     {text}
@@ -449,7 +466,8 @@ export const DetailText: FC<{
       lineHeight: 1.22,
       fontWeight: 500,
       textAlign: "center",
-      color: "rgba(230,220,220,0.78)",
+      color: "rgba(230,220,220,0.82)",
+      textShadow: "0 2px 16px rgba(0,0,0,0.95)",
     }}
   >
     {text}
@@ -536,6 +554,7 @@ const IndicatorRow: FC<{ text: string; accent: AccentPair; index: number }> = ({
           lineHeight: 1.1,
           fontWeight: 600,
           color: "rgba(255,248,248,0.92)",
+          textShadow: "0 2px 12px rgba(0,0,0,0.9)",
         }}
       >
         {text}
@@ -605,7 +624,8 @@ export const ActionList: FC<{
                 fontSize: 34,
                 lineHeight: 1.15,
                 fontWeight: 600,
-                color: "rgba(255,252,252,0.9)",
+                color: "rgba(255,252,252,0.92)",
+                textShadow: "0 2px 12px rgba(0,0,0,0.9)",
               }}
             >
               {item}
@@ -676,19 +696,29 @@ export const BlockSequence: FC<{
 
 /* ─── LAYOUTS ─── */
 
-const Slot: FC<{ top: number; height: number; children?: ReactNode }> = ({ top, height, children }) => (
+const Row: FC<{ children?: ReactNode; gap?: number }> = ({ children, gap = 0 }) =>
+  children != null ? (
+    <div style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center", marginBottom: gap }}>
+      {children}
+    </div>
+  ) : null;
+
+const ColLayout: FC<{ children: ReactNode; gap?: number; justify?: string }> = ({
+  children,
+  gap = 40,
+  justify = "center",
+}) => (
   <div
     style={{
-      position: "absolute",
-      top,
-      left: 0,
-      right: 0,
       width: "100%",
-      height,
+      height: "100%",
       display: "flex",
+      flexDirection: "column",
       alignItems: "center",
-      justifyContent: "center",
-      textAlign: "center",
+      justifyContent: justify,
+      gap,
+      padding: "60px 0",
+      boxSizing: "border-box",
     }}
   >
     {children}
@@ -700,11 +730,11 @@ export const AlertLayout: FC<{
   title?: ReactNode;
   subtitle?: ReactNode;
 }> = ({ tag, title, subtitle }) => (
-  <div style={{ position: "relative", width: "100%", height: "100%" }}>
-    <Slot top={340} height={80}>{tag}</Slot>
-    <Slot top={480} height={500}>{title}</Slot>
-    <Slot top={1050} height={80}>{subtitle}</Slot>
-  </div>
+  <ColLayout gap={0} justify="center">
+    <Row gap={32}>{tag}</Row>
+    <Row gap={60}>{title}</Row>
+    <Row>{subtitle}</Row>
+  </ColLayout>
 );
 
 export const ExplainLayout: FC<{
@@ -713,12 +743,12 @@ export const ExplainLayout: FC<{
   definition?: ReactNode;
   detail?: ReactNode;
 }> = ({ tag, terminal, definition, detail }) => (
-  <div style={{ position: "relative", width: "100%", height: "100%" }}>
-    <Slot top={100} height={70}>{tag}</Slot>
-    <Slot top={220} height={320}>{terminal}</Slot>
-    <Slot top={610} height={340}>{definition}</Slot>
-    <Slot top={1020} height={160}>{detail}</Slot>
-  </div>
+  <ColLayout gap={48}>
+    <Row>{tag}</Row>
+    <Row>{terminal}</Row>
+    <Row>{definition}</Row>
+    {detail && <Row>{detail}</Row>}
+  </ColLayout>
 );
 
 export const PhaseLayout: FC<{
@@ -729,14 +759,14 @@ export const PhaseLayout: FC<{
   detail?: ReactNode;
   indicator?: ReactNode;
 }> = ({ phase, timestamp, title, narrative, detail, indicator }) => (
-  <div style={{ position: "relative", width: "100%", height: "100%" }}>
-    <Slot top={100} height={70}>{phase}</Slot>
-    <Slot top={190} height={60}>{timestamp}</Slot>
-    <Slot top={310} height={220}>{title}</Slot>
-    <Slot top={590} height={200}>{narrative}</Slot>
-    <Slot top={850} height={170}>{detail}</Slot>
-    <Slot top={1080} height={250}>{indicator}</Slot>
-  </div>
+  <ColLayout gap={44}>
+    {phase && <Row>{phase}</Row>}
+    {timestamp && <Row>{timestamp}</Row>}
+    {title && <Row>{title}</Row>}
+    {narrative && <Row>{narrative}</Row>}
+    {detail && <Row>{detail}</Row>}
+    {indicator && <Row>{indicator}</Row>}
+  </ColLayout>
 );
 
 export const DefenseLayout: FC<{
@@ -744,11 +774,11 @@ export const DefenseLayout: FC<{
   title?: ReactNode;
   actions?: ReactNode;
 }> = ({ tag, title, actions }) => (
-  <div style={{ position: "relative", width: "100%", height: "100%" }}>
-    <Slot top={100} height={70}>{tag}</Slot>
-    <Slot top={220} height={340}>{title}</Slot>
-    <Slot top={630} height={650}>{actions}</Slot>
-  </div>
+  <ColLayout gap={48}>
+    <Row>{tag}</Row>
+    <Row>{title}</Row>
+    <Row>{actions}</Row>
+  </ColLayout>
 );
 
 export const CloseLayout: FC<{
@@ -757,10 +787,73 @@ export const CloseLayout: FC<{
   subtitle?: ReactNode;
   bar?: ReactNode;
 }> = ({ tag, title, subtitle, bar }) => (
-  <div style={{ position: "relative", width: "100%", height: "100%" }}>
-    <Slot top={320} height={70}>{tag}</Slot>
-    <Slot top={440} height={440}>{title}</Slot>
-    <Slot top={960} height={80}>{subtitle}</Slot>
-    <Slot top={1100} height={40}>{bar}</Slot>
-  </div>
+  <ColLayout gap={0} justify="center">
+    <Row gap={32}>{tag}</Row>
+    <Row gap={56}>{title}</Row>
+    <Row gap={32}>{subtitle}</Row>
+    <Row>{bar}</Row>
+  </ColLayout>
+);
+
+/* ─── YEAR BADGE (timeline) ─── */
+
+export const YearBadge: FC<{ year: string; accent: AccentPair }> = ({ year, accent }) => {
+  const frame = useCurrentFrame();
+  const pulse = loop(frame, [1, 1.015, 1], 80);
+
+  return (
+    <div style={{ position: "relative", textAlign: "center" }}>
+      {/* Glow behind */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          fontFamily: monoStack,
+          fontSize: 148,
+          fontWeight: 900,
+          letterSpacing: -6,
+          lineHeight: 1,
+          color: accent[0],
+          filter: "blur(22px)",
+          opacity: 0.28,
+          transform: `scale(${pulse})`,
+        }}
+      >
+        {year}
+      </div>
+      {/* Outlined year */}
+      <div
+        style={{
+          position: "relative",
+          fontFamily: monoStack,
+          fontSize: 148,
+          fontWeight: 900,
+          letterSpacing: -6,
+          lineHeight: 1,
+          color: "transparent",
+          WebkitTextStroke: `3px ${accent[0]}`,
+          textShadow: `0 0 40px ${accent[0]}44`,
+          transform: `scale(${pulse})`,
+        }}
+      >
+        {year}
+      </div>
+    </div>
+  );
+};
+
+/* ─── EVENT LAYOUT (timeline) ─── */
+
+export const EventLayout: FC<{
+  tag?: ReactNode;
+  year?: ReactNode;
+  headline?: ReactNode;
+  impact?: ReactNode;
+}> = ({ tag, year, headline, impact }) => (
+  <ColLayout gap={0} justify="center">
+    <Row gap={24}>{tag}</Row>
+    <Row gap={28}>{year}</Row>
+    <Row gap={36}>{headline}</Row>
+    <Row>{impact}</Row>
+  </ColLayout>
 );

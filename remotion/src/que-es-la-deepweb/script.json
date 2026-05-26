@@ -1,0 +1,110 @@
+{
+  "slug": "que-es-la-deepweb",
+  "displayTitle": "Qué es la Deep Web",
+  "accents": {
+    "intro": [
+      "#FF4500",
+      "#FFD700"
+    ],
+    "layers": [
+      "#00FF7F",
+      "#32CD32"
+    ],
+    "phase1": [
+      "#1E90FF",
+      "#00BFFF"
+    ],
+    "phase2": [
+      "#9400D3",
+      "#9932CC"
+    ],
+    "phase3": [
+      "#FF6347",
+      "#FF4500"
+    ],
+    "reality": [
+      "#FFD700",
+      "#FF8C00"
+    ],
+    "close": [
+      "#00FA9A",
+      "#7CFC00"
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "tag": "DESCUBRE",
+      "title": "LA DEEP WEB\nNO ES LO QUE\nCREES",
+      "subtitle": "la parte oculta de internet"
+    },
+    "layers": {
+      "tag": "CAPAS DE INTERNET",
+      "terminal": [
+        "> internet.visible  = 4%",
+        "> deep.web         = 90%",
+        "> dark.web         = 6%",
+        "> contenido.total  = 96% OCULTO"
+      ],
+      "definition": "La Deep Web es la\nparte de Internet que\nno está indexada.",
+      "detail": "Incluye bases de datos, archivos académicos y sitios protegidos por contraseñas."
+    },
+    "phase1": {
+      "phase": "FASE 01",
+      "timestamp": "INICIO",
+      "title": "Acceso\nRestringido",
+      "narrative": "La Deep Web requiere enlaces directos o credenciales. No aparece en motores de búsqueda.",
+      "detail": "Muchos servicios legítimos operan aquí, como bases de datos médicas.",
+      "indicator": [
+        "Acceso limitado",
+        "Contenido seguro"
+      ]
+    },
+    "phase2": {
+      "phase": "FASE 02",
+      "timestamp": "PROFUNDIDAD",
+      "title": "Datos\nOcultos",
+      "narrative": "Contiene información valiosa para empresas y académicos.",
+      "detail": "El 90% de la web es Deep Web. Incluye archivos de investigación.",
+      "indicator": [
+        "Información valiosa",
+        "Acceso especializado"
+      ]
+    },
+    "phase3": {
+      "phase": "FASE 03",
+      "timestamp": "RIESGOS",
+      "title": "Zona\nPeligrosa",
+      "narrative": "La Dark Web es una pequeña parte de la Deep Web, accesible solo con navegadores especiales.",
+      "detail": "Solo el 6% de la Deep Web es Dark Web, donde ocurre actividad ilegal.",
+      "indicator": [
+        "Navegador TOR",
+        "Actividad ilegal"
+      ]
+    },
+    "reality": {
+      "tag": "LA VERDAD",
+      "title": "La Deep Web\nes mayormente benigna,\nuna herramienta para\ninvestigación y privacidad",
+      "actions": [
+        "Investiga antes de acceder",
+        "Utiliza herramientas seguras",
+        "Mantente informado",
+        "Comparte conocimiento responsablemente"
+      ]
+    },
+    "close": {
+      "tag": "DEEP WEB · CONCLUSIÓN",
+      "title": "La Deep Web\nes un mundo\npor descubrir",
+      "subtitle": "Explora con precaución y conocimiento."
+    }
+  },
+  "imagePrompts": {
+    "intro": "Cinematic dark dramatic image. A shadowy digital ocean, mysterious and vast. Deep blacks, dramatic neon lighting, no text, vertical composition, photorealistic.",
+    "layers": "Cinematic dark dramatic image. Layers of an iceberg, above water visible, below vast and hidden. Deep blacks, dramatic neon lighting, no text, vertical composition, photorealistic.",
+    "phase1": "Cinematic dark dramatic image. A locked digital vault, symbolizing restricted access. Deep blacks, dramatic neon lighting, no text, vertical composition, photorealistic.",
+    "phase2": "Cinematic dark dramatic image. A network of interconnected data streams, symbolizing hidden data. Deep blacks, dramatic neon lighting, no text, vertical composition, photorealistic.",
+    "phase3": "Cinematic dark dramatic image. A dark alleyway with a digital code overlay, symbolizing danger. Deep blacks, dramatic neon lighting, no text, vertical composition, photorealistic.",
+    "reality": "Cinematic dark dramatic image. A bright light shining through darkness, symbolizing revelation. Deep blacks, dramatic neon lighting, no text, vertical composition, photorealistic.",
+    "close": "Cinematic dark dramatic image. An open book with digital pages, symbolizing knowledge. Deep blacks, dramatic neon lighting, no text, vertical composition, photorealistic."
+  },
+  "targetDurationSeconds": 60
+}

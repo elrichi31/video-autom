@@ -16,4 +16,6 @@ export {
   PhaseLayout,
   DefenseLayout,
   CloseLayout,
+  YearBadge,
+  EventLayout,
 } from "../zero-day/components";

@@ -1,20 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
-import type { VideoScript, SceneKey, GeneratedImage } from "@/lib/types";
+import type { AnyVideoScript, GeneratedImage } from "@/lib/types";
+import { getSceneKeys } from "@/lib/types";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-const SCENE_KEYS: SceneKey[] = ["intro", "layers", "phase1", "phase2", "phase3", "reality", "close"];
-
 export async function POST(req: NextRequest) {
-  const { script, sceneKey }: { script: VideoScript; sceneKey?: SceneKey } = await req.json();
+  const { script, sceneKey }: { script: AnyVideoScript; sceneKey?: string } = await req.json();
+  const SCENE_KEYS = getSceneKeys(script);
 
   const scenesToGenerate = sceneKey ? [sceneKey] : SCENE_KEYS;
   const results: GeneratedImage[] = [];
   const errors: { sceneKey: string; error: string }[] = [];
 
   for (const key of scenesToGenerate) {
-    const prompt = script.imagePrompts[key];
+    const prompt = (script.imagePrompts as Record<string, string>)[key];
     if (!prompt) continue;
 
     try {

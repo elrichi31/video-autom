@@ -22,82 +22,82 @@ export const DEEPFAKES_TOTAL_DURATION =
   DEEPFAKES_DURATIONS.close;
 
 export const DEEPFAKES_ACCENTS = {
-  intro:   ["#FF5733","#C70039"] as AccentPair,
-  layers:  ["#900C3F","#581845"] as AccentPair,
-  phase1:  ["#FFC300","#FF5733"] as AccentPair,
-  phase2:  ["#DAF7A6","#FFC300"] as AccentPair,
-  phase3:  ["#C70039","#900C3F"] as AccentPair,
-  reality: ["#581845","#DAF7A6"] as AccentPair,
-  close:   ["#900C3F","#FF5733"] as AccentPair,
+  intro:   ["#CC00FF", "#7B00FF"] as AccentPair,
+  layers:  ["#9B00E8", "#5A00CC"] as AccentPair,
+  phase1:  ["#FF00AA", "#CC0088"] as AccentPair,
+  phase2:  ["#FF3366", "#CC0033"] as AccentPair,
+  phase3:  ["#FF6600", "#CC4400"] as AccentPair,
+  reality: ["#00CCFF", "#0088CC"] as AccentPair,
+  close:   ["#CC00FF", "#7B00FF"] as AccentPair,
 };
 
 export const DEEPFAKES_INTRO = {
-  "tag": "ALERTA",
-  "title": "EL PELIGRO\nDE LOS\nDEEPFAKES",
-  "subtitle": "la tecnología que engaña"
+  "tag": "IDENTIDAD",
+  "title": "TU CARA\nYA NO ES\nTUYA",
+  "subtitle": "la IA que destruye la realidad"
 };
 
 export const DEEPFAKES_LAYERS = {
-  "tag": "CAPAS",
+  "tag": "CÓMO FUNCIONA",
   "terminal": [
-    "> deepfake.origen = 2017",
-    "> tecnología.base = IA",
-    "> riesgo          = alto",
-    "> impacto.global  = CRECIENTE"
+    "> tecnología.base  = GAN (redes generativas)",
+    "> tiempo.creación  = menos de 60 segundos",
+    "> detección.humana = falla el 71% de las veces",
+    "> crecimiento.2023 = +550% vs año anterior"
   ],
-  "definition": "Deepfakes son videos\ndigitalmente alterados\npor inteligencia artificial",
-  "detail": "El término 'deepfake' proviene de 'deep learning' y 'fake'."
+  "definition": "Una red neuronal aprende\ntu cara — y puede ponerla\nen cualquier cuerpo o voz",
+  "detail": "En 2017 eran un experimento. En 2024 se usaron para robar 25 millones de dólares en una sola llamada."
 };
 
 export const DEEPFAKES_PHASE1 = {
-  "phase": "FASE 01",
-  "timestamp": "INICIO",
-  "title": "Creación\nInicial",
-  "narrative": "Los deepfakes comenzaron como una curiosidad tecnológica, generando rostros falsos.",
-  "detail": "En 2019, se detectaron más de 14,000 videos deepfake en línea.",
+  "phase": "ORIGEN",
+  "timestamp": "EL INICIO",
+  "title": "De Reddit\nal Crimen",
+  "narrative": "Empezó como entretenimiento en foros. Hoy es una industria del fraude valorada en miles de millones.",
+  "detail": "En 2023 se detectaron más de 96.000 deepfakes en circulación — un 550% más que el año anterior.",
   "indicator": [
-    "14,000 videos",
-    "2019"
+    "+96.000 deepfakes en 2023",
+    "550% de aumento en un año"
   ]
 };
 
 export const DEEPFAKES_PHASE2 = {
-  "phase": "FASE 02",
-  "timestamp": "EVOLUCIÓN",
-  "title": "Avances\nTecnológicos",
-  "narrative": "La tecnología mejoró, permitiendo reemplazar rostros en videos con creciente realismo.",
-  "detail": "Deepfakes ahora se usan para manipular discursos políticos.",
+  "phase": "FRAUDE",
+  "timestamp": "EL ROBO",
+  "title": "25 Millones\nEn Una\nLlamada",
+  "narrative": "Hong Kong, 2024. Un empleado transfirió 25 millones de dólares tras una videollamada con su \"CFO\". Era un deepfake.",
+  "detail": "El 71% de las personas no distingue un deepfake de un video real en una primera visualización.",
   "indicator": [
-    "Manipulación política",
-    "Realismo avanzado"
+    "$25M robados · Hong Kong 2024",
+    "71% de humanos incapaces de detectarlo"
   ]
 };
 
 export const DEEPFAKES_PHASE3 = {
-  "phase": "FASE 03",
-  "timestamp": "AMENAZA",
-  "title": "Riesgos\nReales",
-  "narrative": "Los deepfakes representan un peligro para la veracidad de la información y la seguridad personal.",
-  "detail": "En 2021, el 96% de los deepfakes detectados eran pornográficos.",
+  "phase": "ELECCIONES",
+  "timestamp": "LA AMENAZA",
+  "title": "Democracia\nen Jaque",
+  "narrative": "En el ciclo electoral de 2024, más de 500.000 deepfakes políticos circularon en redes. Candidatos diciendo lo que nunca dijeron.",
+  "detail": "El 96% de los deepfakes detectados siguen siendo contenido sexual no consentido — mayormente mujeres.",
   "indicator": [
-    "96% pornografía",
-    "Seguridad en riesgo"
+    "+500.000 deepfakes políticos · 2024",
+    "96% de víctimas: mujeres"
   ]
 };
 
 export const DEEPFAKES_REALITY = {
-  "tag": "REALIDAD",
-  "title": "Aunque la\ntecnología mejora,\ndepende de nosotros\ndetectar la verdad",
+  "tag": "REALIDAD · AHORA",
+  "title": "Ver ya no\nes creer.\nEsa era\nla regla.",
   "actions": [
-    "Verifica fuentes de información",
-    "Cuestiona videos sospechosos",
-    "Utiliza herramientas de detección",
-    "No confíes ciegamente en videos"
+    "Verifica con una segunda fuente antes de compartir",
+    "Busca micromovimientos: parpadeo, bordes de cara",
+    "Usa herramientas: Deepware, Microsoft Video Authenticator",
+    "Desconfía de cualquier urgencia en videollamada"
   ]
 };
 
 export const DEEPFAKES_CLOSE = {
   "tag": "DEEPFAKES · CONCLUSIÓN",
-  "title": "El futuro está\nen nuestras manos,\nno en los algoritmos",
-  "subtitle": "La responsabilidad es de todos. Protejamos la verdad."
+  "title": "La mentira\nperfecta ya\nexiste",
+  "subtitle": "La pregunta no es si te engañarán. Es cuándo."
 };

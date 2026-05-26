@@ -94,13 +94,6 @@ const LayersScene: FC = () => (
           </Reveal>
         </BlockSequence>
       }
-      detail={
-        <BlockSequence from={90} durationInFrames={DARK_WEB_DURATIONS.layers - 90}>
-          <Reveal y={16} blurFrom={10}>
-            <DetailText text={DARK_WEB_LAYERS.detail} size={34} maxWidth={680} />
-          </Reveal>
-        </BlockSequence>
-      }
     />
   </DarkShell>
 );
@@ -127,13 +120,6 @@ const PhaseScene: FC<{ data: PhaseData; accentKey: keyof typeof DARK_WEB_ACCENTS
   return (
     <DarkShell accent={accent} durationInFrames={dur} variant="body">
       <PhaseLayout
-        phase={
-          <BlockSequence from={0} durationInFrames={dur}>
-            <Reveal y={12} blurFrom={8}>
-              <PhaseLabel text={data.phase} accent={accent[0]} />
-            </Reveal>
-          </BlockSequence>
-        }
         timestamp={
           <BlockSequence from={6} durationInFrames={dur - 6}>
             <Reveal y={10} blurFrom={6}>
@@ -145,20 +131,6 @@ const PhaseScene: FC<{ data: PhaseData; accentKey: keyof typeof DARK_WEB_ACCENTS
           <BlockSequence from={12} durationInFrames={dur - 12}>
             <Reveal y={44} scaleFrom={0.9} blurFrom={28} durationInFrames={36}>
               <GlitchTitle text={data.title} accent={accent} size={130} />
-            </Reveal>
-          </BlockSequence>
-        }
-        narrative={
-          <BlockSequence from={28} durationInFrames={dur - 28}>
-            <Reveal y={22} blurFrom={14}>
-              <NarrativeText text={data.narrative} size={52} />
-            </Reveal>
-          </BlockSequence>
-        }
-        detail={
-          <BlockSequence from={46} durationInFrames={dur - 46}>
-            <Reveal y={16} blurFrom={10}>
-              <DetailText text={data.detail} size={34} maxWidth={700} />
             </Reveal>
           </BlockSequence>
         }

@@ -1,21 +1,18 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import type { VideoScript } from "@/lib/types";
+import type { AnyVideoScript } from "@/lib/types";
+import { getSceneKeys, getSceneLabels } from "@/lib/types";
 import type { VoiceoverScript, ElevenLabsVoice, VoiceSettings } from "@/lib/voiceover-types";
-import { DEFAULT_VOICE_SETTINGS, SCENE_DURATIONS, WORDS_PER_SECOND } from "@/lib/voiceover-types";
-
-const SCENE_KEYS = ["intro", "layers", "phase1", "phase2", "phase3", "reality", "close"] as const;
-const SCENE_LABELS: Record<string, string> = {
-  intro: "Introducción", layers: "Explicación", phase1: "Fase 01",
-  phase2: "Fase 02", phase3: "Fase 03", reality: "Realidad", close: "Cierre",
-};
+import { DEFAULT_VOICE_SETTINGS, getSceneDurations, getTimelineSceneDurations, WORDS_PER_SECOND, DEFAULT_TARGET_DURATION } from "@/lib/voiceover-types";
 
 const MODELS = [
-  { id: "eleven_multilingual_v2", label: "Multilingual v2 — mejor calidad en español" },
+  { id: "eleven_v3",              label: "v3 — recomendado para TikTok (más expresivo)" },
+  { id: "eleven_multilingual_v2", label: "Multilingual v2 — alta calidad en español" },
   { id: "eleven_flash_v2_5",      label: "Flash v2.5 — rápido y económico" },
-  { id: "eleven_v3",              label: "v3 — más expresivo (beta)" },
 ];
+
+const DURATION_PRESETS = [30, 45, 60, 90];
 
 // ─── Word count badge ────────────────────────────────────────────────────────
 
@@ -52,54 +49,114 @@ function Slider({ label, value, min, max, step, onChange }: {
 
 // ─── Main Panel ──────────────────────────────────────────────────────────────
 
-export function VoiceoverPanel({ script, slug }: { script: VideoScript; slug: string }) {
+function emptyVoiceover(keys: string[], durations: Record<string, number>, total: number): VoiceoverScript {
+  const scenes: VoiceoverScript["scenes"] = {};
+  for (const k of keys) {
+    scenes[k] = { text: "", durationSeconds: durations[k] ?? 0, wordCount: 0 };
+  }
+  return { scenes, fullScript: "", totalDurationSeconds: total };
+}
+
+export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug: string }) {
+  const sceneKeys   = getSceneKeys(script);
+  const sceneLabels = getSceneLabels(script);
+
+  function getSceneDurationsForScript(secs: number): Record<string, number> {
+    return script.compositionType === "timeline"
+      ? getTimelineSceneDurations(secs)
+      : getSceneDurations(secs);
+  }
+
+  const [targetDuration, setTargetDuration] = useState<number>(
+    script.targetDurationSeconds ?? DEFAULT_TARGET_DURATION
+  );
   const [voiceover,   setVoiceover]   = useState<VoiceoverScript | null>(null);
   const [voices,      setVoices]      = useState<ElevenLabsVoice[]>([]);
   const [settings,    setSettings]    = useState<VoiceSettings>(DEFAULT_VOICE_SETTINGS);
-  const [audioPath,   setAudioPath]   = useState<string | null>(null);
-  const [audioKey,    setAudioKey]    = useState(0);
+  const [audioPath,    setAudioPath]    = useState<string | null>(null);
+  const [audioKey,     setAudioKey]     = useState(0);
+  const [unsaved,      setUnsaved]      = useState(false);
+  const [savedAt,      setSavedAt]      = useState<string | null>(null);
+  const [sceneFiles,   setSceneFiles]   = useState<Record<string, string> | null>(null);
+  const [genProgress,  setGenProgress]  = useState<string>("");
 
+  const [initLoading,      setInitLoading]      = useState(true);
   const [genScriptLoading, setGenScriptLoading] = useState(false);
   const [genVoiceLoading,  setGenVoiceLoading]  = useState(false);
-  const [voicesLoading,    setVoicesLoading]    = useState(false);
+  const [saveLoading,      setSaveLoading]      = useState(false);
   const [error, setError] = useState("");
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  // Load voices on mount; auto-select the first voice from the account
+  // Load everything in parallel on mount
   useEffect(() => {
-    setVoicesLoading(true);
-    fetch("/api/list-voices")
-      .then((r) => r.json())
-      .then((d) => {
-        const list: ElevenLabsVoice[] = d.voices ?? [];
-        setVoices(list);
-        if (list.length > 0) {
-          setSettings((s) => ({ ...s, voiceId: list[0].voice_id }));
-        }
-      })
-      .finally(() => setVoicesLoading(false));
-  }, []);
+    Promise.all([
+      fetch("/api/list-voices").then((r) => r.json()).catch(() => ({ voices: [] })),
+      fetch(`/api/voiceover-script/${slug}`).then((r) => r.json()).catch(() => null),
+      fetch(`/api/images/${slug}/${slug}-voiceover.mp3`, { method: "HEAD" }).catch(() => null),
+    ]).then(([voicesData, savedData, audioRes]) => {
+      const list: ElevenLabsVoice[] = voicesData.voices ?? [];
+      setVoices(list);
 
-  // Check if voiceover audio already exists
-  useEffect(() => {
-    const path = `/api/images/${slug}/${slug}-voiceover.mp3`;
-    fetch(path, { method: "HEAD" }).then((r) => {
-      if (r.ok) setAudioPath(path);
-    });
-  }, [slug]);
+      if (savedData?.voiceover) {
+        setVoiceover(savedData.voiceover);
+        setSettings(savedData.settings ?? DEFAULT_VOICE_SETTINGS);
+        setTargetDuration(savedData.targetDuration ?? script.targetDurationSeconds ?? DEFAULT_TARGET_DURATION);
+        setSavedAt(savedData.savedAt ?? null);
+        if (savedData.voiceoverFiles) setSceneFiles(savedData.voiceoverFiles);
+      } else {
+        // No saved data — show empty editable scenes right away
+        const dur = getSceneDurationsForScript(script.targetDurationSeconds ?? DEFAULT_TARGET_DURATION);
+        setVoiceover(emptyVoiceover(sceneKeys, dur, script.targetDurationSeconds ?? DEFAULT_TARGET_DURATION));
+        if (list.length > 0) setSettings((s) => ({ ...s, voiceId: list[0].voice_id }));
+      }
+
+      if (audioRes && (audioRes as Response).ok) {
+        setAudioPath(`/api/images/${slug}/${slug}-voiceover.mp3`);
+      }
+    }).finally(() => setInitLoading(false));
+  }, [slug, script.targetDurationSeconds]);
+
+  async function saveVoiceover(
+    vo: VoiceoverScript,
+    s: VoiceSettings,
+    dur: number,
+    files?: Record<string, string>,
+  ) {
+    setSaveLoading(true);
+    try {
+      await fetch(`/api/voiceover-script/${slug}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          voiceover: vo,
+          settings: s,
+          targetDuration: dur,
+          voiceoverFiles: files ?? sceneFiles ?? undefined,
+        }),
+      });
+      setSavedAt(new Date().toISOString());
+      setUnsaved(false);
+    } finally {
+      setSaveLoading(false);
+    }
+  }
 
   async function generateScript() {
     setGenScriptLoading(true);
     setError("");
     try {
+      const scriptWithDuration = { ...script, targetDurationSeconds: targetDuration };
       const res = await fetch("/api/generate-voiceover-script", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ script }),
+        body: JSON.stringify({ script: scriptWithDuration }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Error");
       setVoiceover(data.voiceover);
+      setUnsaved(false);
+      // Auto-save after generation
+      await saveVoiceover(data.voiceover, settings, targetDuration);
     } catch (err) {
       setError(String(err));
     } finally {
@@ -107,22 +164,45 @@ export function VoiceoverPanel({ script, slug }: { script: VideoScript; slug: st
     }
   }
 
+  const hasAnyText = voiceover
+    ? sceneKeys.some((k) => voiceover.scenes[k]?.text.trim().length > 0)
+    : false;
+
   async function generateVoice() {
-    if (!voiceover?.fullScript) return;
+    if (!voiceover || !hasAnyText) return;
     setGenVoiceLoading(true);
+    setGenProgress("Generando audio por escena...");
     setError("");
     try {
+      // Build per-scene texts (only non-empty scenes)
+      const sceneTexts: Record<string, string> = {};
+      for (const k of sceneKeys) {
+        const t = voiceover.scenes[k]?.text.trim();
+        if (t) sceneTexts[k] = t;
+      }
+
       const res = await fetch("/api/generate-voice", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug, fullScript: voiceover.fullScript, settings }),
+        body: JSON.stringify({ slug, settings, sceneTexts }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Error");
-      setAudioPath(`/api/images/${slug}/${data.filename}`);
+
+      const files: Record<string, string> = data.files;
+      setSceneFiles(files);
       setAudioKey((k) => k + 1);
+
+      // Set preview to intro file (or first available)
+      const firstFile = files[sceneKeys.find((k) => files[k]) ?? ""] ?? null;
+      if (firstFile) setAudioPath(`/api/images/${firstFile}`);
+
+      // Save everything including file paths
+      await saveVoiceover(voiceover, settings, targetDuration, files);
+      setGenProgress("");
     } catch (err) {
       setError(String(err));
+      setGenProgress("");
     } finally {
       setGenVoiceLoading(false);
     }
@@ -138,65 +218,167 @@ export function VoiceoverPanel({ script, slug }: { script: VideoScript; slug: st
         [key]: { ...voiceover.scenes[key as keyof typeof voiceover.scenes], text, wordCount },
       },
     };
-    // Rebuild fullScript in order
-    updated.fullScript = SCENE_KEYS.map((k) => updated.scenes[k].text).join(" ");
+    updated.fullScript = sceneKeys.map((k) => updated.scenes[k]?.text ?? "").join(" ... ");
     setVoiceover(updated);
+    setUnsaved(true);
+  }
+
+  function updateSettings(patch: Partial<VoiceSettings>) {
+    setSettings((s) => {
+      const next = { ...s, ...patch };
+      setUnsaved(true);
+      return next;
+    });
+  }
+
+  const sceneDurations = getSceneDurationsForScript(targetDuration);
+
+  function formatSavedAt(iso: string) {
+    const diff = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+    if (diff < 1) return "justo ahora";
+    if (diff < 60) return `hace ${diff} min`;
+    return new Date(iso).toLocaleTimeString("es", { hour: "2-digit", minute: "2-digit" });
+  }
+
+  if (initLoading) {
+    return (
+      <div className="flex items-center gap-3 text-[#555] py-8">
+        <div className="w-4 h-4 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+        Cargando guión guardado...
+      </div>
+    );
   }
 
   return (
     <div className="space-y-6">
 
-      {/* ── Step 1: Generate Script ── */}
+      {/* ── Duration selector ── */}
+      <div className="border border-[#2a2a2a] rounded-xl p-4">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <p className="text-sm font-semibold text-white">Duración del video</p>
+            <p className="text-[#666] text-xs mt-0.5">Las escenas y límites de palabras se escalan automáticamente</p>
+          </div>
+          <span className="text-violet-400 font-mono text-sm font-bold">{targetDuration}s</span>
+        </div>
+        <div className="flex gap-2">
+          {DURATION_PRESETS.map((secs) => (
+            <button
+              key={secs}
+              onClick={() => {
+                setTargetDuration(secs);
+                const dur = getSceneDurationsForScript(secs);
+                setVoiceover(emptyVoiceover(sceneKeys, dur, secs));
+                setUnsaved(false);
+                setSavedAt(null);
+              }}
+              className={`flex-1 py-2 rounded-lg text-sm font-semibold transition
+                ${targetDuration === secs
+                  ? "bg-violet-600 text-white"
+                  : "bg-[#1e1e1e] border border-[#2a2a2a] text-[#666] hover:text-white hover:border-[#444]"}`}
+            >
+              {secs}s
+            </button>
+          ))}
+        </div>
+        <div className="mt-3 flex gap-1.5 flex-wrap">
+          {Object.entries(sceneDurations).map(([key, secs]) => (
+            <span key={key} className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#1e1e1e] text-[#555]">
+              {key} {secs}s
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Step 1: Generate / Edit Script ── */}
       <div className="border border-[#2a2a2a] rounded-xl p-4">
         <div className="flex items-center justify-between mb-3">
           <div>
             <p className="text-sm font-semibold text-white">Guión de voz en off</p>
-            <p className="text-[#666] text-xs mt-0.5">GPT-4o genera narración sincronizada con cada escena</p>
+            <p className="text-[#666] text-xs mt-0.5">
+              {savedAt
+                ? <span className="text-emerald-500">✓ Guardado {formatSavedAt(savedAt)}</span>
+                : "Escribe tú mismo o usa IA para sugerir el texto"}
+            </p>
           </div>
-          <button onClick={generateScript} disabled={genScriptLoading}
-            className="px-4 py-2 rounded-lg text-sm font-semibold bg-violet-600 hover:bg-violet-500
-                       disabled:opacity-40 transition flex items-center gap-2">
-            {genScriptLoading
-              ? <><div className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin"/>Generando...</>
-              : voiceover ? "↺ Regenerar guión" : "Generar guión con GPT-4o"
-            }
-          </button>
+          <div className="flex items-center gap-2">
+            {voiceover && unsaved && (
+              <button
+                onClick={() => saveVoiceover(voiceover, settings, targetDuration)}
+                disabled={saveLoading}
+                className="px-3 py-2 rounded-lg text-xs font-semibold border border-emerald-700/60
+                           text-emerald-400 hover:bg-emerald-900/20 disabled:opacity-40 transition"
+              >
+                {saveLoading ? "Guardando..." : "Guardar cambios"}
+              </button>
+            )}
+            <button onClick={generateScript} disabled={genScriptLoading}
+              className="px-4 py-2 rounded-lg text-sm font-semibold bg-violet-600 hover:bg-violet-500
+                         disabled:opacity-40 transition flex items-center gap-2">
+              {genScriptLoading
+                ? <><div className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin"/>Generando...</>
+                : "✦ Sugerir con IA"
+              }
+            </button>
+          </div>
         </div>
 
         {voiceover && (
           <div className="space-y-3 mt-4">
-            {SCENE_KEYS.map((key) => {
-              const scene   = voiceover.scenes[key];
-              const maxWords = Math.floor(SCENE_DURATIONS[key] * WORDS_PER_SECOND);
+            {sceneKeys.map((key) => {
+              const scene    = voiceover.scenes[key];
+              const maxWords = Math.floor((sceneDurations[key] ?? 5) * WORDS_PER_SECOND * settings.speed);
               return (
                 <div key={key}>
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold text-[#888]">{SCENE_LABELS[key]}</span>
-                      <span className="text-[10px] text-[#444] mono">{SCENE_DURATIONS[key]}s</span>
+                      <span className="text-xs font-semibold text-[#888]">{sceneLabels[key] ?? key}</span>
+                      <span className="text-[10px] text-[#444] mono">{sceneDurations[key]}s</span>
                     </div>
-                    <WordBadge text={scene.text} maxWords={maxWords} />
+                    <WordBadge text={scene?.text ?? ""} maxWords={maxWords} />
                   </div>
                   <textarea
-                    value={scene.text}
+                    value={scene?.text ?? ""}
                     onChange={(e) => updateSceneText(key, e.target.value)}
                     rows={2}
+                    placeholder="Escribe la narración para esta escena..."
                     className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white
-                               text-sm focus:outline-none focus:border-violet-500 transition resize-none"
+                               text-sm focus:outline-none focus:border-violet-500 transition resize-none
+                               placeholder:text-[#333]"
                   />
+                  {(script.imagePrompts as Record<string, string>)?.[key] && (
+                    <p className="text-[10px] text-[#444] leading-relaxed mt-1 pl-1">
+                      <span className="text-[#555] font-semibold">Imagen: </span>
+                      {(script.imagePrompts as Record<string, string>)[key]}
+                    </p>
+                  )}
                 </div>
               );
             })}
 
-            {/* Full script preview */}
-            <div className="mt-2">
-              <p className="text-[10px] font-bold text-[#666] uppercase tracking-wider mb-1">
-                Guión completo (enviado a ElevenLabs)
-              </p>
-              <div className="bg-[#0d0d0d] border border-[#2a2a2a] rounded-lg p-3 text-sm text-[#aaa] leading-relaxed">
-                {voiceover.fullScript}
+            {/* Full script preview — only when there's content */}
+            {hasAnyText && (
+              <div className="mt-2">
+                <p className="text-[10px] font-bold text-[#666] uppercase tracking-wider mb-1">
+                  Guión completo (enviado a ElevenLabs)
+                </p>
+                <div className="bg-[#0d0d0d] border border-[#2a2a2a] rounded-lg p-3 text-sm text-[#aaa] leading-relaxed">
+                  {sceneKeys.map((k) => voiceover.scenes[k]?.text.trim()).filter(Boolean).join(" ... ")}
+                </div>
               </div>
-            </div>
+            )}
+
+            {/* Inline save reminder when unsaved */}
+            {unsaved && (
+              <button
+                onClick={() => saveVoiceover(voiceover, settings, targetDuration)}
+                disabled={saveLoading}
+                className="w-full py-2 rounded-lg text-xs font-semibold border border-emerald-700/40
+                           text-emerald-500 hover:bg-emerald-900/20 disabled:opacity-40 transition"
+              >
+                {saveLoading ? "Guardando..." : "↑ Guardar cambios en el guión"}
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -209,11 +391,11 @@ export function VoiceoverPanel({ script, slug }: { script: VideoScript; slug: st
           {/* Voice selector */}
           <div>
             <label className="block text-[10px] font-bold text-[#666] uppercase tracking-wider mb-1">
-              Voz {voicesLoading && <span className="text-[#444]">(cargando...)</span>}
+              Voz
             </label>
             <select
               value={settings.voiceId}
-              onChange={(e) => setSettings((s) => ({ ...s, voiceId: e.target.value }))}
+              onChange={(e) => updateSettings({ voiceId: e.target.value })}
               className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white
                          text-sm focus:outline-none focus:border-violet-500 transition"
             >
@@ -224,7 +406,7 @@ export function VoiceoverPanel({ script, slug }: { script: VideoScript; slug: st
                   {v.labels?.gender ? ` · ${v.labels.gender}` : ""}
                 </option>
               ))}
-              {voices.length === 0 && !voicesLoading && (
+              {voices.length === 0 && (
                 <option value={DEFAULT_VOICE_SETTINGS.voiceId}>Adam (default)</option>
               )}
             </select>
@@ -235,7 +417,7 @@ export function VoiceoverPanel({ script, slug }: { script: VideoScript; slug: st
             <label className="block text-[10px] font-bold text-[#666] uppercase tracking-wider mb-1">Modelo</label>
             <select
               value={settings.modelId}
-              onChange={(e) => setSettings((s) => ({ ...s, modelId: e.target.value }))}
+              onChange={(e) => updateSettings({ modelId: e.target.value })}
               className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white
                          text-sm focus:outline-none focus:border-violet-500 transition"
             >
@@ -247,47 +429,60 @@ export function VoiceoverPanel({ script, slug }: { script: VideoScript; slug: st
 
           {/* Sliders */}
           <div className="grid grid-cols-2 gap-4">
-            <Slider label="Estabilidad"  value={settings.stability}       min={0} max={1} step={0.05} onChange={(v) => setSettings((s) => ({ ...s, stability: v }))} />
-            <Slider label="Similitud"    value={settings.similarityBoost} min={0} max={1} step={0.05} onChange={(v) => setSettings((s) => ({ ...s, similarityBoost: v }))} />
-            <Slider label="Estilo"       value={settings.style}           min={0} max={1} step={0.05} onChange={(v) => setSettings((s) => ({ ...s, style: v }))} />
-            <Slider label="Velocidad"    value={settings.speed}           min={0.7} max={1.2} step={0.05} onChange={(v) => setSettings((s) => ({ ...s, speed: v }))} />
+            <Slider label="Estabilidad"  value={settings.stability}       min={0} max={1} step={0.05} onChange={(v) => updateSettings({ stability: v })} />
+            <Slider label="Similitud"    value={settings.similarityBoost} min={0} max={1} step={0.05} onChange={(v) => updateSettings({ similarityBoost: v })} />
+            <Slider label="Estilo"       value={settings.style}           min={0} max={1} step={0.05} onChange={(v) => updateSettings({ style: v })} />
+            <Slider label="Velocidad"    value={settings.speed}           min={0.7} max={1.2} step={0.05} onChange={(v) => updateSettings({ speed: v })} />
           </div>
 
-          {/* Generate voice button */}
           {error && (
             <p className="text-red-400 text-xs bg-red-900/20 border border-red-800/30 rounded-lg px-3 py-2">{error}</p>
           )}
-          <button onClick={generateVoice} disabled={genVoiceLoading}
+          {genProgress && (
+            <p className="text-violet-400 text-xs text-center animate-pulse">{genProgress}</p>
+          )}
+          <button onClick={generateVoice} disabled={genVoiceLoading || !hasAnyText}
             className="w-full py-2.5 rounded-xl font-semibold text-sm bg-emerald-600 hover:bg-emerald-500
                        disabled:opacity-40 transition flex items-center justify-center gap-2">
             {genVoiceLoading
-              ? <><div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"/>Generando audio con ElevenLabs...</>
-              : audioPath ? "↺ Regenerar audio" : "Generar audio con ElevenLabs"
+              ? <><div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"/>Generando 7 escenas...</>
+              : sceneFiles ? "↺ Regenerar audio sincronizado" : `Generar audio sincronizado (${sceneKeys.length} escenas)`
             }
           </button>
         </div>
       )}
 
-      {/* ── Audio preview ── */}
-      {audioPath && (
-        <div className="border border-emerald-800/40 bg-emerald-900/10 rounded-xl p-4">
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-sm font-semibold text-emerald-400">Audio generado</p>
-            <a href={audioPath} download className="text-xs text-[#666] hover:text-white transition">
-              ↓ Descargar MP3
-            </a>
+      {/* ── Per-scene audio status ── */}
+      {sceneFiles && (
+        <div className="border border-emerald-800/40 bg-emerald-900/10 rounded-xl p-4 space-y-3">
+          <p className="text-sm font-semibold text-emerald-400">Audio sincronizado por escena ✓</p>
+          <div className="grid grid-cols-1 gap-2">
+            {sceneKeys.map((key) => {
+              const file = sceneFiles[key];
+              return (
+                <div key={key} className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className={`w-2 h-2 rounded-full ${file ? "bg-emerald-500" : "bg-[#333]"}`} />
+                    <span className="text-xs text-[#888]">{sceneLabels[key] ?? key}</span>
+                  </div>
+                  {file ? (
+                    <audio
+                      key={`${audioKey}-${key}`}
+                      controls
+                      className="h-7"
+                      style={{ colorScheme: "dark", width: 200 }}
+                    >
+                      <source src={`/api/images/${file}?v=${audioKey}`} type="audio/mpeg" />
+                    </audio>
+                  ) : (
+                    <span className="text-[10px] text-[#444]">sin texto</span>
+                  )}
+                </div>
+              );
+            })}
           </div>
-          <audio
-            key={audioKey}
-            ref={audioRef}
-            controls
-            className="w-full h-10"
-            style={{ colorScheme: "dark" }}
-          >
-            <source src={`${audioPath}?v=${audioKey}`} type="audio/mpeg" />
-          </audio>
-          <p className="text-[#555] text-xs mt-2 mono">
-            Archivo: {slug}/{slug}-voiceover.mp3 · usado en Remotion como voiceoverFile
+          <p className="text-[#444] text-[10px]">
+            Cada escena reproduce su audio al inicio — sincronización perfecta
           </p>
         </div>
       )}
