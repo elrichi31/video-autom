@@ -1,0 +1,12 @@
+{
+  "name": "video-autom",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently --names \"remotion,dashboard\" --prefix-colors \"cyan,magenta\" \"npm run dev --prefix remotion\" \"npm run dev --prefix dashboard\"",
+    "build": "concurrently \"npm run build --prefix remotion\" \"npm run build --prefix dashboard\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "slug": "ransomware-terror-tecnologico",
+  "displayTitle": "Ransomware Terror Tecnologico",
+  "targetDurationSeconds": 45,
+  "accents": {
+    "intro":   ["#FF0000", "#8B0000"],
+    "layers":  ["#FF3300", "#CC1100"],
+    "phase1":  ["#FF6600", "#CC4400"],
+    "phase2":  ["#FF9900", "#CC7700"],
+    "phase3":  ["#FFCC00", "#CC9900"],
+    "reality": ["#00AAFF", "#0077CC"],
+    "close":   ["#FF0000", "#8B0000"]
+  },
+  "scenes": {
+    "intro": {
+      "tag": "CIBERATAQUE",
+      "title": "EN 23\nMINUTOS\nPARALIZADO",
+      "subtitle": "el secuestro digital que no para"
+    },
+    "layers": {
+      "tag": "CÓMO FUNCIONA",
+      "terminal": [
+        "> vector.entrada   = email malicioso (94% de los casos)",
+        "> tiempo.detección = 278 días en promedio",
+        "> cifrado.activo   = en menos de 23 minutos",
+        "> rescate.promedio = $1.540.000 en 2023"
+      ],
+      "definition": "No borra tus datos.\nLos cifra — y solo ellos\ntienen la clave.",
+      "detail": "En 2023 los ataques de ransomware costaron 1,1 billones de dólares a nivel global. Récord absoluto."
+    },
+    "phase1": {
+      "phase": "INFILTRACIÓN",
+      "timestamp": "EL ENGAÑO",
+      "title": "Un Email.\nUn Clic.\nTodo Perdido.",
+      "narrative": "El 94% de los ataques empiezan con un correo. Alguien del equipo hace clic. En menos de 23 minutos los archivos ya están cifrados.",
+      "detail": "Los atacantes permanecen ocultos en la red un promedio de 278 días antes de activar el ransomware.",
+      "indicator": ["94% entran por email", "278 días sin ser detectados"]
+    },
+    "phase2": {
+      "phase": "CIFRADO",
+      "timestamp": "EL SECUESTRO",
+      "title": "Tus Archivos\nYa No Son\nTuyos",
+      "narrative": "Hospitales que no pueden acceder a historiales. Fábricas detenidas. Municipios sin servicios. El ransomware no discrimina objetivo.",
+      "detail": "El Hospital Universitario de Düsseldorf (2020): primer muerte documentada causada por un ataque de ransomware.",
+      "indicator": ["1er muerte confirmada · Düsseldorf 2020", "$1,1 billones perdidos en 2023"]
+    },
+    "phase3": {
+      "phase": "RESCATE",
+      "timestamp": "EL PRECIO",
+      "title": "Colonial\nPipeline:\n$4,4M",
+      "narrative": "Mayo 2021. Colonial Pipeline pagó 4,4 millones de dólares en bitcoin en pocas horas. El FBI recuperó 2,3 millones. El resto, desaparecido.",
+      "detail": "El rescate promedio en 2023 fue de 1.542.333 dólares. Un 89% más que el año anterior.",
+      "indicator": ["$4,4M · Colonial Pipeline 2021", "+89% aumento de rescates en 2023"]
+    },
+    "reality": {
+      "tag": "DEFENSA · AHORA",
+      "title": "Pagar\nno garantiza\nrecuperar.\nJamás.",
+      "actions": [
+        "Backup offline diario — desconectado de la red",
+        "Autenticación en dos pasos en todo el equipo",
+        "Simula ataques de phishing con tu organización",
+        "Plan de respuesta escrito antes del ataque"
+      ]
+    },
+    "close": {
+      "tag": "RANSOMWARE · CONCLUSIÓN",
+      "title": "El ataque\nperfecto solo\nnecesita un clic",
+      "subtitle": "La pregunta no es si te atacarán. Es cuándo."
+    }
+  },
+  "imagePrompts": {
+    "intro":   "Dramatic macro shot of a glowing red padlock over a dark server room, binary code rain, cinematic red and black color palette, photorealistic",
+    "layers":  "POV hacker terminal screen with scrolling red text and code, dark environment, neon red glow, atmospheric cyberpunk aesthetic",
+    "phase1":  "Close-up of a phishing email on a laptop screen, cursor hovering over a malicious link, tense atmosphere, dark office setting",
+    "phase2":  "Wide shot of encrypted file icons spreading across a dark digital landscape, red glitch effects, ominous atmosphere",
+    "phase3":  "Dramatic overhead shot of bitcoin transactions flowing into shadowy hands, red and gold color palette, cinematic lighting",
+    "reality": "Professional cybersecurity team working urgently in a blue-lit operations center, monitors showing threat data, hopeful atmosphere",
+    "close":   "Single red skull made of glowing circuit patterns on pitch black background, minimal and striking, ominous red glow"
+  }
+}
