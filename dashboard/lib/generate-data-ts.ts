@@ -8,6 +8,9 @@ export function generateDataTs(script: AnyVideoScript): string {
 
 function generateStandardDataTs(script: VideoScript): string {
   const { slug, accents, scenes } = script;
+  // Older scripts predate these fields; fall back to safe defaults.
+  const niche = script.niche ?? "general";
+  const hookStyle = script.hookStyle ?? "curiosity";
   const CONST = slug.toUpperCase().replace(/-/g, "_");
   const total = script.targetDurationSeconds ?? DEFAULT_TARGET_DURATION;
   const d = getSceneDurations(total);
@@ -35,6 +38,13 @@ export const ${CONST}_TOTAL_DURATION =
   ${CONST}_DURATIONS.phase3 +
   ${CONST}_DURATIONS.reality +
   ${CONST}_DURATIONS.close;
+
+export type VideoNiche = "cybersecurity" | "ai" | "history" | "fraud" | "news" | "general";
+export type HookStyle = "shock" | "curiosity" | "contrarian" | "countdown" | "real-story";
+
+export const ${CONST}_NICHE: VideoNiche = ${JSON.stringify(niche)};
+
+export const ${CONST}_HOOK_STYLE: HookStyle = ${JSON.stringify(hookStyle)};
 
 export const ${CONST}_ACCENTS = {
   intro:   ${JSON.stringify(accents.intro)} as AccentPair,
@@ -64,6 +74,9 @@ export const ${CONST}_CLOSE = ${JSON.stringify(scenes.close, null, 2)};
 
 function generateTimelineDataTs(script: VideoScriptTimeline): string {
   const { slug, accents, scenes } = script;
+  // Older scripts predate these fields; fall back to safe defaults.
+  const niche = script.niche ?? "general";
+  const hookStyle = script.hookStyle ?? "curiosity";
   const CONST = slug.toUpperCase().replace(/-/g, "_");
   const total = script.targetDurationSeconds ?? DEFAULT_TARGET_DURATION;
   const d = getTimelineSceneDurations(total);
@@ -91,6 +104,13 @@ export const ${CONST}_TOTAL_DURATION =
   ${CONST}_DURATIONS.event4 +
   ${CONST}_DURATIONS.today +
   ${CONST}_DURATIONS.close;
+
+export type VideoNiche = "cybersecurity" | "ai" | "history" | "fraud" | "news" | "general";
+export type HookStyle = "shock" | "curiosity" | "contrarian" | "countdown" | "real-story";
+
+export const ${CONST}_NICHE: VideoNiche = ${JSON.stringify(niche)};
+
+export const ${CONST}_HOOK_STYLE: HookStyle = ${JSON.stringify(hookStyle)};
 
 export const ${CONST}_ACCENTS = {
   intro:  ${JSON.stringify(accents.intro)}  as AccentPair,

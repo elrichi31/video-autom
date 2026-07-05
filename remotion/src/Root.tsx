@@ -72,6 +72,36 @@ import {
   calculateMetadata as escasezTokensIaCalculateMetadata,
 } from "./EscasezTokensIaComposition";
 
+import {
+  CriptomonedasYFraudesComposition,
+  criptomonedasYFraudesDuration,
+  calculateMetadata as criptomonedasYFraudesCalculateMetadata,
+} from "./CriptomonedasYFraudesComposition";
+
+import {
+  TiendasEnLineaNecessidadNegociosComposition,
+  tiendasEnLineaNecessidadNegociosDuration,
+  calculateMetadata as tiendasEnLineaNecessidadNegociosCalculateMetadata,
+} from "./TiendasEnLineaNecessidadNegociosComposition";
+
+import {
+  JuiceJackingPeligroCargarCelularComposition,
+  juiceJackingPeligroCargarCelularDuration,
+  calculateMetadata as juiceJackingPeligroCargarCelularCalculateMetadata,
+} from "./JuiceJackingPeligroCargarCelularComposition";
+
+import {
+  ImpactoCiberseguridadGpt56Composition,
+  impactoCiberseguridadGpt56Duration,
+  calculateMetadata as impactoCiberseguridadGpt56CalculateMetadata,
+} from "./ImpactoCiberseguridadGpt56Composition";
+
+import {
+  EstafaIaClonacionVozComposition,
+  estafaIaClonacionVozDuration,
+  calculateMetadata as estafaIaClonacionVozCalculateMetadata,
+} from "./EstafaIaClonacionVozComposition";
+
 export const RemotionRoot: FC = () => {
   return (
     <>
@@ -251,6 +281,56 @@ export const RemotionRoot: FC = () => {
         component={EscasezTokensIaComposition}
         calculateMetadata={escasezTokensIaCalculateMetadata}
         durationInFrames={escasezTokensIaDuration}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{ voiceoverFile: null, voiceoverFiles: null, sceneDurations: null }}
+      />
+      <Composition
+        id="CriptomonedasYFraudesVerticalPremium"
+        component={CriptomonedasYFraudesComposition}
+        calculateMetadata={criptomonedasYFraudesCalculateMetadata}
+        durationInFrames={criptomonedasYFraudesDuration}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{ voiceoverFile: null, voiceoverFiles: null, sceneDurations: null }}
+      />
+      <Composition
+        id="TiendasEnLineaNecessidadNegociosVerticalPremium"
+        component={TiendasEnLineaNecessidadNegociosComposition}
+        calculateMetadata={tiendasEnLineaNecessidadNegociosCalculateMetadata}
+        durationInFrames={tiendasEnLineaNecessidadNegociosDuration}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{ voiceoverFile: null, voiceoverFiles: null, sceneDurations: null }}
+      />
+      <Composition
+        id="JuiceJackingPeligroCargarCelularVerticalPremium"
+        component={JuiceJackingPeligroCargarCelularComposition}
+        calculateMetadata={juiceJackingPeligroCargarCelularCalculateMetadata}
+        durationInFrames={juiceJackingPeligroCargarCelularDuration}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{ voiceoverFile: null, voiceoverFiles: null, sceneDurations: null }}
+      />
+      <Composition
+        id="ImpactoCiberseguridadGpt56VerticalPremium"
+        component={ImpactoCiberseguridadGpt56Composition}
+        calculateMetadata={impactoCiberseguridadGpt56CalculateMetadata}
+        durationInFrames={impactoCiberseguridadGpt56Duration}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{ voiceoverFile: null, voiceoverFiles: null, sceneDurations: null }}
+      />
+      <Composition
+        id="EstafaIaClonacionVozVerticalPremium"
+        component={EstafaIaClonacionVozComposition}
+        calculateMetadata={estafaIaClonacionVozCalculateMetadata}
+        durationInFrames={estafaIaClonacionVozDuration}
         fps={30}
         width={1080}
         height={1920}

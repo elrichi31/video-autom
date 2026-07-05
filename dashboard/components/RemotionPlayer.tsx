@@ -8,6 +8,8 @@ type LoadedComp = {
   durationInFrames: number;
 };
 
+type RemotionPlayerInputProps = Record<string, unknown>;
+
 // Compositions whose file name doesn't follow the standard pattern
 const FILE_OVERRIDES: Record<string, string> = {
   OsintVerticalPremium: "PhoneHackedComposition",
@@ -40,7 +42,15 @@ async function loadComp(compositionId: string): Promise<LoadedComp> {
   return { component, durationInFrames };
 }
 
-export function RemotionPlayer({ compositionId }: { compositionId: string }) {
+export function RemotionPlayer({
+  compositionId,
+  inputProps,
+  durationInFrames,
+}: {
+  compositionId: string;
+  inputProps?: RemotionPlayerInputProps;
+  durationInFrames?: number;
+}) {
   const [comp, setComp]   = useState<LoadedComp | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -64,7 +74,7 @@ export function RemotionPlayer({ compositionId }: { compositionId: string }) {
   if (!comp) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="w-5 h-5 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -72,12 +82,12 @@ export function RemotionPlayer({ compositionId }: { compositionId: string }) {
   return (
     <Player
       component={comp.component}
-      durationInFrames={comp.durationInFrames}
+      durationInFrames={durationInFrames ?? comp.durationInFrames}
       fps={30}
       compositionWidth={1080}
       compositionHeight={1920}
       style={{ width: "100%", height: "100%" }}
-      inputProps={{ voiceoverFile: null }}
+      inputProps={inputProps ?? { voiceoverFile: null }}
       controls
       loop
     />

@@ -17,7 +17,7 @@ function Field({
   multiline?: boolean; mono?: boolean; hint?: string;
 }) {
   const base = `w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white text-sm
-                focus:outline-none focus:border-violet-500 transition resize-none
+                focus:outline-none focus:border-emerald-500 transition resize-none
                 ${mono ? "font-mono" : ""}`;
   return (
     <div>
@@ -53,7 +53,7 @@ function ArrayField({
           <input
             key={i}
             className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-lg px-3 py-2
-                       text-white text-sm focus:outline-none focus:border-violet-500 transition"
+                       text-white text-sm focus:outline-none focus:border-emerald-500 transition"
             value={item}
             onChange={(e) => {
               const next = [...items];
@@ -261,6 +261,13 @@ export function VideoEditor({
   const [regenerating, setRegenerating] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>("scenes");
 
+  // Scene regeneration with fresh context
+  const [context, setContext] = useState("");
+  const [contextFileName, setContextFileName] = useState("");
+  const [showContext, setShowContext] = useState(false);
+  const [regenScenes, setRegenScenes] = useState(false);
+  const [regenError, setRegenError] = useState("");
+
   useEffect(() => {
     setLoading(true);
     fetch(`/api/videos/${slug}`)
@@ -296,6 +303,60 @@ export function VideoEditor({
     setSaved(true);
   }
 
+  async function handleContextFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const text = await file.text();
+    setContext(text);
+    setContextFileName(file.name);
+    setShowContext(true);
+    e.target.value = "";
+  }
+
+  async function handleRegenerateScenes() {
+    if (!script) return;
+    setRegenScenes(true);
+    setRegenError("");
+    try {
+      const res = await fetch("/api/generate-script", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          topic: script.displayTitle,
+          targetDurationSeconds: script.targetDurationSeconds,
+          compositionType: script.compositionType ?? "standard",
+          context: context.trim() || undefined,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Error regenerando escenas");
+
+      // Keep this video's identity and assets; only swap the on-screen texts.
+      // slug/accents/imagePrompts stay so existing images remain aligned.
+      const next = {
+        ...script,
+        scenes: data.script.scenes,
+        niche: data.script.niche ?? script.niche,
+        hookStyle: data.script.hookStyle ?? script.hookStyle,
+      } as AnyVideoScript;
+
+      setScript(next);
+      setSaved(false);
+
+      // Persist immediately (writes script.json + regenerates data.ts).
+      await fetch(`/api/videos/${slug}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ script: next }),
+      });
+      setSaved(true);
+    } catch (err) {
+      setRegenError(String(err));
+    } finally {
+      setRegenScenes(false);
+    }
+  }
+
   async function handleRegenerateImage(key: string) {
     if (!script) return;
     setRegenerating(key);
@@ -328,7 +389,7 @@ export function VideoEditor({
   if (loading) {
     return (
       <div className="flex items-center gap-3 text-[#555]">
-        <div className="w-4 h-4 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-4 h-4 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
         Cargando video...
       </div>
     );
@@ -368,7 +429,7 @@ export function VideoEditor({
         {tab === "scenes" && (
           <button onClick={handleSave} disabled={saving}
             className={`px-4 py-2 rounded-xl text-sm font-semibold transition
-              ${saved ? "bg-emerald-700 text-emerald-200" : "bg-violet-600 hover:bg-violet-500 text-white"}
+              ${saved ? "bg-emerald-700 text-emerald-200" : "bg-emerald-600 hover:bg-emerald-500 text-white"}
               disabled:opacity-40`}>
             {saving ? "Guardando..." : saved ? "✓ Guardado" : "Guardar cambios"}
           </button>
@@ -406,6 +467,70 @@ export function VideoEditor({
                   ))}
                   <span className="text-[#444] text-xs ml-1">paleta</span>
                 </div>
+
+                {/* Regenerate scenes with fresh context */}
+                <div className="border border-[#2a2a2a] rounded-xl p-4 mb-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-semibold text-white">Regenerar escenas con IA</p>
+                      <p className="text-[#666] text-xs mt-0.5">
+                        Reescribe los textos en pantalla con info actualizada · las imágenes se conservan
+                      </p>
+                    </div>
+                    <button onClick={handleRegenerateScenes} disabled={regenScenes}
+                      className="px-4 py-2 rounded-lg text-sm font-semibold bg-emerald-600 hover:bg-emerald-500
+                                 disabled:opacity-40 transition flex items-center gap-2 shrink-0">
+                      {regenScenes
+                        ? <><div className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin"/>Regenerando...</>
+                        : "✦ Regenerar escenas"
+                      }
+                    </button>
+                  </div>
+
+                  <button type="button" onClick={() => setShowContext((v) => !v)}
+                    className="mt-3 text-[11px] font-semibold text-[#888] hover:text-white transition flex items-center gap-1.5">
+                    <span className="text-[#555]">{showContext ? "▾" : "▸"}</span>
+                    Contexto para la IA
+                    {context.trim() && (
+                      <span className="text-emerald-500 normal-case">
+                        · {contextFileName ? `📄 ${contextFileName}` : `${context.trim().length.toLocaleString()} car.`}
+                      </span>
+                    )}
+                    <span className="text-[#444] font-normal">(opcional)</span>
+                  </button>
+
+                  {showContext && (
+                    <div className="mt-2">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <p className="text-[10px] text-[#555]">
+                          Pega o sube info actualizada. La IA la usará como fuente de verdad (datos, cifras, fechas).
+                        </p>
+                        <label className="text-[10px] px-2 py-1 rounded-lg bg-[#1e1e1e] border border-[#2a2a2a]
+                                          text-[#888] hover:text-white hover:border-[#444] transition cursor-pointer shrink-0 ml-2">
+                          Subir .md / .txt
+                          <input type="file" accept=".md,.txt,text/markdown,text/plain"
+                            onChange={handleContextFile} className="hidden" />
+                        </label>
+                      </div>
+                      <textarea
+                        value={context}
+                        onChange={(e) => { setContext(e.target.value); if (contextFileName) setContextFileName(""); }}
+                        placeholder="Ej: OpenAI lanzó GPT-5.6 en 2026 con tres modelos. Sol detecta vulnerabilidades..."
+                        rows={4}
+                        className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-white
+                                   placeholder-[#444] focus:outline-none focus:border-emerald-500 transition resize-y font-mono"
+                      />
+                    </div>
+                  )}
+
+                  {regenError && (
+                    <p className="text-red-400 text-xs bg-red-900/20 border border-red-800/30 rounded-lg px-3 py-2 mt-2">{regenError}</p>
+                  )}
+                  <p className="text-[10px] text-[#444] mt-2">
+                    Tras regenerar, revisa las escenas y luego actualiza la voz en off para que todo quede parejo.
+                  </p>
+                </div>
+
                 <div className="space-y-2 mb-6">
                   {sceneKeys.map((key) => (
                     <ScenePanel key={key} sceneKey={key} sceneLabel={sceneLabels[key] ?? key} script={script}
@@ -418,7 +543,7 @@ export function VideoEditor({
             );
           })()}
           <button onClick={handleSave} disabled={saving}
-            className="w-full py-3 rounded-xl font-semibold text-sm bg-violet-600 hover:bg-violet-500 disabled:opacity-40 transition">
+            className="w-full py-3 rounded-xl font-semibold text-sm bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 transition">
             {saving ? "Guardando..." : "Guardar todos los cambios →"}
           </button>
         </>
@@ -450,10 +575,42 @@ function RenderPanel({ slug, compositionId }: { slug: string; compositionId: str
   const [rendered,  setRendered]  = useState(false);
   const [progress,  setProgress]  = useState(0);
   const [error,     setError]     = useState("");
+  const [hasVoiceover, setHasVoiceover] = useState(false);
+  const [playerInputProps, setPlayerInputProps] = useState<Record<string, unknown>>({
+    voiceoverFile: null,
+    voiceoverFiles: null,
+    sceneDurations: null,
+  });
 
   useEffect(() => {
-    fetch(`/api/download-video/${slug}.mp4`, { method: "HEAD" })
-      .then((r) => { if (r.ok) setRendered(true); });
+    let cancelled = false;
+
+    Promise.all([
+      fetch(`/api/download-video/${slug}.mp4`, { method: "HEAD" }).then((r) => r.ok).catch(() => false),
+      fetch(`/api/images/${slug}/${slug}-voiceover.mp3`, { method: "HEAD" }).then((r) => r.ok).catch(() => false),
+      fetch(`/api/voiceover-script/${slug}`).then((r) => r.ok ? r.json() : null).catch(() => null),
+    ]).then(([hasRenderedVideo, hasSingleVoiceFile, savedVoiceover]) => {
+      if (cancelled) return;
+
+      if (hasRenderedVideo) setRendered(true);
+
+      const voiceoverFile = hasSingleVoiceFile ? `${slug}/${slug}-voiceover.mp3` : null;
+      const voiceoverFiles = savedVoiceover?.voiceoverFiles ?? null;
+      const hasPerSceneVoice = Boolean(
+        voiceoverFiles && Object.values(voiceoverFiles).some((value) => typeof value === "string" && value.length > 0),
+      );
+
+      setHasVoiceover(Boolean(voiceoverFile || hasPerSceneVoice));
+      setPlayerInputProps({
+        voiceoverFile,
+        voiceoverFiles,
+        sceneDurations: null,
+      });
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, [slug]);
 
   async function handleRender() {
@@ -505,7 +662,7 @@ function RenderPanel({ slug, compositionId }: { slug: string; compositionId: str
       {/* Live composition preview */}
       <div className="rounded-xl overflow-hidden border border-[#2a2a2a] bg-black"
            style={{ aspectRatio: "9/16", maxHeight: 500, margin: "0 auto", width: "min(280px, 100%)" }}>
-        <RemotionPlayer compositionId={compositionId} />
+        <RemotionPlayer compositionId={compositionId} inputProps={playerInputProps} />
       </div>
 
       <div className="border border-[#2a2a2a] rounded-xl p-4">
@@ -514,6 +671,16 @@ function RenderPanel({ slug, compositionId }: { slug: string; compositionId: str
           Ejecuta <span className="mono text-[#aaa]">npx remotion render</span> con la voz en off si está disponible.
           El proceso puede tardar 1-3 minutos.
         </p>
+
+        <div className={`mb-4 rounded-lg border px-3 py-2 text-xs ${
+          hasVoiceover
+            ? "border-emerald-800/40 bg-emerald-900/10 text-emerald-400"
+            : "border-amber-800/40 bg-amber-900/10 text-amber-300"
+        }`}>
+          {hasVoiceover
+            ? "Voz detectada: la preview y el render usaran el audio guardado."
+            : "Sin voz guardada: si renderizas ahora, el video saldra sin narracion."}
+        </div>
 
         {error && (
           <div className="mb-4 bg-red-900/20 border border-red-800/30 rounded-lg p-3">
@@ -525,11 +692,11 @@ function RenderPanel({ slug, compositionId }: { slug: string; compositionId: str
           <div className="mb-4">
             <div className="flex justify-between text-xs text-[#666] mb-1.5">
               <span>Renderizando...</span>
-              <span className="font-mono text-violet-400">{progress}%</span>
+              <span className="font-mono text-emerald-400">{progress}%</span>
             </div>
             <div className="w-full bg-[#1a1a1a] rounded-full h-2 overflow-hidden">
               <div
-                className="h-2 rounded-full bg-gradient-to-r from-violet-600 to-violet-400 transition-all duration-300"
+                className="h-2 rounded-full bg-gradient-to-r from-emerald-600 to-green-400 transition-all duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -537,7 +704,7 @@ function RenderPanel({ slug, compositionId }: { slug: string; compositionId: str
         )}
 
         <button onClick={handleRender} disabled={rendering}
-          className="w-full py-3 rounded-xl font-semibold text-sm bg-violet-600 hover:bg-violet-500
+          className="w-full py-3 rounded-xl font-semibold text-sm bg-emerald-600 hover:bg-emerald-500
                      disabled:opacity-40 transition flex items-center justify-center gap-2">
           {rendering
             ? <><div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"/>Procesando frames...</>
@@ -654,7 +821,7 @@ function TikTokPanel({ script, slug }: { script: AnyVideoScript; slug: string })
         )}
         <div className="flex items-center gap-2">
           <button onClick={generate} disabled={loading}
-            className="flex-1 py-2.5 rounded-xl font-semibold text-sm bg-violet-600 hover:bg-violet-500
+            className="flex-1 py-2.5 rounded-xl font-semibold text-sm bg-emerald-600 hover:bg-emerald-500
                        disabled:opacity-40 transition flex items-center justify-center gap-2">
             {loading
               ? <><div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"/>Generando...</>
@@ -678,7 +845,7 @@ function TikTokPanel({ script, slug }: { script: AnyVideoScript; slug: string })
             <div className="flex items-center justify-between mb-2">
               <p className="text-[10px] font-bold text-[#666] uppercase tracking-wider">Título</p>
               <button onClick={() => copy(caption.title, "title")}
-                className="text-[10px] text-[#555] hover:text-violet-400 transition font-mono">
+                className="text-[10px] text-[#555] hover:text-emerald-400 transition font-mono">
                 {copied === "title" ? "✓ copiado" : "copiar"}
               </button>
             </div>
@@ -691,7 +858,7 @@ function TikTokPanel({ script, slug }: { script: AnyVideoScript; slug: string })
             <div className="flex items-center justify-between mb-2">
               <p className="text-[10px] font-bold text-[#666] uppercase tracking-wider">Descripción</p>
               <button onClick={() => copy(caption.description, "desc")}
-                className="text-[10px] text-[#555] hover:text-violet-400 transition font-mono">
+                className="text-[10px] text-[#555] hover:text-emerald-400 transition font-mono">
                 {copied === "desc" ? "✓ copiado" : "copiar"}
               </button>
             </div>
@@ -703,7 +870,7 @@ function TikTokPanel({ script, slug }: { script: AnyVideoScript; slug: string })
             <div className="flex items-center justify-between mb-3">
               <p className="text-[10px] font-bold text-[#666] uppercase tracking-wider">Hashtags</p>
               <button onClick={() => copy(caption.hashtags.join(" "), "tags")}
-                className="text-[10px] text-[#555] hover:text-violet-400 transition font-mono">
+                className="text-[10px] text-[#555] hover:text-emerald-400 transition font-mono">
                 {copied === "tags" ? "✓ copiados" : "copiar todos"}
               </button>
             </div>
@@ -711,7 +878,7 @@ function TikTokPanel({ script, slug }: { script: AnyVideoScript; slug: string })
               {caption.hashtags.map((tag) => (
                 <button key={tag} onClick={() => copy(tag, tag)}
                   className="text-xs px-2 py-1 rounded-lg bg-[#1a1a1a] border border-[#2a2a2a]
-                             text-violet-400 hover:border-violet-500 transition font-mono">
+                             text-emerald-400 hover:border-emerald-500 transition font-mono">
                   {copied === tag ? "✓" : tag}
                 </button>
               ))}

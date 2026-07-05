@@ -1,5 +1,20 @@
 export type AccentPair = [string, string];
 
+export type VideoNiche =
+  | "cybersecurity"
+  | "ai"
+  | "history"
+  | "fraud"
+  | "news"
+  | "general";
+
+export type HookStyle =
+  | "shock"
+  | "curiosity"
+  | "contrarian"
+  | "countdown"
+  | "real-story";
+
 // ─── Standard scenes ─────────────────────────────────────────────────────────
 
 export interface SceneIntro {
@@ -39,6 +54,8 @@ export interface SceneClose {
 export interface VideoScript {
   slug: string;
   displayTitle: string;
+  niche: VideoNiche;
+  hookStyle: HookStyle;
   compositionType?: "standard";
   targetDurationSeconds: number;
   accents: {
@@ -84,6 +101,8 @@ export type SceneKeyTimeline = "intro" | "event1" | "event2" | "event3" | "event
 export interface VideoScriptTimeline {
   slug: string;
   displayTitle: string;
+  niche: VideoNiche;
+  hookStyle: HookStyle;
   compositionType: "timeline";
   targetDurationSeconds: number;
   accents: Record<SceneKeyTimeline, AccentPair>;

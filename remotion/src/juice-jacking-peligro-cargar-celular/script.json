@@ -1,0 +1,112 @@
+{
+  "slug": "juice-jacking-peligro-cargar-celular",
+  "displayTitle": "JUICE JACKING: PELIGRO REAL",
+  "niche": "cybersecurity",
+  "hookStyle": "shock",
+  "accents": {
+    "intro": [
+      "#FF0000",
+      "#000000"
+    ],
+    "layers": [
+      "#FF0000",
+      "#FFFFFF"
+    ],
+    "phase1": [
+      "#FF4500",
+      "#000000"
+    ],
+    "phase2": [
+      "#FF8C00",
+      "#FFFFFF"
+    ],
+    "phase3": [
+      "#FF6347",
+      "#000000"
+    ],
+    "reality": [
+      "#FFD700",
+      "#FFFFFF"
+    ],
+    "close": [
+      "#B22222",
+      "#FFFFFF"
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "tag": "ALERTA",
+      "title": "¡CARGAR TU\nCELULAR PUEDE SER LETAL!",
+      "subtitle": "¿Sabías que el 80% de los ataques cibernéticos empiezan así?"
+    },
+    "layers": {
+      "tag": "CONCEPTOS CLAVE",
+      "terminal": [
+        "> Juice Jacking = hackeo a través de USB",
+        "> 2023 = 30% de ataques cibernéticos son por puertos USB públicos",
+        "> Instituciones = aeropuertos y cafés como focos de riesgo",
+        "> 90% de los usuarios ignoran el peligro"
+      ],
+      "definition": "El Juice Jacking es una técnica utilizada por hackers para robar datos a través de puertos USB públicos. Es un ataque invisible y creciente.",
+      "detail": "En 2023, el 30% de los ataques cibernéticos se originaron en puertos USB públicos, según Cybersecurity Ventures."
+    },
+    "phase1": {
+      "phase": "EL RIESGO REAL",
+      "timestamp": "1 MINUTO",
+      "title": "¿CÓMO FUNCIONA EL JUICE JACKING?",
+      "narrative": "Un hacker conecta un dispositivo a un puerto USB público y puede acceder a tu información en segundos.",
+      "detail": "Los datos pueden ser robados en menos de 30 segundos.",
+      "indicator": [
+        "30 segundos = datos robados",
+        "Hackeo en aeropuertos reportado en 2022"
+      ]
+    },
+    "phase2": {
+      "phase": "CONSECUENCIAS",
+      "timestamp": "2 MINUTOS",
+      "title": "DAÑOS A TU PRIVACIDAD",
+      "narrative": "Las consecuencias son devastadoras: robo de identidad, pérdidas económicas y datos sensibles expuestos.",
+      "detail": "En 2023, 1 de cada 5 usuarios sufrió robo de identidad tras un Juice Jacking.",
+      "indicator": [
+        "20% = robo de identidad tras Juice Jacking",
+        "Datos de 500,000 usuarios comprometidos"
+      ]
+    },
+    "phase3": {
+      "phase": "UN MUNDO INSEGURO",
+      "timestamp": "3 MINUTOS",
+      "title": "¿QUÉ PASA SI TE ROBA TU INFORMACIÓN?",
+      "narrative": "El giro más oscuro: tu información puede ser vendida en el mercado negro, afectando tu vida financiera y personal.",
+      "detail": "Los datos personales pueden alcanzan precios de hasta $200 en la dark web.",
+      "indicator": [
+        "$200 = precio de datos personales en la dark web",
+        "Más de 1 millón de datos vendidos en 2023"
+      ]
+    },
+    "reality": {
+      "tag": "PROTEGE TU INFORMACIÓN",
+      "title": "No dejes que un simple cargador\narruine tu vida",
+      "actions": [
+        "Usa tu propio cargador portátil.",
+        "Evita puertos USB públicos siempre que sea posible.",
+        "Informa a otros sobre este peligro.",
+        "Mantén tus dispositivos actualizados con software de seguridad."
+      ]
+    },
+    "close": {
+      "tag": "CONCLUSIÓN",
+      "title": "Cargar tu celular\npuede ser un error",
+      "subtitle": "Piensa dos veces antes de conectar tu dispositivo."
+    }
+  },
+  "imagePrompts": {
+    "intro": "Hyper-realistic cinematic photograph of a crowded airport charging station with multiple phones plugged in. Dramatic lighting, close-up of a phone screen showing a warning. Shot on RED Monstro 8K, anamorphic 50mm lens. Vertical 9:16 portrait composition.",
+    "layers": "Hyper-realistic cinematic photograph of a hacker in a dark environment with computer screens showing USB vulnerabilities. Overhead shot with intense lighting contrast. Shot on RED Monstro 8K, anamorphic 50mm lens. Vertical 9:16 portrait composition.",
+    "phase1": "Hyper-realistic cinematic photograph of a person charging their phone in a public café, unaware of a hacker nearby. POV perspective, soft background lights. Shot on RED Monstro 8K, anamorphic 50mm lens. Vertical 9:16 portrait composition.",
+    "phase2": "Hyper-realistic cinematic photograph of a news headline about identity theft on a smartphone. Close-up shot with a worried person's face in the background. Shot on RED Monstro 8K, anamorphic 50mm lens. Vertical 9:16 portrait composition.",
+    "phase3": "Hyper-realistic cinematic photograph of dark web marketplace with data being sold. Macro shot of a computer screen with numbers and prices. Shot on RED Monstro 8K, anamorphic 50mm lens. Vertical 9:16 portrait composition.",
+    "reality": "Hyper-realistic cinematic photograph of a person using a portable charger in a crowded place. Ambient light highlighting the charger. Shot on RED Monstro 8K, anamorphic 50mm lens. Vertical 9:16 portrait composition.",
+    "close": "Hyper-realistic cinematic photograph of a person looking worriedly at their phone, contemplating. Dramatic lighting with a dark background. Shot on RED Monstro 8K, anamorphic 50mm lens. Vertical 9:16 portrait composition."
+  },
+  "targetDurationSeconds": 60
+}

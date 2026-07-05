@@ -15,3 +15,51 @@ body {
 ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
 
 .mono { font-family: "JetBrains Mono", "Fira Code", monospace; }
+
+/* ── Modal open / close motion (transitions-dev: 06-modal) ─────────────────── */
+:root {
+  --modal-open-dur: 250ms;
+  --modal-close-dur: 150ms;
+  --modal-scale: 0.96;
+  --modal-scale-close: 0.96;
+  --modal-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Backdrop fade */
+.t-modal-backdrop {
+  animation: t-modal-backdrop-in var(--modal-open-dur) var(--modal-ease);
+}
+.t-modal-backdrop[data-state="closing"] {
+  animation: t-modal-backdrop-out var(--modal-close-dur) var(--modal-ease) forwards;
+}
+
+/* Dialog scale-up in / softer scale-down out */
+.t-modal {
+  transform-origin: center;
+  will-change: transform, opacity;
+  animation: t-modal-in var(--modal-open-dur) var(--modal-ease);
+}
+.t-modal[data-state="closing"] {
+  animation: t-modal-out var(--modal-close-dur) var(--modal-ease) forwards;
+}
+
+@keyframes t-modal-backdrop-in  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes t-modal-backdrop-out { from { opacity: 1; } to { opacity: 0; } }
+
+@keyframes t-modal-in {
+  from { opacity: 0; transform: scale(var(--modal-scale)); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes t-modal-out {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(var(--modal-scale-close)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-modal,
+  .t-modal[data-state="closing"],
+  .t-modal-backdrop,
+  .t-modal-backdrop[data-state="closing"] {
+    animation: none;
+  }
+}

@@ -5,12 +5,13 @@ import type { AnyVideoScript, GeneratedImage } from "@/lib/types";
 import { getSceneKeys, getSceneLabels } from "@/lib/types";
 import { VideoList } from "@/components/VideoList";
 import { VideoEditor } from "@/components/VideoEditor";
+import { VoiceoverPanel } from "@/components/VoiceoverPanel";
 
 // ─── NAV ─────────────────────────────────────────────────────────────────────
 
 type View =
   | { name: "home" }
-  | { name: "wizard"; step: 1 | 2 | 3 | 4 }
+  | { name: "wizard"; step: 1 | 2 | 3 | 4 | 5 }
   | { name: "videos" }
   | { name: "editor"; slug: string; compositionId: string };
 
@@ -27,7 +28,7 @@ function Nav({
         onClick={() => onNav({ name: "home" })}
         className="flex items-center gap-2.5 hover:opacity-80 transition"
       >
-        <div className="w-8 h-8 rounded-lg bg-violet-600 flex items-center justify-center text-sm font-bold">
+        <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-sm font-bold">
           V
         </div>
         <div>
@@ -65,7 +66,7 @@ function NavBtn({
         ${active
           ? "bg-white/10 text-white"
           : highlight
-            ? "bg-violet-600 hover:bg-violet-500 text-white"
+            ? "bg-emerald-600 hover:bg-emerald-500 text-white"
             : "text-[#666] hover:text-white hover:bg-white/5"
         }`}
     >
@@ -77,7 +78,7 @@ function NavBtn({
 // ─── STEP INDICATOR ──────────────────────────────────────────────────────────
 
 function StepIndicator({ current }: { current: number }) {
-  const steps = ["Tema", "Guión", "Imágenes", "Guardar"];
+  const steps = ["Tema", "Guión", "Imágenes", "Voz", "Guardar"];
   return (
     <div className="flex items-center gap-2 mb-8">
       {steps.map((label, i) => {
@@ -88,7 +89,7 @@ function StepIndicator({ current }: { current: number }) {
           <div key={label} className="flex items-center gap-2">
             <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold
               ${done   ? "bg-emerald-500 text-black"  : ""}
-              ${active ? "bg-violet-500 text-white"   : ""}
+              ${active ? "bg-emerald-500 text-white"   : ""}
               ${!done && !active ? "bg-[#2a2a2a] text-[#666]" : ""}`}>
               {done ? "✓" : n}
             </div>
@@ -115,8 +116,24 @@ function TopicForm({
   const [topic, setTopic] = useState(initialTopic ?? "");
   const [targetDuration, setTargetDuration] = useState(45);
   const [compositionType, setCompositionType] = useState<"standard" | "timeline">("standard");
+  const [context, setContext] = useState("");
+  const [contextFileName, setContextFileName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const text = await file.text();
+    setContext(text);
+    setContextFileName(file.name);
+    e.target.value = ""; // allow re-selecting the same file
+  }
+
+  function clearContext() {
+    setContext("");
+    setContextFileName("");
+  }
 
   const SUGGESTIONS = [
     "Ransomware", "Ingeniería social", "Inteligencia artificial en 2025",
@@ -133,7 +150,7 @@ function TopicForm({
       const res = await fetch("/api/generate-script", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic, targetDurationSeconds: targetDuration, compositionType }),
+        body: JSON.stringify({ topic, targetDurationSeconds: targetDuration, compositionType, context: context.trim() || undefined }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Error desconocido");
@@ -158,7 +175,7 @@ function TopicForm({
           onChange={(e) => setTopic(e.target.value)}
           placeholder="Ej: Ransomware, Deepfakes, Dark Web..."
           className="w-full bg-[#161616] border border-[#2a2a2a] rounded-xl px-4 py-3 text-white
-                     placeholder-[#555] focus:outline-none focus:border-violet-500 transition text-base"
+                     placeholder-[#555] focus:outline-none focus:border-emerald-500 transition text-base"
         />
         <div className="flex flex-wrap gap-2">
           {SUGGESTIONS.map((s) => (
@@ -170,11 +187,48 @@ function TopicForm({
           ))}
         </div>
 
+        {/* Context (.md / .txt upload or paste) */}
+        <div className="bg-[#161616] border border-[#2a2a2a] rounded-xl p-3">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs font-bold text-[#666] uppercase tracking-wider">
+              Contexto del video <span className="text-[#444] normal-case font-normal">(opcional)</span>
+            </p>
+            <label className="text-xs px-2.5 py-1 rounded-lg bg-[#1e1e1e] border border-[#2a2a2a]
+                              text-[#888] hover:text-white hover:border-[#444] transition cursor-pointer">
+              Subir .md / .txt
+              <input type="file" accept=".md,.txt,text/markdown,text/plain"
+                onChange={handleFile} className="hidden" />
+            </label>
+          </div>
+          <textarea
+            value={context}
+            onChange={(e) => { setContext(e.target.value); if (contextFileName) setContextFileName(""); }}
+            placeholder="Pega aquí info actualizada (datos, cifras, fechas, fuentes). GPT la usará como fuente de verdad para el guión."
+            rows={4}
+            className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-white
+                       placeholder-[#555] focus:outline-none focus:border-emerald-500 transition resize-y mono"
+          />
+          <div className="flex items-center justify-between mt-2">
+            <p className="text-[10px] text-[#444]">
+              {contextFileName
+                ? <span className="text-emerald-400">📄 {contextFileName}</span>
+                : "El tema sigue siendo obligatorio · el contexto enriquece los datos"}
+              {context.trim() && ` · ${context.trim().length.toLocaleString()} caracteres`}
+            </p>
+            {context.trim() && (
+              <button type="button" onClick={clearContext}
+                className="text-[10px] text-[#666] hover:text-red-400 transition">
+                Limpiar
+              </button>
+            )}
+          </div>
+        </div>
+
         {/* Duration selector */}
         <div className="bg-[#161616] border border-[#2a2a2a] rounded-xl p-3">
           <div className="flex items-center justify-between mb-2">
             <p className="text-xs font-bold text-[#666] uppercase tracking-wider">Duración del video</p>
-            <span className="text-violet-400 font-mono text-xs font-bold">{targetDuration}s</span>
+            <span className="text-emerald-400 font-mono text-xs font-bold">{targetDuration}s</span>
           </div>
           <div className="flex gap-2">
             {DURATION_PRESETS.map((secs) => (
@@ -184,7 +238,7 @@ function TopicForm({
                 onClick={() => setTargetDuration(secs)}
                 className={`flex-1 py-1.5 rounded-lg text-sm font-semibold transition
                   ${targetDuration === secs
-                    ? "bg-violet-600 text-white"
+                    ? "bg-emerald-600 text-white"
                     : "bg-[#1e1e1e] border border-[#2a2a2a] text-[#666] hover:text-white hover:border-[#444]"}`}
               >
                 {secs}s
@@ -207,7 +261,7 @@ function TopicForm({
                 onClick={() => setCompositionType(type)}
                 className={`flex-1 py-2 rounded-lg text-sm font-semibold transition text-left px-3
                   ${compositionType === type
-                    ? "bg-violet-600 text-white"
+                    ? "bg-emerald-600 text-white"
                     : "bg-[#1e1e1e] border border-[#2a2a2a] text-[#666] hover:text-white hover:border-[#444]"}`}
               >
                 <span className="block text-sm">{type === "standard" ? "Estándar" : "Timeline"}</span>
@@ -223,7 +277,7 @@ function TopicForm({
           <p className="text-red-400 text-sm bg-red-900/20 border border-red-800/30 rounded-lg px-3 py-2">{error}</p>
         )}
         <button type="submit" disabled={loading || !topic.trim()}
-          className="w-full py-3 rounded-xl font-semibold text-sm bg-violet-600 hover:bg-violet-500
+          className="w-full py-3 rounded-xl font-semibold text-sm bg-emerald-600 hover:bg-emerald-500
                      disabled:opacity-40 disabled:cursor-not-allowed transition">
           {loading ? "Generando guión con GPT-4o..." : "Generar guión →"}
         </button>
@@ -246,6 +300,14 @@ function ScriptPreview({ script, onContinue }: { script: AnyVideoScript; onConti
         <div>
           <h2 className="text-2xl font-bold">{script.displayTitle}</h2>
           <p className="text-[#666] text-sm mono mt-1">{script.slug}</p>
+          <div className="flex flex-wrap gap-2 mt-3">
+            <span className="px-2.5 py-1 rounded-full border border-emerald-700/40 bg-emerald-900/10 text-[11px] font-semibold text-emerald-300">
+              niche: {script.niche}
+            </span>
+            <span className="px-2.5 py-1 rounded-full border border-emerald-700/40 bg-emerald-900/10 text-[11px] font-semibold text-emerald-300">
+              hook: {script.hookStyle}
+            </span>
+          </div>
         </div>
         <div className="flex gap-1">
           {Object.keys(accents).map((k) => (
@@ -280,7 +342,7 @@ function ScriptPreview({ script, onContinue }: { script: AnyVideoScript; onConti
         ))}
       </div>
       <button onClick={onContinue}
-        className="w-full py-3 rounded-xl font-semibold text-sm bg-violet-600 hover:bg-violet-500 transition">
+        className="w-full py-3 rounded-xl font-semibold text-sm bg-emerald-600 hover:bg-emerald-500 transition">
         Generar imágenes con gpt-image-1 →
       </button>
     </div>
@@ -339,7 +401,7 @@ function ImageGallery({
           </p>
         </div>
         <button onClick={() => generate()} disabled={loadingAll}
-          className="px-4 py-2 rounded-xl text-sm font-semibold bg-violet-600 hover:bg-violet-500
+          className="px-4 py-2 rounded-xl text-sm font-semibold bg-emerald-600 hover:bg-emerald-500
                      disabled:opacity-40 transition">
           {loadingAll ? "Generando todas..." : "Generar todas"}
         </button>
@@ -365,7 +427,7 @@ function ImageGallery({
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center">
                   {isLoading
-                    ? <div className="w-5 h-5 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+                    ? <div className="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
                     : <div className="text-[#333] text-2xl">+</div>}
                 </div>
               )}
@@ -382,7 +444,7 @@ function ImageGallery({
               {!img && !isLoading && (
                 <button onClick={() => generate(key)}
                   className="absolute inset-0 flex items-center justify-center text-[#555]
-                             hover:text-violet-400 transition text-xs font-semibold">
+                             hover:text-emerald-400 transition text-xs font-semibold">
                   Generar
                 </button>
               )}
@@ -390,16 +452,63 @@ function ImageGallery({
           );
         })}
       </div>
-      <button onClick={onContinue} disabled={images.length === 0}
-        className="w-full py-3 rounded-xl font-semibold text-sm bg-emerald-600 hover:bg-emerald-500
-                   disabled:opacity-40 transition">
-        Guardar en Remotion →
+      <button onClick={onContinue}
+        className="w-full py-3 rounded-xl font-semibold text-sm bg-emerald-600 hover:bg-emerald-500 transition">
+        {images.length === 0
+          ? "Saltar imágenes por ahora →"
+          : images.length < sceneKeys.length
+            ? `Continuar con ${images.length}/${sceneKeys.length} imágenes →`
+            : "Continuar a voz en off →"}
       </button>
+      {images.length < sceneKeys.length && (
+        <p className="text-[#555] text-xs mt-2 text-center">
+          Las imágenes que falten se generan después desde el editor, sin perder el guión ni la voz.
+        </p>
+      )}
     </div>
   );
 }
 
 // ─── WIZARD STEP 4 ───────────────────────────────────────────────────────────
+
+function VoiceoverStep({
+  script,
+  onContinue,
+  onBack,
+}: {
+  script: AnyVideoScript;
+  onContinue: () => void;
+  onBack: () => void;
+}) {
+  return (
+    <div className="max-w-3xl space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold mb-2">Voz en off del video</h2>
+        <p className="text-[#666] text-sm">
+          Genera la narracion dentro del mismo flujo. Es opcional, pero si la creas aqui el preview y el render la podran usar.
+        </p>
+      </div>
+
+      <VoiceoverPanel script={script} slug={script.slug} />
+
+      <div className="flex gap-3">
+        <button
+          onClick={onBack}
+          className="flex-1 py-3 rounded-xl font-semibold text-sm border border-[#2a2a2a]
+                     text-[#888] hover:text-white hover:border-[#444] transition"
+        >
+          Volver a imagenes
+        </button>
+        <button
+          onClick={onContinue}
+          className="flex-1 py-3 rounded-xl font-semibold text-sm bg-emerald-600 hover:bg-emerald-500 transition"
+        >
+          Continuar a guardar {"->"}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 function SavePanel({
   script, images, onReset, onGoToVideos,
@@ -435,6 +544,7 @@ function SavePanel({
       <h2 className="text-2xl font-bold mb-2">Guardar en el proyecto</h2>
       <p className="text-[#666] text-sm mb-6">
         Escribe el <span className="mono text-[#aaa]">data.ts</span>, la composición y registra en <span className="mono text-[#aaa]">Root.tsx</span>.
+        Si ya generaste voz, el render del sitio la detectará automáticamente desde <span className="mono text-[#aaa]">public/{script.slug}/</span>.
       </p>
 
       {saved.length > 0 ? (
@@ -449,8 +559,8 @@ function SavePanel({
               ))}
             </ul>
           </div>
-          <div className="border border-violet-800/30 bg-violet-900/10 rounded-xl p-4">
-            <p className="text-violet-300 text-sm font-semibold mb-2">Todo listo en Remotion</p>
+          <div className="border border-emerald-800/30 bg-emerald-900/10 rounded-xl p-4">
+            <p className="text-emerald-300 text-sm font-semibold mb-2">Todo listo en Remotion</p>
             <p className="text-[#888] text-sm">
               La composición y el registro en <span className="mono text-[#aaa]">Root.tsx</span> se generaron automáticamente.
               Abre el Remotion Studio para previsualizar el video.
@@ -461,7 +571,7 @@ function SavePanel({
           </div>
           <div className="flex gap-3">
             <button onClick={onGoToVideos}
-              className="flex-1 py-3 rounded-xl font-semibold text-sm bg-violet-600 hover:bg-violet-500 transition">
+              className="flex-1 py-3 rounded-xl font-semibold text-sm bg-emerald-600 hover:bg-emerald-500 transition">
               Ver en Mis videos →
             </button>
             <button onClick={onReset}
@@ -507,8 +617,8 @@ function HomeView({ onNew, onVideos }: { onNew: () => void; onVideos: () => void
       <p className="text-[#666] mb-8">Genera guiones e imágenes para tus videos de IA y ciberseguridad.</p>
       <div className="grid grid-cols-2 gap-4">
         <button onClick={onNew}
-          className="p-6 rounded-2xl border border-violet-700/40 bg-violet-900/10 text-left
-                     hover:border-violet-500/60 hover:bg-violet-900/20 transition group">
+          className="p-6 rounded-2xl border border-emerald-700/40 bg-emerald-900/10 text-left
+                     hover:border-emerald-500/60 hover:bg-emerald-900/20 transition group">
           <div className="text-3xl mb-3">✨</div>
           <p className="font-bold text-white text-base mb-1">Nuevo video</p>
           <p className="text-[#888] text-xs">Genera guión + imágenes con GPT-4o y gpt-image-1</p>
@@ -583,6 +693,13 @@ export default function Home() {
             />
           )}
           {wizardStep === 4 && script && (
+            <VoiceoverStep
+              script={script}
+              onBack={() => setView({ name: "wizard", step: 3 })}
+              onContinue={() => setView({ name: "wizard", step: 5 })}
+            />
+          )}
+          {wizardStep === 5 && script && (
             <SavePanel
               script={script}
               images={images}
@@ -598,7 +715,7 @@ export default function Home() {
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold">Mis videos</h2>
             <button onClick={() => goWizard()}
-              className="px-4 py-2 rounded-xl text-sm font-semibold bg-violet-600 hover:bg-violet-500 transition">
+              className="px-4 py-2 rounded-xl text-sm font-semibold bg-emerald-600 hover:bg-emerald-500 transition">
               + Nuevo video
             </button>
           </div>

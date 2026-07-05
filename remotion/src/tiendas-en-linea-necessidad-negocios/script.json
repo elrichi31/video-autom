@@ -1,0 +1,110 @@
+{
+  "slug": "tiendas-en-linea-necessidad-negocios",
+  "displayTitle": "TIENDAS EN LÍNEA\nNECESIDAD EN NEGOCIOS",
+  "accents": {
+    "intro": [
+      "#C70039",
+      "#FFC300"
+    ],
+    "layers": [
+      "#FF5733",
+      "#FFC300"
+    ],
+    "phase1": [
+      "#FF5733",
+      "#FFC300"
+    ],
+    "phase2": [
+      "#C70039",
+      "#FFC300"
+    ],
+    "phase3": [
+      "#900C3F",
+      "#FFC300"
+    ],
+    "reality": [
+      "#581845",
+      "#FFC300"
+    ],
+    "close": [
+      "#900C3F",
+      "#FFC300"
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "tag": "INICIO IMPACTANTE",
+      "title": "LA VERDAD\nSIN FILTROS",
+      "subtitle": "Descubre por qué tu negocio se queda atrás sin una tienda online."
+    },
+    "layers": {
+      "tag": "CONCEPTO CLAVE",
+      "terminal": [
+        "> ecommerce.2023       = 6.3 billones de dólares en ventas",
+        "> negocios.sin.online   = 70% fracasan en 3 años",
+        "> crecimiento.global     = 20% anual en ventas online",
+        "> mito.tienda.física    = NO es suficiente en la era digital"
+      ],
+      "definition": "Las tiendas en línea no son solo una opción, son\nuna necesidad para competir hoy en día.\nEl mundo se ha digitalizado y tú también debes hacerlo.",
+      "detail": "En 2023, el comercio electrónico alcanzará\n6.3 billones de dólares en ventas globales."
+    },
+    "phase1": {
+      "phase": "REALIDAD CRUDA",
+      "timestamp": "HECHO IMPACTANTE",
+      "title": "Las estadísticas\nno mienten",
+      "narrative": "El 70% de los negocios que no tienen presencia online\ncierran en menos de 3 años. ¿Te arriesgarías a ser uno de ellos?",
+      "detail": "70% de negocios sin tienda online fracasan en 3 años. Fuente: Forbes.",
+      "indicator": [
+        "$4.9M costo medio de una quiebra",
+        "70% de nuevos negocios fracasan"
+      ]
+    },
+    "phase2": {
+      "phase": "LA ESCALADA",
+      "timestamp": "CIFRAS REALES",
+      "title": "El crecimiento\nes imparable",
+      "narrative": "Las ventas online crecen un 20% anual. Cada vez más,\nlos consumidores prefieren comprar desde casa.",
+      "detail": "Las ventas online crecerán un 20% anual hasta 2025. Fuente: Statista.",
+      "indicator": [
+        "$6.3B en ventas online en 2023",
+        "20% de crecimiento anual"
+      ]
+    },
+    "phase3": {
+      "phase": "EL GOLPE FINAL",
+      "timestamp": "LA VERDAD DOLOROSA",
+      "title": "Sin tienda online,\nno tienes futuro",
+      "narrative": "Imagínate perder clientes cada día. Sin una tienda online,\ntu competencia te está robando ventas. ¡Despierta!",
+      "detail": "El 80% de los consumidores investigan online antes de comprar. Fuente: Google.",
+      "indicator": [
+        "80% de consumidores investigan antes de comprar",
+        "90% prefiere comprar online"
+      ]
+    },
+    "reality": {
+      "tag": "REALIDAD · CONTEXTO",
+      "title": "Es hora de actuar:\nla digitalización es clave",
+      "actions": [
+        "Crea tu tienda online hoy mismo",
+        "Explora plataformas como Shopify o WooCommerce",
+        "Invierte en marketing digital para atraer clientes",
+        "No te quedes atrás, el futuro es digital"
+      ]
+    },
+    "close": {
+      "tag": "CONCLUSIÓN IMPACTANTE",
+      "title": "Sin digitalización,\ntu negocio está condenado",
+      "subtitle": "El futuro es online o nada. ¡No lo ignores!"
+    }
+  },
+  "imagePrompts": {
+    "intro": "Hyper-realistic cinematic photograph. Close-up of a smartphone displaying a shopping cart icon, blurred background of a busy street. Shot on RED Monstro 8K, anamorphic 50mm. Neon reflections from storefronts illuminating the screen. Dramatic contrast, deep blacks. No text, no logos. Vertical 9:16. Photorealistic.",
+    "layers": "Hyper-realistic cinematic photograph. Wide-angle shot of an empty retail store, dust particles floating in the air, sunlight streaming through the windows. Shot on RED Monstro 8K, anamorphic 50mm. Warm sunlight creating a nostalgic atmosphere. No text, no logos. Vertical 9:16. Photorealistic.",
+    "phase1": "Hyper-realistic cinematic photograph. POV perspective of a business owner looking at a closed sign on their shop, despair evident on their face. Shot on RED Monstro 8K, anamorphic 50mm. Single point backlight highlighting their features. No text, no logos. Vertical 9:16. Photorealistic.",
+    "phase2": "Hyper-realistic cinematic photograph. Overhead view of a bustling cityscape at night, with glowing shop windows and people shopping on their phones. Shot on RED Monstro 8K, anamorphic 50mm. Neon lights reflecting off glass surfaces. No text, no logos. Vertical 9:16. Photorealistic.",
+    "phase3": "Hyper-realistic cinematic photograph. Extreme close-up of a shopping cart icon on a laptop screen, fingers poised to click, with shadows looming in the background. Shot on RED Monstro 8K, anamorphic 50mm. Dim backlight creating a sense of urgency. No text, no logos. Vertical 9:16. Photorealistic.",
+    "reality": "Hyper-realistic cinematic photograph. A vibrant office scene with a business owner discussing e-commerce strategies with a digital marketing consultant, charts and graphs visible on the screen. Shot on RED Monstro 8K, anamorphic 50mm. Bright overhead lights illuminating their focused expressions. No text, no logos. Vertical 9:16. Photorealistic.",
+    "close": "Hyper-realistic cinematic photograph. Extreme close-up of a broken storefront window with a 'For Rent' sign, reflecting a cloudy sky, symbolizing lost opportunities. Shot on RED Monstro 8K, anamorphic 50mm. Soft natural light creating a melancholic atmosphere. No text, no logos. Vertical 9:16. Photorealistic."
+  },
+  "targetDurationSeconds": 45
+}

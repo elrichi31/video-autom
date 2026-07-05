@@ -2,14 +2,15 @@ export type AccentPair = [string, string];
 
 export const RANSOMWARE_TERROR_TECNOLOGICO_FPS = 30;
 
+// Target duration: 45s — scene durations scaled proportionally
 export const RANSOMWARE_TERROR_TECNOLOGICO_DURATIONS = {
-  intro:   3 * RANSOMWARE_TERROR_TECNOLOGICO_FPS,
-  layers:  6 * RANSOMWARE_TERROR_TECNOLOGICO_FPS,
-  phase1:  7 * RANSOMWARE_TERROR_TECNOLOGICO_FPS,
-  phase2:  7 * RANSOMWARE_TERROR_TECNOLOGICO_FPS,
-  phase3:  7 * RANSOMWARE_TERROR_TECNOLOGICO_FPS,
-  reality: 7 * RANSOMWARE_TERROR_TECNOLOGICO_FPS,
-  close:   4 * RANSOMWARE_TERROR_TECNOLOGICO_FPS,
+  intro:   3   * RANSOMWARE_TERROR_TECNOLOGICO_FPS,
+  layers:  7  * RANSOMWARE_TERROR_TECNOLOGICO_FPS,
+  phase1:  8  * RANSOMWARE_TERROR_TECNOLOGICO_FPS,
+  phase2:  7  * RANSOMWARE_TERROR_TECNOLOGICO_FPS,
+  phase3:  8  * RANSOMWARE_TERROR_TECNOLOGICO_FPS,
+  reality: 8 * RANSOMWARE_TERROR_TECNOLOGICO_FPS,
+  close:   4   * RANSOMWARE_TERROR_TECNOLOGICO_FPS,
 } as const;
 
 export const RANSOMWARE_TERROR_TECNOLOGICO_TOTAL_DURATION =
@@ -21,14 +22,21 @@ export const RANSOMWARE_TERROR_TECNOLOGICO_TOTAL_DURATION =
   RANSOMWARE_TERROR_TECNOLOGICO_DURATIONS.reality +
   RANSOMWARE_TERROR_TECNOLOGICO_DURATIONS.close;
 
+export type VideoNiche = "cybersecurity" | "ai" | "history" | "fraud" | "news" | "general";
+export type HookStyle = "shock" | "curiosity" | "contrarian" | "countdown" | "real-story";
+
+export const RANSOMWARE_TERROR_TECNOLOGICO_NICHE: VideoNiche = "general";
+
+export const RANSOMWARE_TERROR_TECNOLOGICO_HOOK_STYLE: HookStyle = "curiosity";
+
 export const RANSOMWARE_TERROR_TECNOLOGICO_ACCENTS = {
-  intro:   ["#FF0000", "#8B0000"] as AccentPair,
-  layers:  ["#FF3300", "#CC1100"] as AccentPair,
-  phase1:  ["#FF6600", "#CC4400"] as AccentPair,
-  phase2:  ["#FF9900", "#CC7700"] as AccentPair,
-  phase3:  ["#FFCC00", "#CC9900"] as AccentPair,
-  reality: ["#00AAFF", "#0077CC"] as AccentPair,
-  close:   ["#FF0000", "#8B0000"] as AccentPair,
+  intro:   ["#FF0000","#8B0000"] as AccentPair,
+  layers:  ["#FF3300","#CC1100"] as AccentPair,
+  phase1:  ["#FF6600","#CC4400"] as AccentPair,
+  phase2:  ["#FF9900","#CC7700"] as AccentPair,
+  phase3:  ["#FFCC00","#CC9900"] as AccentPair,
+  reality: ["#00AAFF","#0077CC"] as AccentPair,
+  close:   ["#FF0000","#8B0000"] as AccentPair,
 };
 
 export const RANSOMWARE_TERROR_TECNOLOGICO_INTRO = {

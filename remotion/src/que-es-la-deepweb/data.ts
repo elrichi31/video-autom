@@ -4,13 +4,13 @@ export const QUE_ES_LA_DEEPWEB_FPS = 30;
 
 // Target duration: 60s — scene durations scaled proportionally
 export const QUE_ES_LA_DEEPWEB_DURATIONS = {
-  intro:   4  * QUE_ES_LA_DEEPWEB_FPS,
+  intro:   4   * QUE_ES_LA_DEEPWEB_FPS,
   layers:  9  * QUE_ES_LA_DEEPWEB_FPS,
-  phase1:  10 * QUE_ES_LA_DEEPWEB_FPS,
-  phase2:  11 * QUE_ES_LA_DEEPWEB_FPS,
-  phase3:  10 * QUE_ES_LA_DEEPWEB_FPS,
+  phase1:  10  * QUE_ES_LA_DEEPWEB_FPS,
+  phase2:  11  * QUE_ES_LA_DEEPWEB_FPS,
+  phase3:  10  * QUE_ES_LA_DEEPWEB_FPS,
   reality: 10 * QUE_ES_LA_DEEPWEB_FPS,
-  close:   6  * QUE_ES_LA_DEEPWEB_FPS,
+  close:   6   * QUE_ES_LA_DEEPWEB_FPS,
 } as const;
 
 export const QUE_ES_LA_DEEPWEB_TOTAL_DURATION =
@@ -22,83 +22,90 @@ export const QUE_ES_LA_DEEPWEB_TOTAL_DURATION =
   QUE_ES_LA_DEEPWEB_DURATIONS.reality +
   QUE_ES_LA_DEEPWEB_DURATIONS.close;
 
+export type VideoNiche = "cybersecurity" | "ai" | "history" | "fraud" | "news" | "general";
+export type HookStyle = "shock" | "curiosity" | "contrarian" | "countdown" | "real-story";
+
+export const QUE_ES_LA_DEEPWEB_NICHE: VideoNiche = "general";
+
+export const QUE_ES_LA_DEEPWEB_HOOK_STYLE: HookStyle = "curiosity";
+
 export const QUE_ES_LA_DEEPWEB_ACCENTS = {
-  intro:   ["#00FFCC", "#00CCAA"] as AccentPair,
-  layers:  ["#00DDFF", "#0099CC"] as AccentPair,
-  phase1:  ["#3399FF", "#1166DD"] as AccentPair,
-  phase2:  ["#9933FF", "#6600CC"] as AccentPair,
-  phase3:  ["#FF3300", "#CC1100"] as AccentPair,
-  reality: ["#FFAA00", "#DD8800"] as AccentPair,
-  close:   ["#00FFCC", "#00CCAA"] as AccentPair,
+  intro:   ["#FF4500","#FFD700"] as AccentPair,
+  layers:  ["#00FF7F","#32CD32"] as AccentPair,
+  phase1:  ["#1E90FF","#00BFFF"] as AccentPair,
+  phase2:  ["#9400D3","#9932CC"] as AccentPair,
+  phase3:  ["#FF6347","#FF4500"] as AccentPair,
+  reality: ["#FFD700","#FF8C00"] as AccentPair,
+  close:   ["#00FA9A","#7CFC00"] as AccentPair,
 };
 
 export const QUE_ES_LA_DEEPWEB_INTRO = {
-  "tag": "INTERNET OCULTO",
-  "title": "EL 96%\nDE INTERNET\nINVISIBLE",
-  "subtitle": "lo que Google nunca te enseña"
+  "tag": "DESCUBRE",
+  "title": "LA DEEP WEB\nNO ES LO QUE\nCREES",
+  "subtitle": "la parte oculta de internet"
 };
 
 export const QUE_ES_LA_DEEPWEB_LAYERS = {
   "tag": "CAPAS DE INTERNET",
   "terminal": [
-    "> surface.web      = 4%  (Google, redes sociales)",
-    "> deep.web         = 90% (bases de datos, intranets)",
-    "> dark.web         = 6%  (solo con Tor)",
-    "> tamaño.total     = 500x más grande que la web visible"
+    "> internet.visible  = 4%",
+    "> deep.web         = 90%",
+    "> dark.web         = 6%",
+    "> contenido.total  = 96% OCULTO"
   ],
-  "definition": "La Deep Web no es ilegal.\nEs simplemente internet\nque los buscadores no ven.",
-  "detail": "Los servidores de la Deep Web almacenan 7.500 terabytes de datos. La web visible: apenas 19."
+  "definition": "La Deep Web es la\nparte de Internet que\nno está indexada.",
+  "detail": "Incluye bases de datos, archivos académicos y sitios protegidos por contraseñas."
 };
 
 export const QUE_ES_LA_DEEPWEB_PHASE1 = {
-  "phase": "LO QUE USAS",
-  "timestamp": "SURFACE WEB",
-  "title": "Solo Ves\nel 4%",
-  "narrative": "Google indexa menos del 4% de internet. El resto existe, funciona, y tiene miles de millones de páginas — simplemente no aparece en búsquedas.",
-  "detail": "Hay más de 550 mil millones de documentos en la Deep Web. Google indexa unos 4.500 millones.",
+  "phase": "FASE 01",
+  "timestamp": "INICIO",
+  "title": "Acceso\nRestringido",
+  "narrative": "La Deep Web requiere enlaces directos o credenciales. No aparece en motores de búsqueda.",
+  "detail": "Muchos servicios legítimos operan aquí, como bases de datos médicas.",
   "indicator": [
-    "550.000M de documentos ocultos",
-    "Google indexa solo 4.500M"
+    "Acceso limitado",
+    "Contenido seguro"
   ]
 };
 
 export const QUE_ES_LA_DEEPWEB_PHASE2 = {
-  "phase": "QUIÉN VIVE AHÍ",
-  "timestamp": "DEEP WEB",
-  "title": "No Son\nCriminales",
-  "narrative": "Hospitales, universidades, gobiernos y empresas almacenan aquí sus datos. También periodistas y activistas que necesitan privacidad real.",
-  "detail": "2,5 millones de personas usan Tor cada día — la mayoría en países con censura gubernamental.",
+  "phase": "FASE 02",
+  "timestamp": "PROFUNDIDAD",
+  "title": "Datos\nOcultos",
+  "narrative": "Contiene información valiosa para empresas y académicos.",
+  "detail": "El 90% de la web es Deep Web. Incluye archivos de investigación.",
   "indicator": [
-    "2,5M usuarios de Tor al día",
-    "Mayoría en países censurados"
+    "Información valiosa",
+    "Acceso especializado"
   ]
 };
 
 export const QUE_ES_LA_DEEPWEB_PHASE3 = {
-  "phase": "DARK WEB",
-  "timestamp": "EL 6% OSCURO",
-  "title": "Ahí Sí\nHay Que\nTener Miedo",
-  "narrative": "El 6% más profundo es la Dark Web. Mercados de datos robados, credenciales, armas. En 2023, más de 100.000 contraseñas robadas se vendieron ahí cada día.",
-  "detail": "Una credencial bancaria robada se vende por un promedio de 15 dólares en mercados de Dark Web.",
+  "phase": "FASE 03",
+  "timestamp": "RIESGOS",
+  "title": "Zona\nPeligrosa",
+  "narrative": "La Dark Web es una pequeña parte de la Deep Web, accesible solo con navegadores especiales.",
+  "detail": "Solo el 6% de la Deep Web es Dark Web, donde ocurre actividad ilegal.",
   "indicator": [
-    "+100.000 contraseñas/día vendidas",
-    "Precio medio: $15 por cuenta"
+    "Navegador TOR",
+    "Actividad ilegal"
   ]
 };
 
 export const QUE_ES_LA_DEEPWEB_REALITY = {
   "tag": "LA VERDAD",
-  "title": "La Deep Web\nno es el problema.\nTus datos ahí\ndentro, sí.",
+  "title": "La Deep Web\nes mayormente benigna,\nuna herramienta para\ninvestigación y privacidad",
   "actions": [
-    "Comprueba si tu email está comprometido: haveibeenpwned.com",
-    "Usa un gestor de contraseñas — nunca repitas",
-    "Activa 2FA en todas las cuentas críticas",
-    "Monitoriza alertas de filtraciones de datos"
+    "Investiga antes de acceder",
+    "Utiliza herramientas seguras",
+    "Mantente informado",
+    "Comparte conocimiento responsablemente"
   ]
 };
 
 export const QUE_ES_LA_DEEPWEB_CLOSE = {
   "tag": "DEEP WEB · CONCLUSIÓN",
-  "title": "No todo\nlo oculto\nes peligroso",
-  "subtitle": "Pero todo lo peligroso sabe cómo ocultarse."
+  "title": "La Deep Web\nes un mundo\npor descubrir",
+  "subtitle": "Explora con precaución y conocimiento."
 };

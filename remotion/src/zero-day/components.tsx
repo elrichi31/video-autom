@@ -1,4 +1,5 @@
 import type { FC, ReactNode } from "react";
+import { useState } from "react";
 import {
   AbsoluteFill,
   Easing,
@@ -11,6 +12,15 @@ import {
   useVideoConfig,
 } from "remotion";
 import type { AccentPair } from "./data";
+
+// Background image that simply disappears if the file is missing, instead of
+// failing the whole render. This lets a video be saved/previewed with some (or
+// no) scene images and have them appear automatically once generated later.
+const OptionalBg: FC<{ src: string; style: React.CSSProperties }> = ({ src, style }) => {
+  const [failed, setFailed] = useState(false);
+  if (failed) return null;
+  return <Img src={src} style={style} onError={() => setFailed(true)} />;
+};
 
 const clamp = {
   extrapolateLeft: "clamp" as const,
@@ -44,6 +54,187 @@ const revealSpring = (frame: number, fps: number, durationInFrames = 32) =>
     config: { damping: 200, stiffness: 180, mass: 0.9 },
   });
 
+type MotionNiche =
+  | "cybersecurity"
+  | "ai"
+  | "history"
+  | "fraud"
+  | "news"
+  | "general";
+
+type MotionHookStyle =
+  | "shock"
+  | "curiosity"
+  | "contrarian"
+  | "countdown"
+  | "real-story";
+
+type MotionSceneKey =
+  | "intro"
+  | "layers"
+  | "phase1"
+  | "phase2"
+  | "phase3"
+  | "reality"
+  | "close"
+  | "event1"
+  | "event2"
+  | "event3"
+  | "event4"
+  | "today";
+
+type MotionProfile = {
+  imageScale: [number, number, number];
+  imageX: [number, number, number];
+  imageY: [number, number, number];
+  imageRotate: [number, number, number];
+  pulse: number;
+  gridOpacity: number;
+  particleCount: number;
+  particleTravel: number;
+  tintOpacity: number;
+  vignetteOpacity: number;
+};
+
+const normalizeNiche = (value?: string): MotionNiche => {
+  switch (value) {
+    case "cybersecurity":
+    case "ai":
+    case "history":
+    case "fraud":
+    case "news":
+      return value;
+    default:
+      return "general";
+  }
+};
+
+const normalizeHookStyle = (value?: string): MotionHookStyle => {
+  switch (value) {
+    case "shock":
+    case "curiosity":
+    case "contrarian":
+    case "countdown":
+    case "real-story":
+      return value;
+    default:
+      return "curiosity";
+  }
+};
+
+const getMotionProfile = ({
+  niche,
+  hookStyle,
+  sceneKey,
+}: {
+  niche: MotionNiche;
+  hookStyle: MotionHookStyle;
+  sceneKey?: MotionSceneKey;
+}): MotionProfile => {
+  const profileByNiche: Record<MotionNiche, MotionProfile> = {
+    cybersecurity: {
+      imageScale: [1.1, 1.15, 1.2],
+      imageX: [-5, 2, 6],
+      imageY: [-2, 0, 4],
+      imageRotate: [-0.9, 0.2, 0.8],
+      pulse: 0.18,
+      gridOpacity: 0.24,
+      particleCount: 18,
+      particleTravel: 8,
+      tintOpacity: 0.24,
+      vignetteOpacity: 0.64,
+    },
+    ai: {
+      imageScale: [1.07, 1.12, 1.16],
+      imageX: [4, 0, -4],
+      imageY: [-3, -1, 2],
+      imageRotate: [0.4, 0, -0.4],
+      pulse: 0.16,
+      gridOpacity: 0.14,
+      particleCount: 12,
+      particleTravel: 5,
+      tintOpacity: 0.18,
+      vignetteOpacity: 0.52,
+    },
+    history: {
+      imageScale: [1.12, 1.16, 1.2],
+      imageX: [-7, -3, 2],
+      imageY: [-4, -1, 3],
+      imageRotate: [-0.6, -0.2, 0.3],
+      pulse: 0.11,
+      gridOpacity: 0.08,
+      particleCount: 22,
+      particleTravel: 4,
+      tintOpacity: 0.22,
+      vignetteOpacity: 0.72,
+    },
+    fraud: {
+      imageScale: [1.09, 1.13, 1.17],
+      imageX: [8, 3, -2],
+      imageY: [-2, 1, 5],
+      imageRotate: [0.9, 0.1, -0.5],
+      pulse: 0.2,
+      gridOpacity: 0.18,
+      particleCount: 16,
+      particleTravel: 7,
+      tintOpacity: 0.2,
+      vignetteOpacity: 0.66,
+    },
+    news: {
+      imageScale: [1.05, 1.08, 1.12],
+      imageX: [-8, -2, 3],
+      imageY: [0, 1, 3],
+      imageRotate: [-0.35, 0, 0.35],
+      pulse: 0.15,
+      gridOpacity: 0.12,
+      particleCount: 10,
+      particleTravel: 5,
+      tintOpacity: 0.18,
+      vignetteOpacity: 0.58,
+    },
+    general: {
+      imageScale: [1.08, 1.12, 1.16],
+      imageX: [-4, 1, 4],
+      imageY: [-2, 0, 3],
+      imageRotate: [-0.4, 0, 0.4],
+      pulse: 0.14,
+      gridOpacity: 0.16,
+      particleCount: 14,
+      particleTravel: 6,
+      tintOpacity: 0.18,
+      vignetteOpacity: 0.6,
+    },
+  };
+
+  const base = profileByNiche[niche];
+  const hookBoost = hookStyle === "shock"
+    ? 1.16
+    : hookStyle === "countdown"
+      ? 1.1
+      : hookStyle === "contrarian"
+        ? 1.06
+        : hookStyle === "real-story"
+          ? 0.94
+          : 1;
+  const isIntro = sceneKey === "intro";
+  const isCalmScene = sceneKey === "reality" || sceneKey === "today" || sceneKey === "close";
+  const sceneScaleBoost = isIntro ? 1.04 : isCalmScene ? 0.96 : 1;
+  const sceneTravelBoost = sceneKey === "phase3" || sceneKey === "event4" ? 1.14 : isCalmScene ? 0.86 : 1;
+
+  return {
+    imageScale: base.imageScale.map((v) => Number((v * hookBoost * sceneScaleBoost).toFixed(3))) as [number, number, number],
+    imageX: base.imageX.map((v) => Number((v * sceneTravelBoost).toFixed(2))) as [number, number, number],
+    imageY: base.imageY.map((v) => Number((v * sceneTravelBoost).toFixed(2))) as [number, number, number],
+    imageRotate: base.imageRotate.map((v) => Number((v * sceneTravelBoost).toFixed(2))) as [number, number, number],
+    pulse: base.pulse * hookBoost,
+    gridOpacity: isCalmScene ? base.gridOpacity * 0.78 : base.gridOpacity,
+    particleCount: Math.max(8, Math.round(base.particleCount * (isCalmScene ? 0.72 : 1))),
+    particleTravel: base.particleTravel * sceneTravelBoost,
+    tintOpacity: isIntro ? base.tintOpacity + 0.04 : base.tintOpacity,
+    vignetteOpacity: base.vignetteOpacity,
+  };
+};
+
 /* ─── SCENE SHELL (RED VARIANT) ─── */
 
 export const DarkShell: FC<{
@@ -52,8 +243,22 @@ export const DarkShell: FC<{
   children: ReactNode;
   variant?: "alert" | "body" | "terminal" | "close";
   bgSrc?: string;
-}> = ({ accent, durationInFrames, children, variant = "body", bgSrc }) => {
+  niche?: string;
+  hookStyle?: string;
+  sceneKey?: MotionSceneKey;
+}> = ({ accent, durationInFrames, children, variant = "body", bgSrc, niche, hookStyle, sceneKey }) => {
   const frame = useCurrentFrame();
+  const motionProfile = getMotionProfile({
+    niche: normalizeNiche(niche),
+    hookStyle: normalizeHookStyle(hookStyle),
+    sceneKey,
+  });
+  const imageProgress = interpolate(frame, [0, Math.max(1, durationInFrames - 1)], [0, 1], clamp);
+  const bgScale = interpolate(imageProgress, [0, 0.55, 1], motionProfile.imageScale, clamp);
+  const bgX = interpolate(imageProgress, [0, 0.55, 1], motionProfile.imageX, clamp);
+  const bgY = interpolate(imageProgress, [0, 0.55, 1], motionProfile.imageY, clamp);
+  const bgRotate = interpolate(imageProgress, [0, 0.55, 1], motionProfile.imageRotate, clamp);
+  const bgBlurOpacity = interpolate(imageProgress, [0, 0.5, 1], [0.15, 0.22, 0.12], clamp);
   const contentOpacity = interpolate(
     frame,
     [0, 10, durationInFrames - 14, durationInFrames - 1],
@@ -65,20 +270,43 @@ export const DarkShell: FC<{
   return (
     <AbsoluteFill style={{ backgroundColor: "#050101", color: "white", overflow: "hidden" }}>
       {bgSrc && (
-        <Img
-          src={bgSrc}
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            objectPosition: "center",
-            opacity: 1,
-          }}
-        />
+        <>
+          <OptionalBg
+            src={bgSrc}
+            style={{
+              position: "absolute",
+              inset: -24,
+              width: "calc(100% + 48px)",
+              height: "calc(100% + 48px)",
+              objectFit: "cover",
+              objectPosition: "center",
+              opacity: bgBlurOpacity,
+              filter: "blur(18px) saturate(1.1)",
+              transform: `translate3d(${bgX * -0.45}px, ${bgY * -0.4}px, 0) scale(${bgScale + 0.05})`,
+            }}
+          />
+          <OptionalBg
+            src={bgSrc}
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center",
+              opacity: 0.95,
+              transform: `translate3d(${bgX}px, ${bgY}px, 0) scale(${bgScale}) rotate(${bgRotate}deg)`,
+            }}
+          />
+        </>
       )}
-      <DarkBackground accent={accent} variant={variant} />
+      <DarkBackground
+        accent={accent}
+        variant={variant}
+        niche={normalizeNiche(niche)}
+        sceneKey={sceneKey}
+        motionProfile={motionProfile}
+      />
       {variant === "alert" && <AlertBorder accent={accent} />}
       <div
         style={{
@@ -110,11 +338,18 @@ export const DarkShell: FC<{
 
 /* ─── DARK BACKGROUND ─── */
 
-const DarkBackground: FC<{ accent: AccentPair; variant: string }> = ({ accent, variant }) => {
+const DarkBackground: FC<{
+  accent: AccentPair;
+  variant: string;
+  niche: MotionNiche;
+  sceneKey?: MotionSceneKey;
+  motionProfile: MotionProfile;
+}> = ({ accent, variant, niche, sceneKey, motionProfile }) => {
   const frame = useCurrentFrame();
   const pulseOpacity = variant === "alert"
-    ? interpolate((frame * 2) % 60, [0, 30, 60], [0.08, 0.22, 0.08], clamp)
-    : 0.12;
+    ? interpolate((frame * 2) % 60, [0, 30, 60], [motionProfile.pulse * 0.55, motionProfile.pulse * 1.35, motionProfile.pulse * 0.55], clamp)
+    : motionProfile.pulse;
+  const sweep = interpolate((frame * 1.8) % 160, [0, 160], [-320, 1280], clamp);
 
   return (
     <>
@@ -123,17 +358,15 @@ const DarkBackground: FC<{ accent: AccentPair; variant: string }> = ({ accent, v
           background: `radial-gradient(ellipse at 50% 30%, ${accent[1]}11 0%, transparent 50%), radial-gradient(circle at 80% 80%, ${accent[0]}09 0%, transparent 40%), linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.65) 100%)`,
         }}
       />
-      {/* Grid */}
       <AbsoluteFill
         style={{
-          opacity: 0.18,
+          opacity: motionProfile.gridOpacity,
           backgroundImage:
             "linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)",
           backgroundSize: "80px 80px",
           maskImage: "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.6) 30%, rgba(0,0,0,0.3) 100%)",
         }}
       />
-      {/* Center pulse */}
       <div
         style={{
           position: "absolute",
@@ -142,8 +375,86 @@ const DarkBackground: FC<{ accent: AccentPair; variant: string }> = ({ accent, v
           transform: `scale(${loop(frame, [1, 1.06, 1], 120)})`,
         }}
       />
-      {/* Floating particles */}
-      {Array.from({ length: 14 }).map((_, i) => {
+      <AbsoluteFill
+        style={{
+          background: `linear-gradient(135deg, ${accent[1]}${Math.round(motionProfile.tintOpacity * 255).toString(16).padStart(2, "0")} 0%, transparent 35%, transparent 70%, ${accent[0]}11 100%)`,
+          mixBlendMode: niche === "history" ? "screen" : "normal",
+        }}
+      />
+      <AbsoluteFill
+        style={{
+          background: `radial-gradient(circle at 50% 50%, transparent 30%, rgba(0,0,0,${motionProfile.vignetteOpacity}) 100%)`,
+        }}
+      />
+      {(niche === "cybersecurity" || niche === "ai") && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            width: 220,
+            background: `linear-gradient(90deg, transparent 0%, ${accent[0]}18 50%, transparent 100%)`,
+            transform: `translateX(${sweep}px) skewX(-18deg)`,
+            opacity: niche === "cybersecurity" ? 0.5 : 0.32,
+            filter: "blur(6px)",
+          }}
+        />
+      )}
+      {niche === "fraud" && (
+        <>
+          <div
+            style={{
+              position: "absolute",
+              inset: "-10% -30%",
+              background: `repeating-linear-gradient(-28deg, transparent 0 72px, ${accent[0]}12 72px 82px)`,
+              opacity: 0.42,
+              transform: `translateX(${interpolate((frame * 1.2) % 240, [0, 240], [-30, 30], clamp)}px)`,
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: `radial-gradient(circle at 50% 24%, ${accent[0]}12 0%, transparent 32%)`,
+            }}
+          />
+        </>
+      )}
+      {niche === "history" && (
+        <AbsoluteFill
+          style={{
+            background: "linear-gradient(180deg, rgba(18,12,4,0.18) 0%, transparent 30%, transparent 70%, rgba(18,12,4,0.28) 100%)",
+            mixBlendMode: "screen",
+          }}
+        />
+      )}
+      {niche === "news" && (
+        <>
+          <div
+            style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              top: 74,
+              height: 3,
+              background: `linear-gradient(90deg, transparent 0%, ${accent[0]}55 25%, ${accent[1]}66 75%, transparent 100%)`,
+              opacity: 0.58,
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              bottom: 88,
+              height: 2,
+              background: `linear-gradient(90deg, transparent 0%, ${accent[1]}55 25%, ${accent[0]}66 75%, transparent 100%)`,
+              opacity: 0.5,
+            }}
+          />
+        </>
+      )}
+      {Array.from({ length: motionProfile.particleCount }).map((_, i) => {
         const size = 2 + random(`zd-p-s-${i}`) * 3;
         const baseLeft = 5 + random(`zd-p-l-${i}`) * 90;
         const baseTop = 10 + random(`zd-p-t-${i}`) * 80;
@@ -159,7 +470,7 @@ const DarkBackground: FC<{ accent: AccentPair; variant: string }> = ({ accent, v
               height: size,
               borderRadius: 999,
               left: `${baseLeft}%`,
-              top: `${baseTop - progress * 6}%`,
+              top: `${baseTop - progress * motionProfile.particleTravel}%`,
               opacity,
               background: i % 2 === 0 ? accent[0] : accent[1],
               boxShadow: `0 0 12px ${accent[0]}`,
@@ -167,6 +478,17 @@ const DarkBackground: FC<{ accent: AccentPair; variant: string }> = ({ accent, v
           />
         );
       })}
+      {sceneKey === "intro" && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: `radial-gradient(circle at 50% 50%, transparent 0%, transparent 42%, ${accent[0]}08 68%, transparent 100%)`,
+            opacity: 0.55,
+            transform: `scale(${loop(frame, [0.96, 1.04, 0.96], 90)})`,
+          }}
+        />
+      )}
     </>
   );
 };

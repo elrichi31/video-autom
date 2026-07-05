@@ -29,7 +29,7 @@ export interface VoiceSettings {
 
 export const DEFAULT_VOICE_SETTINGS: VoiceSettings = {
   voiceId:         "pNInz6obpgDQGcFmaJgB", // Adam — deep, professional
-  modelId:         "eleven_v3",             // más expresivo, ideal TikTok
+  modelId:         "eleven_flash_v2_5",     // ahorro por defecto
   stability:       0.45,                    // más expresividad dramática
   similarityBoost: 0.80,
   style:           0.55,                    // emoción y énfasis

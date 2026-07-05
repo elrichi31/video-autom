@@ -12,8 +12,6 @@ const MODELS = [
   { id: "eleven_flash_v2_5",      label: "Flash v2.5 — rápido y económico" },
 ];
 
-const DURATION_PRESETS = [30, 45, 60, 90];
-
 // ─── Word count badge ────────────────────────────────────────────────────────
 
 function WordBadge({ text, maxWords }: { text: string; maxWords: number }) {
@@ -42,7 +40,7 @@ function Slider({ label, value, min, max, step, onChange }: {
       </div>
       <input type="range" min={min} max={max} step={step} value={value}
         onChange={(e) => onChange(parseFloat(e.target.value))}
-        className="w-full accent-violet-500 h-1.5 rounded" />
+        className="w-full accent-emerald-500 h-1.5 rounded" />
     </div>
   );
 }
@@ -67,9 +65,9 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
       : getSceneDurations(secs);
   }
 
-  const [targetDuration, setTargetDuration] = useState<number>(
-    script.targetDurationSeconds ?? DEFAULT_TARGET_DURATION
-  );
+  // Duration is owned by Step 1 (the topic form / script). The voiceover panel
+  // only reads it so the on-screen script and narration share the same pacing.
+  const targetDuration = script.targetDurationSeconds ?? DEFAULT_TARGET_DURATION;
   const [voiceover,   setVoiceover]   = useState<VoiceoverScript | null>(null);
   const [voices,      setVoices]      = useState<ElevenLabsVoice[]>([]);
   const [settings,    setSettings]    = useState<VoiceSettings>(DEFAULT_VOICE_SETTINGS);
@@ -79,6 +77,10 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
   const [savedAt,      setSavedAt]      = useState<string | null>(null);
   const [sceneFiles,   setSceneFiles]   = useState<Record<string, string> | null>(null);
   const [genProgress,  setGenProgress]  = useState<string>("");
+
+  const [context,        setContext]        = useState("");
+  const [contextFileName, setContextFileName] = useState("");
+  const [showContext,    setShowContext]    = useState(false);
 
   const [initLoading,      setInitLoading]      = useState(true);
   const [genScriptLoading, setGenScriptLoading] = useState(false);
@@ -100,7 +102,6 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
       if (savedData?.voiceover) {
         setVoiceover(savedData.voiceover);
         setSettings(savedData.settings ?? DEFAULT_VOICE_SETTINGS);
-        setTargetDuration(savedData.targetDuration ?? script.targetDurationSeconds ?? DEFAULT_TARGET_DURATION);
         setSavedAt(savedData.savedAt ?? null);
         if (savedData.voiceoverFiles) setSceneFiles(savedData.voiceoverFiles);
       } else {
@@ -141,6 +142,16 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
     }
   }
 
+  async function handleContextFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const text = await file.text();
+    setContext(text);
+    setContextFileName(file.name);
+    setShowContext(true);
+    e.target.value = "";
+  }
+
   async function generateScript() {
     setGenScriptLoading(true);
     setError("");
@@ -149,7 +160,7 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
       const res = await fetch("/api/generate-voiceover-script", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ script: scriptWithDuration }),
+        body: JSON.stringify({ script: scriptWithDuration, context: context.trim() || undefined }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Error");
@@ -243,7 +254,7 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
   if (initLoading) {
     return (
       <div className="flex items-center gap-3 text-[#555] py-8">
-        <div className="w-4 h-4 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-4 h-4 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
         Cargando guión guardado...
       </div>
     );
@@ -252,36 +263,18 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
   return (
     <div className="space-y-6">
 
-      {/* ── Duration selector ── */}
+      {/* ── Duration (read-only — owned by Step 1 / the script) ── */}
       <div className="border border-[#2a2a2a] rounded-xl p-4">
         <div className="flex items-center justify-between mb-3">
           <div>
             <p className="text-sm font-semibold text-white">Duración del video</p>
-            <p className="text-[#666] text-xs mt-0.5">Las escenas y límites de palabras se escalan automáticamente</p>
+            <p className="text-[#666] text-xs mt-0.5">
+              Definida al crear el video · cambia el ritmo desde el guión, no aquí
+            </p>
           </div>
-          <span className="text-violet-400 font-mono text-sm font-bold">{targetDuration}s</span>
+          <span className="text-emerald-400 font-mono text-sm font-bold">{targetDuration}s</span>
         </div>
-        <div className="flex gap-2">
-          {DURATION_PRESETS.map((secs) => (
-            <button
-              key={secs}
-              onClick={() => {
-                setTargetDuration(secs);
-                const dur = getSceneDurationsForScript(secs);
-                setVoiceover(emptyVoiceover(sceneKeys, dur, secs));
-                setUnsaved(false);
-                setSavedAt(null);
-              }}
-              className={`flex-1 py-2 rounded-lg text-sm font-semibold transition
-                ${targetDuration === secs
-                  ? "bg-violet-600 text-white"
-                  : "bg-[#1e1e1e] border border-[#2a2a2a] text-[#666] hover:text-white hover:border-[#444]"}`}
-            >
-              {secs}s
-            </button>
-          ))}
-        </div>
-        <div className="mt-3 flex gap-1.5 flex-wrap">
+        <div className="flex gap-1.5 flex-wrap">
           {Object.entries(sceneDurations).map(([key, secs]) => (
             <span key={key} className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#1e1e1e] text-[#555]">
               {key} {secs}s
@@ -313,7 +306,7 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
               </button>
             )}
             <button onClick={generateScript} disabled={genScriptLoading}
-              className="px-4 py-2 rounded-lg text-sm font-semibold bg-violet-600 hover:bg-violet-500
+              className="px-4 py-2 rounded-lg text-sm font-semibold bg-emerald-600 hover:bg-emerald-500
                          disabled:opacity-40 transition flex items-center gap-2">
               {genScriptLoading
                 ? <><div className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin"/>Generando...</>
@@ -321,6 +314,56 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
               }
             </button>
           </div>
+        </div>
+
+        {/* ── Context for AI generation (paste / upload .md) ── */}
+        <div className="mb-3">
+          <div className="flex items-center justify-between">
+            <button
+              type="button"
+              onClick={() => setShowContext((v) => !v)}
+              className="text-[11px] font-semibold text-[#888] hover:text-white transition flex items-center gap-1.5"
+            >
+              <span className="text-[#555]">{showContext ? "▾" : "▸"}</span>
+              Contexto para la IA
+              {context.trim() && (
+                <span className="text-emerald-500 normal-case">
+                  · {contextFileName ? `📄 ${contextFileName}` : `${context.trim().length.toLocaleString()} car.`}
+                </span>
+              )}
+              <span className="text-[#444] font-normal">(opcional)</span>
+            </button>
+            {context.trim() && (
+              <button type="button" onClick={() => { setContext(""); setContextFileName(""); }}
+                className="text-[10px] text-[#666] hover:text-red-400 transition">
+                Limpiar
+              </button>
+            )}
+          </div>
+
+          {showContext && (
+            <div className="mt-2">
+              <div className="flex items-center justify-between mb-1.5">
+                <p className="text-[10px] text-[#555]">
+                  Pega o sube info actualizada. La IA la usará como fuente de verdad (datos, cifras, fechas).
+                </p>
+                <label className="text-[10px] px-2 py-1 rounded-lg bg-[#1e1e1e] border border-[#2a2a2a]
+                                  text-[#888] hover:text-white hover:border-[#444] transition cursor-pointer shrink-0 ml-2">
+                  Subir .md / .txt
+                  <input type="file" accept=".md,.txt,text/markdown,text/plain"
+                    onChange={handleContextFile} className="hidden" />
+                </label>
+              </div>
+              <textarea
+                value={context}
+                onChange={(e) => { setContext(e.target.value); if (contextFileName) setContextFileName(""); }}
+                placeholder="Ej: OpenAI lanzó GPT-5.6 en 2026 con tres modelos. Sol detecta vulnerabilidades..."
+                rows={4}
+                className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-white
+                           placeholder-[#444] focus:outline-none focus:border-emerald-500 transition resize-y mono"
+              />
+            </div>
+          )}
         </div>
 
         {voiceover && (
@@ -343,7 +386,7 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
                     rows={2}
                     placeholder="Escribe la narración para esta escena..."
                     className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white
-                               text-sm focus:outline-none focus:border-violet-500 transition resize-none
+                               text-sm focus:outline-none focus:border-emerald-500 transition resize-none
                                placeholder:text-[#333]"
                   />
                   {(script.imagePrompts as Record<string, string>)?.[key] && (
@@ -397,7 +440,7 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
               value={settings.voiceId}
               onChange={(e) => updateSettings({ voiceId: e.target.value })}
               className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white
-                         text-sm focus:outline-none focus:border-violet-500 transition"
+                         text-sm focus:outline-none focus:border-emerald-500 transition"
             >
               {voices.map((v) => (
                 <option key={v.voice_id} value={v.voice_id}>
@@ -419,7 +462,7 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
               value={settings.modelId}
               onChange={(e) => updateSettings({ modelId: e.target.value })}
               className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white
-                         text-sm focus:outline-none focus:border-violet-500 transition"
+                         text-sm focus:outline-none focus:border-emerald-500 transition"
             >
               {MODELS.map((m) => (
                 <option key={m.id} value={m.id}>{m.label}</option>
@@ -439,7 +482,7 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
             <p className="text-red-400 text-xs bg-red-900/20 border border-red-800/30 rounded-lg px-3 py-2">{error}</p>
           )}
           {genProgress && (
-            <p className="text-violet-400 text-xs text-center animate-pulse">{genProgress}</p>
+            <p className="text-emerald-400 text-xs text-center animate-pulse">{genProgress}</p>
           )}
           <button onClick={generateVoice} disabled={genVoiceLoading || !hasAnyText}
             className="w-full py-2.5 rounded-xl font-semibold text-sm bg-emerald-600 hover:bg-emerald-500

@@ -1,0 +1,112 @@
+{
+  "slug": "impacto-ciberseguridad-gpt56",
+  "displayTitle": "GPT-5.6 y\nCiberseguridad",
+  "niche": "cybersecurity",
+  "hookStyle": "shock",
+  "accents": {
+    "intro": [
+      "#FF0000",
+      "#000000"
+    ],
+    "layers": [
+      "#FF4500",
+      "#000000"
+    ],
+    "phase1": [
+      "#FF6347",
+      "#000000"
+    ],
+    "phase2": [
+      "#FF7F50",
+      "#000000"
+    ],
+    "phase3": [
+      "#FF8C00",
+      "#000000"
+    ],
+    "reality": [
+      "#FF4500",
+      "#000000"
+    ],
+    "close": [
+      "#FF0000",
+      "#FFFFFF"
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "tag": "ALERTA",
+      "title": "GPT-5.6\nCAMBIA JUEGO",
+      "subtitle": "¿Puede la IA salvarnos de los hackers?"
+    },
+    "layers": {
+      "tag": "CONTEXTUALIZACIÓN",
+      "terminal": [
+        "> OpenAI lanza GPT-5.6 Sol, Terra y Luna",
+        "> Sol es el modelo más potente para ciberseguridad",
+        "> Acceso limitado a socios de confianza",
+        "> Salvaguardas robustas implementadas"
+      ],
+      "definition": "OpenAI ha revelado una nueva familia de modelos.\nGPT-5.6 promete revolucionar la ciberseguridad.\nPero, ¿a qué costo?",
+      "detail": "El anuncio fue realizado el 26 de junio de 2026."
+    },
+    "phase1": {
+      "phase": "MODELO SOL",
+      "timestamp": "MODELO PRINCIPAL",
+      "title": "GPT-5.6 SOL\nLA FUERZA DETRÁS",
+      "narrative": "Sol mejora la investigación de vulnerabilidades y la revisión de código.\nEs el modelo más capaz para enfrentar amenazas cibernéticas.",
+      "detail": "OpenAI dedicó más de 700,000 horas de GPU a fortalecer salvaguardas.",
+      "indicator": [
+        "700,000 horas de GPU dedicadas",
+        "Modelo más fuerte en ciberseguridad"
+      ]
+    },
+    "phase2": {
+      "phase": "RIESGOS POTENCIALES",
+      "timestamp": "DOBLE USO",
+      "title": "LA OTRA CARA\nDE LA MONEDA",
+      "narrative": "Aunque Sol ayuda a defensores, también puede ser mal utilizado.\nEl acceso restringido responde a preocupaciones de seguridad.",
+      "detail": "El acceso limitado fue coordinado con el gobierno de EE.UU.",
+      "indicator": [
+        "Acceso limitado a socios de confianza",
+        "Preocupaciones del gobierno de EE.UU."
+      ]
+    },
+    "phase3": {
+      "phase": "IMPACTO EN SEGURIDAD",
+      "timestamp": "FUTURO INCIERTO",
+      "title": "¿UN MUNDO MÁS SEGURO?\nO MÁS RÁPIDO PARA LOS HACKERS",
+      "narrative": "El potencial de Sol para transformar la ciberseguridad es inmenso.\nPero la pregunta persiste: ¿será suficiente?",
+      "detail": "Sol no produce exploits completos bajo condiciones probadas.",
+      "indicator": [
+        "No produce exploits completos",
+        "Riesgo de mal uso sigue presente"
+      ]
+    },
+    "reality": {
+      "tag": "REALIDAD · CONTEXTO",
+      "title": "La ciberseguridad\nfrente a un dilema",
+      "actions": [
+        "Investiga sobre las capacidades de GPT-5.6",
+        "Considera cómo usar la IA de forma responsable",
+        "Mantente informado sobre las regulaciones de IA",
+        "Participa en debates sobre ética en tecnología"
+      ]
+    },
+    "close": {
+      "tag": "REFLEXIÓN FINAL",
+      "title": "¿La IA\nnos protegerá\nO nos hará más vulnerables?",
+      "subtitle": "La respuesta está en nuestras manos."
+    }
+  },
+  "imagePrompts": {
+    "intro": "Hyper-realistic cinematic photograph. Close-up of a computer screen displaying code with red warning alerts. Shot on RED Monstro 8K, anamorphic 50mm lens. Dramatic contrast, deep blacks. No text, no watermarks, no logos. Vertical 9:16 portrait composition. Photorealistic, not CGI.",
+    "layers": "Hyper-realistic cinematic photograph. Wide-angle view of a conference room with AI researchers discussing models. Shot on RED Monstro 8K, anamorphic 50mm lens. Bright lighting with a futuristic ambiance. No text, no watermarks, no logos. Vertical 9:16 portrait composition. Photorealistic, not CGI.",
+    "phase1": "Hyper-realistic cinematic photograph. Macro shot of a programmer analyzing code with AI tools on multiple screens. Shot on RED Monstro 8K, anamorphic 50mm lens. Intense focus, warm lighting. No text, no watermarks, no logos. Vertical 9:16 portrait composition. Photorealistic, not CGI.",
+    "phase2": "Hyper-realistic cinematic photograph. Overhead shot of a hacker's workspace with monitors displaying attack plans. Shot on RED Monstro 8K, anamorphic 50mm lens. Dark lighting with red highlights. No text, no watermarks, no logos. Vertical 9:16 portrait composition. Photorealistic, not CGI.",
+    "phase3": "Hyper-realistic cinematic photograph. POV shot of a person looking at a digital map illustrating cyber threats. Shot on RED Monstro 8K, anamorphic 50mm lens. Bright lighting with a sense of urgency. No text, no watermarks, no logos. Vertical 9:16 portrait composition. Photorealistic, not CGI.",
+    "reality": "Hyper-realistic cinematic photograph. Close-up of a hand holding a smartphone with security apps open. Shot on RED Monstro 8K, anamorphic 50mm lens. Clear lighting, emphasizing the importance of security. No text, no watermarks, no logos. Vertical 9:16 portrait composition. Photorealistic, not CGI.",
+    "close": "Hyper-realistic cinematic photograph. Dramatic close-up of a face looking worried while reading about cyber threats on a tablet. Shot on RED Monstro 8K, anamorphic 50mm lens. Shadowy lighting for dramatic effect. No text, no watermarks, no logos. Vertical 9:16 portrait composition. Photorealistic, not CGI."
+  },
+  "targetDurationSeconds": 60
+}

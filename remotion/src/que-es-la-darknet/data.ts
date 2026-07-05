@@ -22,6 +22,13 @@ export const QUE_ES_LA_DARKNET_TOTAL_DURATION =
   QUE_ES_LA_DARKNET_DURATIONS.reality +
   QUE_ES_LA_DARKNET_DURATIONS.close;
 
+export type VideoNiche = "cybersecurity" | "ai" | "history" | "fraud" | "news" | "general";
+export type HookStyle = "shock" | "curiosity" | "contrarian" | "countdown" | "real-story";
+
+export const QUE_ES_LA_DARKNET_NICHE: VideoNiche = "general";
+
+export const QUE_ES_LA_DARKNET_HOOK_STYLE: HookStyle = "curiosity";
+
 export const QUE_ES_LA_DARKNET_ACCENTS = {
   intro:   ["#000000","#1a1a1a"] as AccentPair,
   layers:  ["#1a1a1a","#333333"] as AccentPair,

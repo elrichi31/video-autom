@@ -4,6 +4,11 @@ import type { AnyVideoScript, GeneratedImage } from "@/lib/types";
 import { getSceneKeys } from "@/lib/types";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const IMAGE_MODEL = process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-1";
+const IMAGE_QUALITY = process.env.OPENAI_IMAGE_QUALITY ?? "low";
+const IMAGE_SIZE = process.env.OPENAI_IMAGE_SIZE ?? "1024x1536";
+type ImageSize = "auto" | "256x256" | "512x512" | "1024x1024" | "1536x1024" | "1024x1536" | "1792x1024" | "1024x1792";
+type ImageQuality = "low" | "medium" | "high" | "auto";
 
 export async function POST(req: NextRequest) {
   const { script, sceneKey }: { script: AnyVideoScript; sceneKey?: string } = await req.json();
@@ -19,10 +24,10 @@ export async function POST(req: NextRequest) {
 
     try {
       const response = await openai.images.generate({
-        model: "gpt-image-1",
+        model: IMAGE_MODEL,
         prompt,
-        size: "1024x1536",
-        quality: "medium",
+        size: IMAGE_SIZE as ImageSize,
+        quality: IMAGE_QUALITY as ImageQuality,
         n: 1,
       });
 

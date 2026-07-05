@@ -26,6 +26,7 @@ remotion/public/
 # Next.js dashboard build artifacts
 dashboard/.next/
 dashboard/out/
+dashboard/*.tsbuildinfo
 
 # Next.js dashboard build artifacts
 dashboard/.next/

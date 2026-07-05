@@ -1,24 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
-import { SYSTEM_PROMPT, buildUserPrompt, TIMELINE_SYSTEM_PROMPT, buildTimelineUserPrompt } from "@/lib/script-prompt";
+import {
+  SYSTEM_PROMPT,
+  TIMELINE_SYSTEM_PROMPT,
+  buildTimelineUserPrompt,
+  buildUserPrompt,
+  normalizeHookStyle,
+  normalizeNiche,
+} from "@/lib/script-prompt";
 import type { AnyVideoScript } from "@/lib/types";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const SCRIPT_MODEL = process.env.OPENAI_SCRIPT_MODEL ?? "gpt-4o-mini";
 
 export async function POST(req: NextRequest) {
-  const { topic, targetDurationSeconds, compositionType = "standard" } = await req.json();
+  const { topic, targetDurationSeconds, compositionType = "standard", context } = await req.json();
 
   if (!topic?.trim()) {
     return NextResponse.json({ error: "El tema es requerido" }, { status: 400 });
   }
 
+  const contextStr = typeof context === "string" ? context : undefined;
   const isTimeline = compositionType === "timeline";
   const systemPrompt = isTimeline ? TIMELINE_SYSTEM_PROMPT : SYSTEM_PROMPT;
-  const userPrompt   = isTimeline ? buildTimelineUserPrompt(topic) : buildUserPrompt(topic);
+  const durationSecs = typeof targetDurationSeconds === "number" ? targetDurationSeconds : undefined;
+  const userPrompt   = isTimeline
+    ? buildTimelineUserPrompt(topic, contextStr, durationSecs)
+    : buildUserPrompt(topic, contextStr, durationSecs);
 
   const completion = await openai.chat.completions.create({
-    model: "gpt-4o",
-    temperature: 0.7,
+    model: SCRIPT_MODEL,
+    // Lower temperature keeps the writing creative but anchors facts/numbers,
+    // reducing fabricated stats and wrong dates.
+    temperature: 0.4,
     response_format: { type: "json_object" },
     messages: [
       { role: "system", content: systemPrompt },
@@ -36,6 +50,12 @@ export async function POST(req: NextRequest) {
   }
 
   script.targetDurationSeconds = typeof targetDurationSeconds === "number" ? targetDurationSeconds : 45;
+  script.niche = normalizeNiche(script.niche, topic);
+  script.hookStyle = normalizeHookStyle(script.hookStyle);
+
+  if (isTimeline) {
+    script.compositionType = "timeline";
+  }
 
   return NextResponse.json({ script });
 }

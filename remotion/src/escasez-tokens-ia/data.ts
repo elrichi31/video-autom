@@ -22,6 +22,13 @@ export const ESCASEZ_TOKENS_IA_TOTAL_DURATION =
   ESCASEZ_TOKENS_IA_DURATIONS.reality +
   ESCASEZ_TOKENS_IA_DURATIONS.close;
 
+export type VideoNiche = "cybersecurity" | "ai" | "history" | "fraud" | "news" | "general";
+export type HookStyle = "shock" | "curiosity" | "contrarian" | "countdown" | "real-story";
+
+export const ESCASEZ_TOKENS_IA_NICHE: VideoNiche = "general";
+
+export const ESCASEZ_TOKENS_IA_HOOK_STYLE: HookStyle = "curiosity";
+
 export const ESCASEZ_TOKENS_IA_ACCENTS = {
   intro:   ["#FF4500","#FF6347"] as AccentPair,
   layers:  ["#FFD700","#FFA500"] as AccentPair,

@@ -1,0 +1,112 @@
+{
+  "slug": "estafa-ia-clonacion-voz",
+  "displayTitle": "Estafa IA: Clonación de Voz",
+  "niche": "ai",
+  "hookStyle": "shock",
+  "accents": {
+    "intro": [
+      "#FF0000",
+      "#000000"
+    ],
+    "layers": [
+      "#FF0000",
+      "#FFFFFF"
+    ],
+    "phase1": [
+      "#FF4500",
+      "#000000"
+    ],
+    "phase2": [
+      "#FF4500",
+      "#FFFFFF"
+    ],
+    "phase3": [
+      "#FF0000",
+      "#000000"
+    ],
+    "reality": [
+      "#FF4500",
+      "#FFFFFF"
+    ],
+    "close": [
+      "#FF0000",
+      "#000000"
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "tag": "ALERTA",
+      "title": "La próxima estafa\npuede ser tu jefe",
+      "subtitle": "¿Te atreverías a transferir dinero?"
+    },
+    "layers": {
+      "tag": "CONTEXTUALIZACIÓN",
+      "terminal": [
+        "> 2025: 22,000 denuncias de estafas con IA",
+        "> Pérdidas de 893 millones de dólares",
+        "> BEC: más de 3,046 millones en pérdidas",
+        "> La IA hace más fácil clonar voces"
+      ],
+      "definition": "La clonación de voz con IA es una amenaza real\nque puede afectar a cualquier negocio digital.",
+      "detail": "El FBI reportó que las estafas BEC causaron\nmás de 3 mil millones de dólares en 2025."
+    },
+    "phase1": {
+      "phase": "CLONACIÓN DE VOZ",
+      "timestamp": "ESTAFAS EN AUGE",
+      "title": "Estafadores al acecho\ncon voces falsas",
+      "narrative": "Los estafadores investigan tu empresa y clonan voces\npara hacer solicitudes urgentes.",
+      "detail": "Más de 30 millones de dólares en pérdidas\npor BEC con participación de IA.",
+      "indicator": [
+        "Cifras alarmantes de pérdidas",
+        "Estafas que usan IA"
+      ]
+    },
+    "phase2": {
+      "phase": "EL ATAQUE",
+      "timestamp": "MÉTODOS MODERNOS",
+      "title": "Así funciona el ataque\ncon IA",
+      "narrative": "Recibes un mensaje de voz que parece real,\ndiciendo que transfieras dinero urgentemente.",
+      "detail": "El FBI advierte sobre campañas de suplantación\ncon voces generadas por IA.",
+      "indicator": [
+        "Urgencia + secreto = estafa",
+        "Ejemplo de mensaje falso"
+      ]
+    },
+    "phase3": {
+      "phase": "CONSECUENCIAS GRAVES",
+      "timestamp": "CASOS REALES",
+      "title": "Un CEO engañado\npor una voz falsa",
+      "narrative": "En 2019, un CEO transfirió 243,000 dólares\npensando que hablaba con su jefe.",
+      "detail": "La voz era un deepfake, un engaño costoso.",
+      "indicator": [
+        "243,000 dólares perdidos",
+        "Un caso que podría repetirse"
+      ]
+    },
+    "reality": {
+      "tag": "REALIDAD · PREVENCIÓN",
+      "title": "Protege tu negocio\ncon estas acciones",
+      "actions": [
+        "Nunca apruebes pagos solo por voz.",
+        "Crea una palabra clave interna para confirmar.",
+        "Verifica por otro canal antes de actuar.",
+        "Desconfía de solicitudes urgentes y secretas."
+      ]
+    },
+    "close": {
+      "tag": "CONCLUSIÓN",
+      "title": "La IA puede ser\nuna amenaza real",
+      "subtitle": "¡Infórmate y protege tu negocio!"
+    }
+  },
+  "imagePrompts": {
+    "intro": "Hyper-realistic cinematic photograph. Close-up of a serious person speaking into the camera, with a dark background and dramatic lighting. Shot on RED Monstro 8K, anamorphic 50mm lens. Dramatic contrast, deep blacks. No text, no watermarks, no logos. Vertical 9:16 portrait composition. Photorealistic, not CGI.",
+    "layers": "Hyper-realistic cinematic photograph. Overhead shot of a computer screen displaying alarming statistics about fraud, with a person looking concerned. Shot on RED Monstro 8K, anamorphic 50mm lens. Dramatic contrast, deep blacks. No text, no watermarks, no logos. Vertical 9:16 portrait composition. Photorealistic, not CGI.",
+    "phase1": "Hyper-realistic cinematic photograph. POV shot of a smartphone displaying a voice message, with a blurred office background. Shot on RED Monstro 8K, anamorphic 50mm lens. Dramatic contrast, deep blacks. No text, no watermarks, no logos. Vertical 9:16 portrait composition. Photorealistic, not CGI.",
+    "phase2": "Hyper-realistic cinematic photograph. Close-up of a worried employee receiving a call, with a computer screen showing a bank transfer request in the background. Shot on RED Monstro 8K, anamorphic 50mm lens. Dramatic contrast, deep blacks. No text, no watermarks, no logos. Vertical 9:16 portrait composition. Photorealistic, not CGI.",
+    "phase3": "Hyper-realistic cinematic photograph. Medium shot of a news headline about a CEO's fraud case, with a shocked audience in the foreground. Shot on RED Monstro 8K, anamorphic 50mm lens. Dramatic contrast, deep blacks. No text, no watermarks, no logos. Vertical 9:16 portrait composition. Photorealistic, not CGI.",
+    "reality": "Hyper-realistic cinematic photograph. Wide shot of a team meeting discussing cybersecurity measures, with a whiteboard filled with notes in the background. Shot on RED Monstro 8K, anamorphic 50mm lens. Dramatic contrast, deep blacks. No text, no watermarks, no logos. Vertical 9:16 portrait composition. Photorealistic, not CGI.",
+    "close": "Hyper-realistic cinematic photograph. Close-up of a person pointing to a warning sign about voice scams, with a serious expression. Shot on RED Monstro 8K, anamorphic 50mm lens. Dramatic contrast, deep blacks. No text, no watermarks, no logos. Vertical 9:16 portrait composition. Photorealistic, not CGI."
+  },
+  "targetDurationSeconds": 60
+}

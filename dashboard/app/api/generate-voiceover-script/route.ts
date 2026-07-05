@@ -8,19 +8,22 @@ import {
 } from "@/lib/voiceover-prompt";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const VOICEOVER_SCRIPT_MODEL = process.env.OPENAI_VOICEOVER_SCRIPT_MODEL ?? "gpt-4o-mini";
 
 export async function POST(req: NextRequest) {
-  const { script }: { script: AnyVideoScript } = await req.json();
+  const { script, context }: { script: AnyVideoScript; context?: string } = await req.json();
 
+  const contextStr = typeof context === "string" ? context : undefined;
   const isTimeline = script.compositionType === "timeline";
   const systemPrompt = isTimeline ? TIMELINE_VOICEOVER_SYSTEM_PROMPT : VOICEOVER_SYSTEM_PROMPT;
   const userPrompt   = isTimeline
-    ? buildTimelineVoiceoverUserPrompt(script as VideoScriptTimeline)
-    : buildVoiceoverUserPrompt(script as VideoScript);
+    ? buildTimelineVoiceoverUserPrompt(script as VideoScriptTimeline, contextStr)
+    : buildVoiceoverUserPrompt(script as VideoScript, contextStr);
 
   const completion = await openai.chat.completions.create({
-    model: "gpt-4o",
-    temperature: 0.6,
+    model: VOICEOVER_SCRIPT_MODEL,
+    // Lower temperature anchors facts/dates and reduces fabricated stats.
+    temperature: 0.4,
     response_format: { type: "json_object" },
     messages: [
       { role: "system", content: systemPrompt },
