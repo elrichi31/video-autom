@@ -107,10 +107,22 @@ import {
   peligrosCodigosQrDuration,
   calculateMetadata as peligrosCodigosQrCalculateMetadata,
 } from "./PeligrosCodigosQrComposition";
+import {
+  ExplainerLightDemoComposition,
+  explainerLightDemoDuration,
+} from "./ExplainerLightDemoComposition";
 
 export const RemotionRoot: FC = () => {
   return (
     <>
+      <Composition
+        id="ExplainerLightDemo"
+        component={ExplainerLightDemoComposition}
+        durationInFrames={explainerLightDemoDuration}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
       <Composition
         id="Top5AI2026Vertical"
         component={MyComposition}
