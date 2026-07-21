@@ -28,6 +28,5 @@ dashboard/.next/
 dashboard/out/
 dashboard/*.tsbuildinfo
 
-# Next.js dashboard build artifacts
-dashboard/.next/
-dashboard/out/
+# Local machine-specific config — no subir
+.claude/settings.local.json

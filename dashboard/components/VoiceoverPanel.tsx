@@ -4,13 +4,18 @@ import { useEffect, useState, useRef } from "react";
 import type { AnyVideoScript } from "@/lib/types";
 import { getSceneKeys, getSceneLabels } from "@/lib/types";
 import type { VoiceoverScript, ElevenLabsVoice, VoiceSettings } from "@/lib/voiceover-types";
-import { DEFAULT_VOICE_SETTINGS, getSceneDurations, getTimelineSceneDurations, WORDS_PER_SECOND, DEFAULT_TARGET_DURATION } from "@/lib/voiceover-types";
+import { DEFAULT_VOICE_SETTINGS, getSceneDurations, getTimelineSceneDurations, getVoicePreset, isExpressiveVoiceModel, WORDS_PER_SECOND, DEFAULT_TARGET_DURATION } from "@/lib/voiceover-types";
 
 const MODELS = [
-  { id: "eleven_v3",              label: "v3 — recomendado para TikTok (más expresivo)" },
-  { id: "eleven_multilingual_v2", label: "Multilingual v2 — alta calidad en español" },
-  { id: "eleven_flash_v2_5",      label: "Flash v2.5 — rápido y económico" },
+  { id: "eleven_multilingual_v2", label: "Multilingual v2 — recomendado: natural en español" },
+  { id: "eleven_v3",              label: "v3 — expresivo (tags y textos más largos)" },
+  { id: "eleven_flash_v2_5",      label: "Flash v2.5 — borradores rápidos" },
 ];
+
+function isSpanishVoice(voice: ElevenLabsVoice): boolean {
+  const metadata = Object.values(voice.labels ?? {}).join(" ").toLowerCase();
+  return /\b(spanish|español|espanol|es-mx|es-es|mexic|latam|latin)/.test(metadata);
+}
 
 // ─── Word count badge ────────────────────────────────────────────────────────
 
@@ -76,6 +81,8 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
   const [unsaved,      setUnsaved]      = useState(false);
   const [savedAt,      setSavedAt]      = useState<string | null>(null);
   const [sceneFiles,   setSceneFiles]   = useState<Record<string, string> | null>(null);
+  const [sceneTakes,   setSceneTakes]   = useState<Record<string, string[]> | null>(null);
+  const [takeCount,    setTakeCount]    = useState(1);
   const [genProgress,  setGenProgress]  = useState<string>("");
 
   const [context,        setContext]        = useState("");
@@ -104,11 +111,15 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
         setSettings(savedData.settings ?? DEFAULT_VOICE_SETTINGS);
         setSavedAt(savedData.savedAt ?? null);
         if (savedData.voiceoverFiles) setSceneFiles(savedData.voiceoverFiles);
+        if (savedData.voiceoverTakes) setSceneTakes(savedData.voiceoverTakes);
       } else {
         // No saved data — show empty editable scenes right away
         const dur = getSceneDurationsForScript(script.targetDurationSeconds ?? DEFAULT_TARGET_DURATION);
         setVoiceover(emptyVoiceover(sceneKeys, dur, script.targetDurationSeconds ?? DEFAULT_TARGET_DURATION));
-        if (list.length > 0) setSettings((s) => ({ ...s, voiceId: list[0].voice_id }));
+        if (list.length > 0) {
+          const preferred = list.find(isSpanishVoice) ?? list[0];
+          setSettings((s) => ({ ...s, voiceId: preferred.voice_id }));
+        }
       }
 
       if (audioRes && (audioRes as Response).ok) {
@@ -122,6 +133,7 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
     s: VoiceSettings,
     dur: number,
     files?: Record<string, string>,
+    takes?: Record<string, string[]>,
   ) {
     setSaveLoading(true);
     try {
@@ -133,6 +145,7 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
           settings: s,
           targetDuration: dur,
           voiceoverFiles: files ?? sceneFiles ?? undefined,
+          voiceoverTakes: takes ?? sceneTakes ?? undefined,
         }),
       });
       setSavedAt(new Date().toISOString());
@@ -195,13 +208,32 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
       const res = await fetch("/api/generate-voice", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug, settings, sceneTexts }),
+        body: JSON.stringify({ slug, settings, sceneTexts, takeCount }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Error");
 
       const files: Record<string, string> = data.files;
+      const takes: Record<string, string[]> = data.takes ?? {};
+      const normalizedTexts: Record<string, string> = data.normalizedTexts ?? {};
+      const normalizedVoiceover: VoiceoverScript = {
+        ...voiceover,
+        scenes: Object.fromEntries(sceneKeys.map((key) => {
+          const text = normalizedTexts[key] ?? voiceover.scenes[key]?.text ?? "";
+          return [key, {
+            ...voiceover.scenes[key],
+            text,
+            wordCount: text.trim().split(/\s+/).filter(Boolean).length,
+          }];
+        })),
+      };
+      normalizedVoiceover.fullScript = sceneKeys
+        .map((key) => normalizedVoiceover.scenes[key]?.text ?? "")
+        .filter(Boolean)
+        .join(" ");
       setSceneFiles(files);
+      setSceneTakes(takes);
+      setVoiceover(normalizedVoiceover);
       setAudioKey((k) => k + 1);
 
       // Set preview to intro file (or first available)
@@ -209,7 +241,7 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
       if (firstFile) setAudioPath(`/api/images/${firstFile}`);
 
       // Save everything including file paths
-      await saveVoiceover(voiceover, settings, targetDuration, files);
+      await saveVoiceover(normalizedVoiceover, settings, targetDuration, files, takes);
       setGenProgress("");
     } catch (err) {
       setError(String(err));
@@ -243,6 +275,8 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
   }
 
   const sceneDurations = getSceneDurationsForScript(targetDuration);
+  const expressiveMode = isExpressiveVoiceModel(settings.modelId);
+  const effectiveSpeed = expressiveMode ? 1 : settings.speed;
 
   function formatSavedAt(iso: string) {
     const diff = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
@@ -370,7 +404,7 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
           <div className="space-y-3 mt-4">
             {sceneKeys.map((key) => {
               const scene    = voiceover.scenes[key];
-              const maxWords = Math.floor((sceneDurations[key] ?? 5) * WORDS_PER_SECOND * settings.speed);
+              const maxWords = Math.floor((sceneDurations[key] ?? 5) * WORDS_PER_SECOND * effectiveSpeed * 0.9);
               return (
                 <div key={key}>
                   <div className="flex items-center justify-between mb-1">
@@ -460,7 +494,10 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
             <label className="block text-[10px] font-bold text-[#666] uppercase tracking-wider mb-1">Modelo</label>
             <select
               value={settings.modelId}
-              onChange={(e) => updateSettings({ modelId: e.target.value })}
+              onChange={(e) => updateSettings({
+                voiceId: settings.voiceId,
+                ...getVoicePreset(e.target.value),
+              })}
               className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white
                          text-sm focus:outline-none focus:border-emerald-500 transition"
             >
@@ -472,10 +509,34 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
 
           {/* Sliders */}
           <div className="grid grid-cols-2 gap-4">
-            <Slider label="Estabilidad"  value={settings.stability}       min={0} max={1} step={0.05} onChange={(v) => updateSettings({ stability: v })} />
-            <Slider label="Similitud"    value={settings.similarityBoost} min={0} max={1} step={0.05} onChange={(v) => updateSettings({ similarityBoost: v })} />
-            <Slider label="Estilo"       value={settings.style}           min={0} max={1} step={0.05} onChange={(v) => updateSettings({ style: v })} />
-            <Slider label="Velocidad"    value={settings.speed}           min={0.7} max={1.2} step={0.05} onChange={(v) => updateSettings({ speed: v })} />
+            <Slider label="Estabilidad" value={settings.stability} min={0} max={1} step={0.05} onChange={(v) => updateSettings({ stability: v })} />
+            {!expressiveMode && <>
+              <Slider label="Similitud" value={settings.similarityBoost} min={0} max={1} step={0.05} onChange={(v) => updateSettings({ similarityBoost: v })} />
+              <Slider label="Estilo" value={settings.style} min={0} max={0.3} step={0.05} onChange={(v) => updateSettings({ style: v })} />
+              <Slider label="Velocidad" value={settings.speed} min={0.85} max={1.1} step={0.05} onChange={(v) => updateSettings({ speed: v })} />
+            </>}
+          </div>
+
+          {expressiveMode && (
+            <p className="text-[11px] text-amber-300/80 leading-relaxed">
+              v3 controla la expresividad con el texto y la puntuación. No usa velocidad ni similitud; úsalo solo si cada escena tiene suficiente contexto.
+            </p>
+          )}
+
+          <div className="flex items-center justify-between gap-3 rounded-lg bg-[#111] border border-[#242424] px-3 py-2">
+            <div>
+              <p className="text-xs text-[#bbb] font-medium">Tomas por escena</p>
+              <p className="text-[10px] text-[#555]">Genera alternativas para elegir la interpretación más humana.</p>
+            </div>
+            <select
+              value={takeCount}
+              onChange={(e) => setTakeCount(Number(e.target.value))}
+              className="bg-[#0d0d0d] border border-[#333] rounded px-2 py-1 text-xs text-white"
+            >
+              <option value={1}>1 toma</option>
+              <option value={2}>2 tomas</option>
+              <option value={3}>3 tomas</option>
+            </select>
           </div>
 
           {error && (
@@ -509,14 +570,33 @@ export function VoiceoverPanel({ script, slug }: { script: AnyVideoScript; slug:
                     <span className="text-xs text-[#888]">{sceneLabels[key] ?? key}</span>
                   </div>
                   {file ? (
-                    <audio
-                      key={`${audioKey}-${key}`}
-                      controls
-                      className="h-7"
-                      style={{ colorScheme: "dark", width: 200 }}
-                    >
-                      <source src={`/api/images/${file}?v=${audioKey}`} type="audio/mpeg" />
-                    </audio>
+                    <div className="flex items-center gap-2">
+                      {(sceneTakes?.[key]?.length ?? 0) > 1 && (
+                        <select
+                          value={file}
+                          onChange={(e) => {
+                            const nextFiles = { ...sceneFiles, [key]: e.target.value };
+                            setSceneFiles(nextFiles);
+                            setAudioKey((value) => value + 1);
+                            if (voiceover) void saveVoiceover(voiceover, settings, targetDuration, nextFiles, sceneTakes ?? undefined);
+                          }}
+                          className="bg-[#111] border border-[#333] rounded px-1.5 py-1 text-[10px] text-[#bbb]"
+                          aria-label={`Elegir toma para ${sceneLabels[key] ?? key}`}
+                        >
+                          {sceneTakes![key].map((take, index) => (
+                            <option key={take} value={take}>Toma {index + 1}</option>
+                          ))}
+                        </select>
+                      )}
+                      <audio
+                        key={`${audioKey}-${key}`}
+                        controls
+                        className="h-7"
+                        style={{ colorScheme: "dark", width: 200 }}
+                      >
+                        <source src={`/api/images/${file}?v=${audioKey}`} type="audio/mpeg" />
+                      </audio>
+                    </div>
                   ) : (
                     <span className="text-[10px] text-[#444]">sin texto</span>
                   )}

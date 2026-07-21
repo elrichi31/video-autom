@@ -1,0 +1,112 @@
+{
+  "slug": "peligros-codigos-qr",
+  "displayTitle": "Peligros de Códigos QR",
+  "niche": "cybersecurity",
+  "hookStyle": "shock",
+  "accents": {
+    "intro": [
+      "#FF0000",
+      "#000000"
+    ],
+    "layers": [
+      "#FF0000",
+      "#FF7F00"
+    ],
+    "phase1": [
+      "#FF7F00",
+      "#FFFFFF"
+    ],
+    "phase2": [
+      "#FF7F00",
+      "#FF0000"
+    ],
+    "phase3": [
+      "#FF0000",
+      "#FFFFFF"
+    ],
+    "reality": [
+      "#FFFFFF",
+      "#FF7F00"
+    ],
+    "close": [
+      "#FF0000",
+      "#000000"
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "tag": "ALERTA",
+      "title": "Ese pequeño sticker\npodría no pertenecer\na tu negocio",
+      "subtitle": "¡Cuidado con los códigos QR!"
+    },
+    "layers": {
+      "tag": "QUISHING",
+      "terminal": [
+        "> Quishing = QR + phishing",
+        "> Códigos QR falsos en lugares públicos",
+        "> Delincuentes roban datos personales",
+        "> Códigos pegados sobre otros"
+      ],
+      "definition": "El quishing utiliza códigos QR para robar datos.\nLos delincuentes engañan a las víctimas con páginas falsas.",
+      "detail": "Más de 716,000 códigos QR maliciosos detectados en 2025."
+    },
+    "phase1": {
+      "phase": "CÓDIGOS FALSOS",
+      "timestamp": "ADVERTENCIA",
+      "title": "Cuidado con los códigos\npegados sobre otros",
+      "narrative": "Los delincuentes colocan códigos falsos en parquímetros y carteles.\nRevisa si el adhesivo parece manipulado.",
+      "detail": "El FBI advierte sobre códigos QR alterados.",
+      "indicator": [
+        "Códigos QR falsos en lugares públicos",
+        "FBI advierte sobre manipulaciones"
+      ]
+    },
+    "phase2": {
+      "phase": "PÁGINAS FRAUDULENTAS",
+      "timestamp": "RIESGO ALTO",
+      "title": "Páginas que parecen legítimas\npero son un engaño",
+      "narrative": "Al escanear, puedes ser dirigido a un sitio que roba tus datos.\nLos delincuentes imitan bancos y empresas.",
+      "detail": "La FTC alerta sobre páginas que roban información personal.",
+      "indicator": [
+        "Códigos QR maliciosos detectados",
+        "Páginas que imitan entidades legítimas"
+      ]
+    },
+    "phase3": {
+      "phase": "CONSECUENCIAS GRAVES",
+      "timestamp": "ALERTA MÁXIMA",
+      "title": "Robo de credenciales\ncon un solo escaneo",
+      "narrative": "Si introduces tus datos, los delincuentes pueden acceder a tu información bancaria.\nEl riesgo es real y creciente.",
+      "detail": "Más de 3 millones de códigos QR maliciosos en 2025.",
+      "indicator": [
+        "Cifras alarmantes de códigos maliciosos",
+        "Robo de datos personales"
+      ]
+    },
+    "reality": {
+      "tag": "REALIDAD · PREVENCIÓN",
+      "title": "Antes de escanear,\nrevisa siempre la dirección",
+      "actions": [
+        "Desconfía de errores ortográficos en la URL.",
+        "Confirma con un trabajador antes de usarlo.",
+        "No introduzcas datos sensibles desde un QR desconocido.",
+        "Abre manualmente la aplicación oficial para pagos."
+      ]
+    },
+    "close": {
+      "tag": "CONCLUSIÓN · CUIDADO",
+      "title": "El problema no es el QR;\nes no saber quién lo colocó\nni a dónde te está enviando.",
+      "subtitle": "¡Infórmate y mantente seguro!"
+    }
+  },
+  "imagePrompts": {
+    "intro": "Hyper-realistic cinematic photograph. A person hesitates before scanning a QR code on a street sign. Bright daylight, urban setting. Dramatic contrast, deep blacks. No text, no watermarks, no logos. Vertical 9:16 portrait composition. Photorealistic, not CGI.",
+    "layers": "Hyper-realistic cinematic photograph. Close-up of a QR code on a public poster with a suspicious sticker over it. Soft focus background, highlighting the QR code. Bright daylight, urban environment. Dramatic contrast, deep blacks. No text, no watermarks, no logos. Vertical 9:16 portrait composition. Photorealistic, not CGI.",
+    "phase1": "Hyper-realistic cinematic photograph. A person scanning a QR code on a parking meter, unaware of the fake sticker on top. Overhead shot, capturing the street environment. Bright daylight, urban setting. Dramatic contrast, deep blacks. No text, no watermarks, no logos. Vertical 9:16 portrait composition. Photorealistic, not CGI.",
+    "phase2": "Hyper-realistic cinematic photograph. A computer screen showing a fake login page that mimics a bank's website. Close-up of the screen with a person’s hand hesitating to enter credentials. Dim lighting, focused on the screen. Dramatic contrast, deep blacks. No text, no watermarks, no logos. Vertical 9:16 portrait composition. Photorealistic, not CGI.",
+    "phase3": "Hyper-realistic cinematic photograph. A shocked person looking at their phone, realizing they’ve been scammed. Close-up of their face with a blurred phone screen in the foreground. Dramatic lighting, emphasizing the expression. Dramatic contrast, deep blacks. No text, no watermarks, no logos. Vertical 9:16 portrait composition. Photorealistic, not CGI.",
+    "reality": "Hyper-realistic cinematic photograph. A checklist of safety tips for scanning QR codes displayed on a phone screen. Bright and clear lighting, emphasizing the text. Clean background, minimal distractions. Dramatic contrast, deep blacks. No text, no watermarks, no logos. Vertical 9:16 portrait composition. Photorealistic, not CGI.",
+    "close": "Hyper-realistic cinematic photograph. A person confidently using their phone to access a legitimate website, with a satisfied expression. Bright lighting, showcasing a safe environment. Dramatic contrast, deep blacks. No text, no watermarks, no logos. Vertical 9:16 portrait composition. Photorealistic, not CGI."
+  },
+  "targetDurationSeconds": 60
+}

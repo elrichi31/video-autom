@@ -27,17 +27,46 @@ export interface VoiceSettings {
   speed: number;
 }
 
+export const QUALITY_VOICE_MODEL = "eleven_multilingual_v2";
+export const EXPRESSIVE_VOICE_MODEL = "eleven_v3";
+
+export function isExpressiveVoiceModel(modelId: string): boolean {
+  return modelId === EXPRESSIVE_VOICE_MODEL;
+}
+
+/**
+ * Keeps the UI, word budget and API aligned with the controls each model
+ * actually supports. Eleven v3 controls performance through text/tags rather
+ * than the legacy similarity and speed sliders.
+ */
+export function getVoicePreset(modelId: string): Omit<VoiceSettings, "voiceId"> {
+  if (isExpressiveVoiceModel(modelId)) {
+    return {
+      modelId,
+      stability: 0.5,
+      similarityBoost: 0.75,
+      style: 0,
+      speed: 1,
+    };
+  }
+
+  return {
+    modelId,
+    stability: 0.55,
+    similarityBoost: 0.75,
+    style: 0,
+    speed: 0.98,
+  };
+}
+
 export const DEFAULT_VOICE_SETTINGS: VoiceSettings = {
-  voiceId:         "pNInz6obpgDQGcFmaJgB", // Adam — deep, professional
-  modelId:         "eleven_flash_v2_5",     // ahorro por defecto
-  stability:       0.45,                    // más expresividad dramática
-  similarityBoost: 0.80,
-  style:           0.55,                    // emoción y énfasis
-  speed:           1.10,                    // ritmo TikTok (ligeramente más rápido)
+  // The picker will prefer a Spanish-labelled voice when one is available.
+  voiceId:         "pNInz6obpgDQGcFmaJgB",
+  ...getVoicePreset(QUALITY_VOICE_MODEL),
 };
 
-// Speaking rate for timing: ~155 words per minute in Spanish at speed 1.0
-export const WORDS_PER_SECOND = 155 / 60; // ≈ 2.58
+// Documentary Spanish stays intelligible and human around 130-145 WPM.
+export const WORDS_PER_SECOND = 145 / 60;
 
 export const DEFAULT_TARGET_DURATION = 45;
 

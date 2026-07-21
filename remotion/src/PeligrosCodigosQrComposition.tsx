@@ -21,24 +21,24 @@ import {
   TimestampDisplay,
 } from "./dark-web/components";
 import {
-  QUE_ES_LA_DARKNET_ACCENTS as ACCENTS,
-  QUE_ES_LA_DARKNET_CLOSE as CLOSE,
-  QUE_ES_LA_DARKNET_DURATIONS as D,
-  QUE_ES_LA_DARKNET_HOOK_STYLE as HOOK_STYLE,
-  QUE_ES_LA_DARKNET_INTRO as INTRO,
-  QUE_ES_LA_DARKNET_LAYERS as LAYERS,
-  QUE_ES_LA_DARKNET_NICHE as NICHE,
-  QUE_ES_LA_DARKNET_PHASE1 as PHASE1,
-  QUE_ES_LA_DARKNET_PHASE2 as PHASE2,
-  QUE_ES_LA_DARKNET_PHASE3 as PHASE3,
-  QUE_ES_LA_DARKNET_REALITY as REALITY,
-  QUE_ES_LA_DARKNET_TOTAL_DURATION as TOTAL,
-} from "./que-es-la-darknet/data";
+  PELIGROS_CODIGOS_QR_ACCENTS as ACCENTS,
+  PELIGROS_CODIGOS_QR_CLOSE as CLOSE,
+  PELIGROS_CODIGOS_QR_DURATIONS as D,
+  PELIGROS_CODIGOS_QR_HOOK_STYLE as HOOK_STYLE,
+  PELIGROS_CODIGOS_QR_INTRO as INTRO,
+  PELIGROS_CODIGOS_QR_LAYERS as LAYERS,
+  PELIGROS_CODIGOS_QR_NICHE as NICHE,
+  PELIGROS_CODIGOS_QR_PHASE1 as PHASE1,
+  PELIGROS_CODIGOS_QR_PHASE2 as PHASE2,
+  PELIGROS_CODIGOS_QR_PHASE3 as PHASE3,
+  PELIGROS_CODIGOS_QR_REALITY as REALITY,
+  PELIGROS_CODIGOS_QR_TOTAL_DURATION as TOTAL,
+} from "./peligros-codigos-qr/data";
 
 const FPS = 30;
-// Tail silence appended after each scene's narration so the speaker always
-// finishes the sentence cleanly before the cut (2s). TAIL is an extra safety
-// margin covering MP3 duration under-reporting by getAudioDurationInSeconds.
+// A short breath after each scene prevents clipped finals without turning a
+// 45-second narration into a minute-long video. TAIL covers minor MP3
+// duration under-reporting by getAudioDurationInSeconds.
 const SIL = 12;
 const TAIL = 4;
 
@@ -72,7 +72,7 @@ export const calculateMetadata = async ({ props }: { props: Props }) => {
   return { durationInFrames: total, props: { ...props, sceneDurations: sd } };
 };
 
-export const queEsLaDarknetDuration = TOTAL + 7 * SIL;
+export const peligrosCodigosQrDuration = TOTAL + 7 * SIL;
 
 const INTRO_MOTION = HOOK_STYLE === "shock"
   ? { titleFrom: 4, subtitleFrom: 18, titleSize: 148, titleY: 62, subtitleSize: 32 }
@@ -90,7 +90,7 @@ const CLOSE_TITLE_SIZE = Math.round((NICHE === "history" ? 104 : NICHE === "news
 
 /* ─── intro ─── */
 const IntroScene: FC<{ d: number }> = ({ d }) => (
-  <DarkShell accent={ACCENTS.intro} durationInFrames={d} variant="alert" bgSrc={staticFile("que-es-la-darknet/que-es-la-darknet-intro.png")} niche={NICHE} hookStyle={HOOK_STYLE} sceneKey="intro">
+  <DarkShell accent={ACCENTS.intro} durationInFrames={d} variant="alert" bgSrc={staticFile("peligros-codigos-qr/peligros-codigos-qr-intro.png")} niche={NICHE} hookStyle={HOOK_STYLE} sceneKey="intro">
     <AlertLayout
       tag={<BlockSequence from={0} durationInFrames={d}><Reveal y={12} blurFrom={8}><PhaseLabel text={INTRO.tag} accent={ACCENTS.intro[0]} /></Reveal></BlockSequence>}
       title={<BlockSequence from={INTRO_MOTION.titleFrom} durationInFrames={d - INTRO_MOTION.titleFrom}><Reveal y={INTRO_MOTION.titleY} scaleFrom={0.88} blurFrom={30} durationInFrames={38}><GlitchTitle text={INTRO.title} accent={ACCENTS.intro} size={Math.round(INTRO_MOTION.titleSize * TITLE_SCALE)} /></Reveal></BlockSequence>}
@@ -101,7 +101,7 @@ const IntroScene: FC<{ d: number }> = ({ d }) => (
 
 /* ─── layers ─── */
 const LayersScene: FC<{ d: number }> = ({ d }) => (
-  <DarkShell accent={ACCENTS.layers} durationInFrames={d} variant="terminal" bgSrc={staticFile("que-es-la-darknet/que-es-la-darknet-layers.png")} niche={NICHE} hookStyle={HOOK_STYLE} sceneKey="layers">
+  <DarkShell accent={ACCENTS.layers} durationInFrames={d} variant="terminal" bgSrc={staticFile("peligros-codigos-qr/peligros-codigos-qr-layers.png")} niche={NICHE} hookStyle={HOOK_STYLE} sceneKey="layers">
     <ExplainLayout
       tag={<BlockSequence from={0} durationInFrames={d}><Reveal y={12} blurFrom={8}><PhaseLabel text={LAYERS.tag} accent={ACCENTS.layers[0]} /></Reveal></BlockSequence>}
       terminal={<BlockSequence from={10} durationInFrames={d - 10}><Reveal y={20} blurFrom={14}><TerminalBlock lines={LAYERS.terminal} accent={ACCENTS.layers} startFrame={12} /></Reveal></BlockSequence>}
@@ -116,7 +116,7 @@ const PhaseScene: FC<{ pk: PhaseKey; d: number }> = ({ pk, d }) => {
   const data   = pk === "phase1" ? PHASE1 : pk === "phase2" ? PHASE2 : PHASE3;
   const accent = ACCENTS[pk];
   const dur    = d;
-  const imgSrc = pk === "phase1" ? "que-es-la-darknet/que-es-la-darknet-phase1.png" : pk === "phase2" ? "que-es-la-darknet/que-es-la-darknet-phase2.png" : "que-es-la-darknet/que-es-la-darknet-phase3.png";
+  const imgSrc = pk === "phase1" ? "peligros-codigos-qr/peligros-codigos-qr-phase1.png" : pk === "phase2" ? "peligros-codigos-qr/peligros-codigos-qr-phase2.png" : "peligros-codigos-qr/peligros-codigos-qr-phase3.png";
   return (
     <DarkShell accent={accent} durationInFrames={dur} variant="body" bgSrc={staticFile(imgSrc)} niche={NICHE} hookStyle={HOOK_STYLE} sceneKey={pk}>
       <PhaseLayout
@@ -130,7 +130,7 @@ const PhaseScene: FC<{ pk: PhaseKey; d: number }> = ({ pk, d }) => {
 
 /* ─── reality ─── */
 const RealityScene: FC<{ d: number }> = ({ d }) => (
-  <DarkShell accent={ACCENTS.reality} durationInFrames={d} variant="body" bgSrc={staticFile("que-es-la-darknet/que-es-la-darknet-reality.png")} niche={NICHE} hookStyle={HOOK_STYLE} sceneKey="reality">
+  <DarkShell accent={ACCENTS.reality} durationInFrames={d} variant="body" bgSrc={staticFile("peligros-codigos-qr/peligros-codigos-qr-reality.png")} niche={NICHE} hookStyle={HOOK_STYLE} sceneKey="reality">
     <DefenseLayout
       tag={<BlockSequence from={0} durationInFrames={d}><Reveal y={12} blurFrom={8}><PhaseLabel text={REALITY.tag} accent={ACCENTS.reality[0]} /></Reveal></BlockSequence>}
       title={<BlockSequence from={10} durationInFrames={d - 10}><Reveal y={38} scaleFrom={0.93} blurFrom={24}><NarrativeText text={REALITY.title} size={58} /></Reveal></BlockSequence>}
@@ -141,7 +141,7 @@ const RealityScene: FC<{ d: number }> = ({ d }) => (
 
 /* ─── close ─── */
 const CloseScene: FC<{ d: number }> = ({ d }) => (
-  <DarkShell accent={ACCENTS.close} durationInFrames={d} variant="close" bgSrc={staticFile("que-es-la-darknet/que-es-la-darknet-close.png")} niche={NICHE} hookStyle={HOOK_STYLE} sceneKey="close">
+  <DarkShell accent={ACCENTS.close} durationInFrames={d} variant="close" bgSrc={staticFile("peligros-codigos-qr/peligros-codigos-qr-close.png")} niche={NICHE} hookStyle={HOOK_STYLE} sceneKey="close">
     <CloseLayout
       tag={<BlockSequence from={0} durationInFrames={d}><Reveal y={12} blurFrom={8}><PhaseLabel text={CLOSE.tag} accent={ACCENTS.close[0]} /></Reveal></BlockSequence>}
       title={<BlockSequence from={8} durationInFrames={d - 8}><Reveal y={40} scaleFrom={0.92} blurFrom={26} durationInFrames={36}><GlitchTitle text={CLOSE.title} accent={ACCENTS.close} size={CLOSE_TITLE_SIZE} /></Reveal></BlockSequence>}
@@ -152,7 +152,7 @@ const CloseScene: FC<{ d: number }> = ({ d }) => (
 );
 
 /* ─── main ─── */
-export const QueEsLaDarknetComposition: FC<Props> = ({ voiceoverFile = null, voiceoverFiles = null, sceneDurations = null }) => {
+export const PeligrosCodigosQrComposition: FC<Props> = ({ voiceoverFile = null, voiceoverFiles = null, sceneDurations = null }) => {
   const dur = (key: SceneKey) => sceneDurations?.[key] ?? (D as Record<string, number>)[key] + SIL;
   const off = {
     intro:   0,

@@ -102,6 +102,12 @@ import {
   calculateMetadata as estafaIaClonacionVozCalculateMetadata,
 } from "./EstafaIaClonacionVozComposition";
 
+import {
+  PeligrosCodigosQrComposition,
+  peligrosCodigosQrDuration,
+  calculateMetadata as peligrosCodigosQrCalculateMetadata,
+} from "./PeligrosCodigosQrComposition";
+
 export const RemotionRoot: FC = () => {
   return (
     <>
@@ -331,6 +337,16 @@ export const RemotionRoot: FC = () => {
         component={EstafaIaClonacionVozComposition}
         calculateMetadata={estafaIaClonacionVozCalculateMetadata}
         durationInFrames={estafaIaClonacionVozDuration}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{ voiceoverFile: null, voiceoverFiles: null, sceneDurations: null }}
+      />
+      <Composition
+        id="PeligrosCodigosQrVerticalPremium"
+        component={PeligrosCodigosQrComposition}
+        calculateMetadata={peligrosCodigosQrCalculateMetadata}
+        durationInFrames={peligrosCodigosQrDuration}
         fps={30}
         width={1080}
         height={1920}

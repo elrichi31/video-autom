@@ -105,11 +105,11 @@ import {
 } from "./${slug}/data";
 
 const FPS = 30;
-// Tail silence appended after each scene's narration so the speaker always
-// finishes the sentence cleanly before the cut (2s). TAIL is an extra safety
-// margin covering MP3 duration under-reporting by getAudioDurationInSeconds.
-const SIL = 60;
-const TAIL = 8;
+// A short breath after each scene prevents clipped finals without turning a
+// 45-second narration into a minute-long video. TAIL covers minor MP3
+// duration under-reporting by getAudioDurationInSeconds.
+const SIL = 12;
+const TAIL = 4;
 
 type SceneKey = "intro"|"layers"|"phase1"|"phase2"|"phase3"|"reality"|"close";
 type SceneAudio = Partial<Record<SceneKey, string>>;
@@ -300,11 +300,11 @@ import {
 } from "./${slug}/data";
 
 const FPS = 30;
-// Tail silence appended after each scene's narration so the speaker always
-// finishes the sentence cleanly before the cut (2s). TAIL is an extra safety
-// margin covering MP3 duration under-reporting by getAudioDurationInSeconds.
-const SIL = 60;
-const TAIL = 8;
+// A short breath after each scene prevents clipped finals without turning a
+// 45-second narration into a minute-long video. TAIL covers minor MP3
+// duration under-reporting by getAudioDurationInSeconds.
+const SIL = 12;
+const TAIL = 4;
 
 type SceneKey = "intro"|"event1"|"event2"|"event3"|"event4"|"today"|"close";
 type SceneAudio = Partial<Record<SceneKey, string>>;

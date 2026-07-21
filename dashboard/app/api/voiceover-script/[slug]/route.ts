@@ -11,6 +11,7 @@ export interface SavedVoiceoverData {
   targetDuration: number;
   savedAt: string;
   voiceoverFiles?: Record<string, string>; // per-scene audio paths (remotion relative)
+  voiceoverTakes?: Record<string, string[]>; // alternate takes, first is active by default
 }
 
 function filePath(slug: string) {

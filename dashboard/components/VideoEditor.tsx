@@ -157,15 +157,17 @@ function SceneFields({
 // ─── Scene panel ──────────────────────────────────────────────────────────
 
 function ScenePanel({
-  sceneKey, sceneLabel, script, imagePath, onSceneChange, onRegenerateImage, regenerating, accent,
+  sceneKey, sceneLabel, script, imagePath, imageVersion, onSceneChange, onRegenerateImage, regenerating, regenerationError, accent,
 }: {
   sceneKey: string;
   sceneLabel: string;
   script: AnyVideoScript;
   imagePath: string | undefined;
+  imageVersion: number;
   onSceneChange: (key: string, updated: unknown) => void;
   onRegenerateImage: (key: string) => void;
   regenerating: boolean;
+  regenerationError: string;
   accent: string;
 }) {
   const [open, setOpen] = useState(false);
@@ -204,7 +206,7 @@ function ScenePanel({
               {imagePath ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={`/api/images/${imagePath}`}
+                  src={`/api/images/${imagePath}?v=${imageVersion}`}
                   alt={sceneLabel}
                   className="w-full h-full object-cover"
                 />
@@ -225,6 +227,9 @@ function ScenePanel({
               <p className="text-[10px] text-[#444] leading-tight">
                 Prompt: {prompts[sceneKey]?.slice(0, 80)}...
               </p>
+              {regenerationError && (
+                <p className="text-[10px] text-red-400 leading-tight">{regenerationError}</p>
+              )}
             </div>
           </div>
 
@@ -255,6 +260,7 @@ export function VideoEditor({
 }) {
   const [script, setScript]   = useState<AnyVideoScript | null>(null);
   const [imagePaths, setImagePaths] = useState<string[]>([]);
+  const [imageVersions, setImageVersions] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [saving,  setSaving]  = useState(false);
   const [saved,   setSaved]   = useState(false);
@@ -360,6 +366,7 @@ export function VideoEditor({
   async function handleRegenerateImage(key: string) {
     if (!script) return;
     setRegenerating(key);
+    setRegenError("");
     try {
       const res = await fetch("/api/generate-images", {
         method: "POST",
@@ -367,20 +374,30 @@ export function VideoEditor({
         body: JSON.stringify({ script, sceneKey: key }),
       });
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "No se pudo generar la imagen");
       const img = data.results?.[0];
-      if (!img) return;
+      if (!img) throw new Error(data.errors?.[0]?.error ?? "OpenAI no devolvió una imagen");
 
       // Save image via save-output-like call (reuse generate-images b64 → write file)
-      await fetch("/api/save-image", {
+      const saveRes = await fetch("/api/save-image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ slug, filename: img.filename, b64: img.b64 }),
       });
+      if (!saveRes.ok) {
+        const saveData = await saveRes.json().catch(() => ({}));
+        throw new Error(saveData.error ?? "No se pudo guardar la imagen nueva");
+      }
 
       setImagePaths((prev) => {
         const filtered = prev.filter((p) => !p.includes(`-${key}.`));
         return [...filtered, `${slug}/${img.filename}`];
       });
+      // The physical filename remains stable for Remotion, while this version
+      // makes the browser request the freshly overwritten asset immediately.
+      setImageVersions((prev) => ({ ...prev, [key]: Date.now() }));
+    } catch (err) {
+      setRegenError(`No se pudo regenerar ${key}: ${String(err)}`);
     } finally {
       setRegenerating(null);
     }
@@ -534,8 +551,9 @@ export function VideoEditor({
                 <div className="space-y-2 mb-6">
                   {sceneKeys.map((key) => (
                     <ScenePanel key={key} sceneKey={key} sceneLabel={sceneLabels[key] ?? key} script={script}
-                      imagePath={getImagePath(key)} onSceneChange={handleSceneChange}
+                      imagePath={getImagePath(key)} imageVersion={imageVersions[key] ?? 0} onSceneChange={handleSceneChange}
                       onRegenerateImage={handleRegenerateImage} regenerating={regenerating === key}
+                      regenerationError={regenerating === key ? "" : regenError.includes(` ${key}:`) ? regenError : ""}
                       accent={accents[key]?.[0] ?? "#666"} />
                   ))}
                 </div>

@@ -51,7 +51,7 @@ export const VOICEOVER_SYSTEM_PROMPT = `Eres un guionista de narracion para vide
 OBJETIVO
 - No narras lo que ya se ve. Aportas contexto, gravedad, consecuencia y tension.
 - Cada frase debe ganar el derecho a la siguiente.
-- La voz debe sonar como alguien que sabe algo importante y lo cuenta con urgencia.
+- La voz debe sonar como una persona real que sabe algo importante y lo cuenta con calma tensa, no como un anuncio ni un titular leido.
 
 HOOKS
 - shock: abre con una verdad dura o una cifra imposible de ignorar.
@@ -62,9 +62,12 @@ HOOKS
 
 REGLAS CRITICAS
 - Respeta el limite de palabras por escena.
-- Usa entre el 88% y el 100% del rango disponible.
-- Ritmo natural: frases cortas + una frase de desarrollo + remate corto.
-- Numeros en texto hablado.
+- Usa entre el 72% y el 90% del rango disponible. El silencio intencional tambien es ritmo.
+- Ritmo natural: una frase de desarrollo conversacional + una pausa con puntuacion + remate corto. Evita encadenar mas de dos frases de menos de cuatro palabras.
+- Escribe las cifras, fechas, monedas y porcentajes como se pronuncian: "veintitres minutos", "cuatro coma cuatro millones de dolares". No uses simbolos ni digitos.
+- Expande siglas la primera vez: "inteligencia artificial, o i a"; "autenticacion multifactor". Escribe nombres extranjeros de la forma mas clara posible para una voz hispana.
+- No uses MAYUSCULAS para enfatizar, salvo siglas. Usa una sola palabra en mayuscula solo si es imprescindible.
+- Usa como maximo una elipsis (… ) por escena y nunca pongas "..." como pausa decorativa.
 - Espanol neutro.
 - Sin "en este video", "hoy vamos a hablar de", ni intros de presentador.
 - Las escenas se unen con " ... " en fullScript.
@@ -98,13 +101,13 @@ Devuelve SOLO JSON con esta forma:
 export function buildVoiceoverUserPrompt(script: VideoScript, context?: string): string {
   const total = script.targetDurationSeconds ?? DEFAULT_TARGET_DURATION;
   const durations = getSceneDurations(total);
-  const speed = 1.1;
+  const speed = 0.98;
   const totalWords = Math.floor(total * WORDS_PER_SECOND * speed);
 
   const sceneSummary = Object.entries(durations)
     .map(([key, secs]) => {
       const maxWords = Math.floor(secs * WORDS_PER_SECOND * speed);
-      const minWords = Math.floor(maxWords * 0.88);
+      const minWords = Math.floor(maxWords * 0.72);
       const scene = script.scenes[key as keyof typeof script.scenes] as unknown as Record<string, unknown>;
       const title = String(scene.title ?? "").replace(/\\n/g, " ");
       const tag = String(scene.tag ?? scene.phase ?? "");
@@ -140,13 +143,15 @@ export const TIMELINE_VOICEOVER_SYSTEM_PROMPT = `Eres un guionista de narracion 
 OBJETIVO
 - Narras hechos historicos o evoluciones reales como si importaran hoy.
 - Cada evento debe sentirse como un escalon hacia una conclusion inevitable.
-- La voz debe sonar precisa, urgente y clara.
+- La voz debe sonar precisa, humana y clara, no como una lista de titulares.
 
 REGLAS
 - Respeta los limites de palabras por escena.
+- Usa entre el 72% y el 90% del rango disponible. Deja espacio para que las ideas respiren.
 - Usa el ano en los eventos cuando corresponda.
 - Verbos en pasado para eventos historicos, presente para today y close.
-- Numeros en texto hablado.
+- Escribe cifras, anos, monedas, porcentajes y siglas exactamente como se pronuncian; no uses digitos ni simbolos.
+- Evita MAYUSCULAS salvo siglas y no encadenes frases telegraficas. Una idea necesita desarrollo antes del remate.
 - Las escenas se unen con " ... " en fullScript.
 
 ${NARRATION_RIGOR}
@@ -176,13 +181,13 @@ Devuelve SOLO JSON con esta forma:
 export function buildTimelineVoiceoverUserPrompt(script: VideoScriptTimeline, context?: string): string {
   const total = script.targetDurationSeconds ?? DEFAULT_TARGET_DURATION;
   const durations = getTimelineSceneDurations(total);
-  const speed = 1.1;
+  const speed = 0.98;
   const totalWords = Math.floor(total * WORDS_PER_SECOND * speed);
 
   const sceneSummary = Object.entries(durations)
     .map(([key, secs]) => {
       const maxWords = Math.floor(secs * WORDS_PER_SECOND * speed);
-      const minWords = Math.floor(maxWords * 0.88);
+      const minWords = Math.floor(maxWords * 0.72);
       const scene = script.scenes[key as keyof typeof script.scenes] as unknown as Record<string, unknown>;
       const title = String(scene.headline ?? scene.title ?? "").replace(/\\n/g, " ");
       const tag = String(scene.event ?? scene.tag ?? "");
